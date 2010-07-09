@@ -2,7 +2,7 @@
 
 namespace Symfony\Bundle\DoctrineMigrationsBundle;
 
-use Symfony\Foundation\Bundle\Bundle;
+use Symfony\Framework\Bundle\Bundle;
 
 /*
  * This file is part of the Symfony framework.
