@@ -14,6 +14,7 @@ namespace Symfony\Bundle\DoctrineMigrationsBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Bundle\DoctrineBundle\Command\Proxy\DoctrineCommandHelper;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
 
 /**
@@ -36,7 +37,7 @@ class MigrationsStatusDoctrineCommand extends StatusCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        DoctrineCommand::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
+        DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
 
         $configuration = $this->getMigrationConfiguration($input, $output);
         DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
