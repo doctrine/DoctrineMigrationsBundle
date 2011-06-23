@@ -23,7 +23,7 @@ class Configuration
 
         $rootNode
             ->children()
-                ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()->end()
+                ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/Resources/migrations')->cannotBeEmpty()->end()
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
