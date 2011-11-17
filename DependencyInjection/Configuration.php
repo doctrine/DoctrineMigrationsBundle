@@ -1,6 +1,6 @@
 <?php
 
-namespace Symfony\Bundle\DoctrineMigrationsBundle\DependencyInjection;
+namespace Doctrine\Bundle\DoctrineMigrationsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 

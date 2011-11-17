@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Bundle\DoctrineMigrationsBundle;
+namespace Doctrine\Bundle\DoctrineMigrationsBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
