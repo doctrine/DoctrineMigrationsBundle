@@ -2,26 +2,24 @@
 
 namespace Symfony\Bundle\DoctrineMigrationsBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
  * DoctrineMigrationsExtension configuration structure.
  *
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
+ * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
-class Configuration
+class Configuration implements ConfigurationInterface
 {
-    /**
-     * Generates the configuration tree.
-     *
-     * @return \Symfony\Component\Config\Definition\ArrayNode The config tree
-     */
-    public function getConfigTree()
+    public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doctrine_migrations', 'array');
+        $rootNode = $treeBuilder->root('doctrine_migrations');
 
         $rootNode
+            ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()->end()
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
@@ -30,6 +28,6 @@ class Configuration
             ->end()
         ;
 
-        return $treeBuilder->buildTree();
+        return $treeBuilder;
     }
 }
