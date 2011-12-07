@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Doctrine\Bundle\DoctrineMigrationsBundle\Command;
+namespace Doctrine\Bundle\MigrationsBundle\Command;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;

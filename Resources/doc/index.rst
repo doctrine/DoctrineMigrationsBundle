@@ -60,7 +60,7 @@ following:
     {
         $bundles = array(
             //...
-            new Doctrine\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
         );
     }
 

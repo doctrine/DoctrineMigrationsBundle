@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Doctrine\Bundle\DoctrineMigrationsBundle\DependencyInjection;
+namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
