@@ -28,7 +28,7 @@ and the doctrine-migrations library as dependencies in your application:
 
     [DoctrineMigrationsBundle]
         git=http://github.com/doctrine/DoctrineMigrationsBundle.git
-        target=/bundles/Doctrine/Bundle/DoctrineMigrationsBundle
+        target=/bundles/Doctrine/Bundle/MigrationsBundle
 
 Update the vendor libraries:
 
