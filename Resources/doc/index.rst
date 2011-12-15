@@ -27,8 +27,8 @@ and the doctrine-migrations library as dependencies in your application:
         git=http://github.com/doctrine/migrations.git
 
     [DoctrineMigrationsBundle]
-        git=http://github.com/symfony/DoctrineMigrationsBundle.git
-        target=/bundles/Symfony/Bundle/DoctrineMigrationsBundle
+        git=http://github.com/doctrine/DoctrineMigrationsBundle.git
+        target=/bundles/Doctrine/Bundle/MigrationsBundle
 
 Update the vendor libraries:
 
@@ -60,7 +60,7 @@ following:
     {
         $bundles = array(
             //...
-            new Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
         );
     }
 
