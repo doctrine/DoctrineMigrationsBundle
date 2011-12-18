@@ -26,5 +26,5 @@
     "autoload": {
         "psr-0": { "Doctrine\\Bundle\\DoctrineMigrationsBundle": "" }
     },
-    "target-dir": "Doctrine/Bundle/DoctrineMigrationsBundle"
+    "target-dir": "Doctrine/Bundle/MigrationsBundle"
 }
