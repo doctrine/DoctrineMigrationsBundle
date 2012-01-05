@@ -134,7 +134,7 @@ migration to execute:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:status
+    php app/console doctrine:migrations:status --show-versions
 
      == Configuration
 
@@ -158,7 +158,7 @@ finally migrate when you're ready:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:migrate
+    php app/console doctrine:migrations:migrate 20100621140655
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
