@@ -1,9 +1,12 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Doctrine MigrationsBundle
+ *
+ * The code was originally distributed inside the Symfony framework.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Doctrine Project, Benjamin Eberlei <kontakt@beberlei.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,7 +25,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class DoctrineMigrationsExtension extends Extension
 {
     /**
-     * Responds to the twig configuration parameter.
+     * Responds to the migrations configuration parameter.
      *
      * @param array            $configs
      * @param ContainerBuilder $container
