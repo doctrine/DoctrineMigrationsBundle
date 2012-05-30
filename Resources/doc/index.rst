@@ -27,7 +27,7 @@ and the doctrine-migrations library as dependencies in your application:
         git=http://github.com/doctrine/migrations.git
 
     [DoctrineMigrationsBundle]
-        git=http://github.com/symfony/DoctrineMigrationsBundle.git
+        git=http://github.com/doctrine/DoctrineMigrationsBundle.git
         target=/bundles/Symfony/Bundle/DoctrineMigrationsBundle
         version=origin/2.0
 
@@ -284,4 +284,4 @@ schema fully up to date. In fact, this is an easy and dependable workflow
 for your project.
 
 .. _documentation: http://www.doctrine-project.org/projects/migrations/2.0/docs/reference/introduction/en
-.. _DoctrineMigrationsBundle: https://github.com/symfony/DoctrineMigrationsBundle
+.. _DoctrineMigrationsBundle: https://github.com/dcotrine/DoctrineMigrationsBundle
