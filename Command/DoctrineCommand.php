@@ -16,7 +16,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Command;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand as BaseCommand;
+use Symfony\Bundle\DoctrineBundle\Command\DoctrineCommand as BaseCommand;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 
 /**
