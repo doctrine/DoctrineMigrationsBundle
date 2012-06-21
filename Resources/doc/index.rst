@@ -18,37 +18,31 @@ Make sure you have both the ``doctrine-migrations`` and ``DoctrineMigrationsBund
 libraries configured in your project. Follow these steps to install the
 libraries in the Symfony Standard distribution.
 
-Add the following to ``deps``. This will register the Migrations Bundle
-and the doctrine-migrations library as dependencies in your application:
+If you're using the Standard Distribution, add the following to your
+``composer.json`` file:
 
-.. code-block:: text
+.. code-block:: json
 
-    [doctrine-migrations]
-        git=http://github.com/doctrine/migrations.git
-
-    [DoctrineMigrationsBundle]
-        git=http://github.com/doctrine/DoctrineMigrationsBundle.git
-        target=/bundles/Doctrine/Bundle/MigrationsBundle
+{
+    "require": {
+        "doctrine/doctrine-migrations-bundle": "dev-master"
+    }
+}
 
 Update the vendor libraries:
 
 .. code-block:: bash
 
-    $ php bin/vendors install
+    $ php composer.phar update
 
-Next, ensure the new ``Doctrine\DBAL\Migrations`` namespace will be autoloaded
-via ``autoload.php``. The new ``Migrations`` namespace *must* be placed above
-the ``Doctrine\\DBAL`` entry so that the autoloader looks inside the migrations
-directory for those classes:
+If everything worked, the ``DoctrineMigrationsBundle`` can now be found
+at ``vendor/doctrine/doctrine-migrations-bundle``.
 
-.. code-block:: php
+.. note::
 
-    // app/autoload.php
-    $loader->registerNamespaces(array(
-        //...
-        'Doctrine\\DBAL\\Migrations' => __DIR__.'/../vendor/doctrine-migrations/lib',
-        'Doctrine\\DBAL'             => __DIR__.'/../vendor/doctrine-dbal/lib',
-    ));
+    ``DoctrineMigrationsBundle`` installs
+    `Doctrine Migrations`_ library. The library can be found
+    at ``vendor/doctrine/migrations``.
 
 Finally, be sure to enable the bundle in ``AppKernel.php`` by including the
 following:
