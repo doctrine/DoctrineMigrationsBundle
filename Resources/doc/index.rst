@@ -33,7 +33,7 @@ Update the vendor libraries:
 
 .. code-block:: bash
 
-    $ php composer.phar install
+    $ php composer.phar update
 
 If everything worked, the ``DoctrineMigrationsBundle`` can now be found
 at ``vendor/doctrine/doctrine-migrations-bundle``.
