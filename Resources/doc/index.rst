@@ -14,20 +14,18 @@ Installation
 ------------
 
 Doctrine migrations for Symfony are maintained in the `DoctrineMigrationsBundle`_.
-Make sure you have both the ``doctrine-migrations`` and ``DoctrineMigrationsBundle``
-libraries configured in your project. Follow these steps to install the
-libraries in the Symfony Standard distribution.
+The bundle uses external `Doctrine Database Migrations`_ library.
 
-If you're using the Standard Distribution, add the following to your
-``composer.json`` file:
+Follow these steps to install the bundle and the library in the Symfony
+Standard edition. Add the following to your ``composer.json`` file:
 
 .. code-block:: json
 
-{
-    "require": {
-        "doctrine/doctrine-migrations-bundle": "dev-master"
+    {
+        "require": {
+            "doctrine/doctrine-migrations-bundle": "dev-master"
+        }
     }
-}
 
 Update the vendor libraries:
 
@@ -41,7 +39,7 @@ at ``vendor/doctrine/doctrine-migrations-bundle``.
 .. note::
 
     ``DoctrineMigrationsBundle`` installs
-    `Doctrine Migrations`_ library. The library can be found
+    `Doctrine Database Migrations`_ library. The library can be found
     at ``vendor/doctrine/migrations``.
 
 Finally, be sure to enable the bundle in ``AppKernel.php`` by including the
@@ -276,5 +274,6 @@ to create a fresh database and run your migrations in order to get your database
 schema fully up to date. In fact, this is an easy and dependable workflow
 for your project.
 
-.. _documentation: http://www.doctrine-project.org/projects/migrations/2.0/docs/reference/introduction/en
+.. _documentation: http://docs.doctrine-project.org/projects/doctrine-migrations/en/latest/index.html
 .. _DoctrineMigrationsBundle: https://github.com/doctrine/DoctrineMigrationsBundle
+.. _`Doctrine Database Migrations`: https://github.com/doctrine/migrations
