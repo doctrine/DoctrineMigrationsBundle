@@ -23,11 +23,11 @@ If you're using the Standard Distribution, add the following to your
 
 .. code-block:: json
 
-{
-    "require": {
-        "doctrine/doctrine-migrations-bundle": "dev-master"
+    {
+        "require": {
+            "doctrine/doctrine-migrations-bundle": "dev-master"
+        }
     }
-}
 
 Update the vendor libraries:
 
