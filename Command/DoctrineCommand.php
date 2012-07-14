@@ -40,13 +40,13 @@ abstract class DoctrineCommand extends BaseCommand
         $configuration->setName($container->getParameter('doctrine_migrations.name'));
         $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         
-        $this->injectContainerToMigrations($container, $configuration->getMigrations());
+        self::injectContainerToMigrations($container, $configuration->getMigrations());
     }
 
     /**
      * Injects the container to migrations aware of it
      */
-    private function injectContainerToMigrations(ContainerInterface $container, array $versions)
+    private static function injectContainerToMigrations(ContainerInterface $container, array $versions)
     {
         foreach ($versions as $version) {
             $migration = $version->getMigration();
