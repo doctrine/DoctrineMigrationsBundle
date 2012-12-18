@@ -23,7 +23,7 @@ Standard edition. Add the following to your ``composer.json`` file:
 
     {
         "require": {
-            "doctrine/doctrine-migrations-bundle": "dev-master"
+            "doctrine/doctrine-migrations-bundle": "@dev"
         }
     }
 
@@ -31,7 +31,7 @@ Update the vendor libraries:
 
 .. code-block:: bash
 
-    $ php composer.phar update
+    $ php composer.phar update doctrine/doctrine-migrations-bundle
 
 If everything worked, the ``DoctrineMigrationsBundle`` can now be found
 at ``vendor/doctrine/doctrine-migrations-bundle``.
