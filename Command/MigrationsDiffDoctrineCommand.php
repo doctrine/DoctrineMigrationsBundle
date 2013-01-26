@@ -44,7 +44,11 @@ class MigrationsDiffDoctrineCommand extends DiffCommand
         DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
 
         $configuration = $this->getMigrationConfiguration($input, $output);
-        DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
+        DoctrineCommand::configureMigrations(
+            $this->getApplication()->getKernel()->getContainer(),
+            $configuration,
+            $input->getOption('em')
+        );
 
         parent::execute($input, $output);
     }

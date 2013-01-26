@@ -27,19 +27,37 @@ use Doctrine\DBAL\Migrations\Configuration\Configuration;
  */
 abstract class DoctrineCommand extends BaseCommand
 {
-    public static function configureMigrations(ContainerInterface $container, Configuration $configuration)
+    public static function configureMigrations(ContainerInterface $container, Configuration $configuration, $em)
     {
-        $dir = $container->getParameter('doctrine_migrations.dir_name');
+        if ($container->hasParameter('doctrine_migrations.default_entity_manager')) {
+            $configurationPrefix = 'doctrine_migrations.default_entity_manager';
+        } elseif ($container->hasParameter('doctrine_migrations.' . $em)) {
+            $configurationPrefix = 'doctrine_migrations.' . $em;
+        } else {
+            if (null === $em) {
+                $message = 'There is no doctrine migrations configuration available for the default entity manager';
+            } else {
+                $message = sprintf(
+                    'There is no doctrine migrations configuration available for the %s entity manager',
+                    $em
+                );
+            }
+            throw new \InvalidArgumentException($message);
+        }
+
+        $containerParameters = $container->getParameter($configurationPrefix);
+
+        $dir = $containerParameters['dir_name'];
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
 
-        $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
+        $configuration->setMigrationsNamespace($containerParameters['namespace']);
         $configuration->setMigrationsDirectory($dir);
         $configuration->registerMigrationsFromDirectory($dir);
-        $configuration->setName($container->getParameter('doctrine_migrations.name'));
-        $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
-        
+        $configuration->setName($containerParameters['name']);
+        $configuration->setMigrationsTableName($containerParameters['table_name']);
+
         self::injectContainerToMigrations($container, $configuration->getMigrations());
     }
 

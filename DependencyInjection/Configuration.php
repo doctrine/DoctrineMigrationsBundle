@@ -35,6 +35,23 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('doctrine_migrations', 'array');
 
         $rootNode
+            ->beforeNormalization()
+                ->ifTrue(function($v) {
+                    if(empty($v)) {
+                        return true;
+                    }
+                    $firstConfigValue = array_shift($v);
+
+                    return !is_array($firstConfigValue);
+                })
+                ->then(function($v) {
+                    $v = array('default_entity_manager' => $v);
+
+                    return $v;
+                })
+            ->end()
+            ->useAttributeAsKey('name')
+            ->prototype('array')
             ->children()
                 ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()->end()
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
