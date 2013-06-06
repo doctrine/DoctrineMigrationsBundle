@@ -23,6 +23,7 @@ Standard edition. Add the following to your ``composer.json`` file:
 
     {
         "require": {
+            "doctrine/migrations": "dev-master",
             "doctrine/doctrine-migrations-bundle": "dev-master"
         }
     }
@@ -36,11 +37,6 @@ Update the vendor libraries:
 If everything worked, the ``DoctrineMigrationsBundle`` can now be found
 at ``vendor/doctrine/doctrine-migrations-bundle``.
 
-.. note::
-
-    ``DoctrineMigrationsBundle`` installs
-    `Doctrine Database Migrations`_ library. The library can be found
-    at ``vendor/doctrine/migrations``.
 
 Finally, be sure to enable the bundle in ``AppKernel.php`` by including the
 following:
