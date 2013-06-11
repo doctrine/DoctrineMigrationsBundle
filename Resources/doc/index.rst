@@ -310,6 +310,20 @@ to get full access to the container.
         }
     }
 
+Manual Tables
+-------------
+
+It is a common use case, that in addition to your generated database structure based on your doctrine entities you might need custom tables. By default such tables will be removed by the doctrine:migrations:diff command.
+
+If you follow a specific scheme you can configure doctrine/dbal to ignore those tables.  Let's say all custom tables will be prefixed by 't_'. In this case you just have to add the following configuration option to your doctrine configuration:
+
+.. code-block:: yaml
+doctrine:
+    dbal:        
+        schema_filter: ~^(?!t_)~
+
+This ignores the tables on the DBAL level and they will bei ignored by the diff command.
+
 .. _documentation: http://docs.doctrine-project.org/projects/doctrine-migrations/en/latest/index.html
 .. _DoctrineMigrationsBundle: https://github.com/doctrine/DoctrineMigrationsBundle
 .. _`Doctrine Database Migrations`: https://github.com/doctrine/migrations
