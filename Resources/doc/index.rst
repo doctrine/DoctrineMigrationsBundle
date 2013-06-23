@@ -321,10 +321,24 @@ If you follow a specific scheme you can configure doctrine/dbal to ignore those
 tables. Let's say all custom tables will be prefixed by 't_'. In this case you 
 just have to add the following configuration option to your doctrine configuration:
 
-.. code-block:: yaml
-doctrine:
-    dbal:        
-        schema_filter: ~^(?!t_)~
+.. configuration-block::
+    .. code-block:: yaml
+        doctrine:
+            dbal:        
+                schema_filter: ~^(?!t_)~
+                
+    .. code-block:: xml
+        <doctrine:dbal schema_filter="~^(?!t_)~" ... />
+
+    
+    .. code-block:: php
+        $container->loadFromExtension('doctrine', array(
+            'dbal' => array(
+                'schema_filter'  => '~^(?!t_)~',
+                // ...
+            ),
+            // ...
+        ));
 
 This ignores the tables on the DBAL level and they will be ignored by the diff command.
 
