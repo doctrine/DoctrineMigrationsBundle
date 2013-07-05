@@ -322,6 +322,7 @@ tables. Let's say all custom tables will be prefixed by 't_'. In this case you
 just have to add the following configuration option to your doctrine configuration:
 
 .. configuration-block::
+
     .. code-block:: yaml
         doctrine:
             dbal:        
