@@ -25,7 +25,13 @@ abstract class DoctrineCommand extends BaseCommand
 {
     public static function configureMigrations(ContainerInterface $container, Configuration $configuration)
     {
-        $dir = $container->getParameter('doctrine_migrations.dir_name');
+        // Attempt to grab the migrations directory from a configuration file first. If not defined,
+        // use the one from the primary configuration file or the default one.
+        $dir = $configuration->getMigrationsDirectory();
+        if (empty($dir)) {
+            $dir = $container->getParameter('doctrine_migrations.dir_name');
+        }
+
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
