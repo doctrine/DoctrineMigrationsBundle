@@ -281,7 +281,7 @@ In some cases you might need access to the container to ensure the proper update
 your data structure. This could be necessary to update relations with some specific
 logic or to create new entities. 
 
-Therefore you can just implement the ContainerAwareInterface with it's needed methods
+Therefore you can just implement the ContainerAwareInterface with its needed methods
 to get full access to the container.
 
 .. code-block:: php
