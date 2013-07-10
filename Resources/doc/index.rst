@@ -324,15 +324,18 @@ just have to add the following configuration option to your doctrine configurati
 .. configuration-block::
 
     .. code-block:: yaml
+    
         doctrine:
             dbal:        
                 schema_filter: ~^(?!t_)~
                 
     .. code-block:: xml
+    
         <doctrine:dbal schema-filter="~^(?!t_)~" ... />
 
     
     .. code-block:: php
+    
         $container->loadFromExtension('doctrine', array(
             'dbal' => array(
                 'schema_filter'  => '~^(?!t_)~',
