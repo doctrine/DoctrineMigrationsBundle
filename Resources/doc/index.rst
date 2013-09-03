@@ -346,6 +346,9 @@ just have to add the following configuration option to your doctrine configurati
 
 This ignores the tables on the DBAL level and they will be ignored by the diff command.
 
+Note that if you have multiple connections configured then the ``schema_filter`` configuration
+will need to be placed per-connection.
+
 .. _documentation: http://docs.doctrine-project.org/projects/doctrine-migrations/en/latest/index.html
 .. _DoctrineMigrationsBundle: https://github.com/doctrine/DoctrineMigrationsBundle
 .. _`Doctrine Database Migrations`: https://github.com/doctrine/migrations
