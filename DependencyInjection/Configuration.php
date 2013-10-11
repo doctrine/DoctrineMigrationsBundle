@@ -27,6 +27,14 @@ class Configuration
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
+                ->arrayNode('migrations')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('version')->isRequired()->end()
+                            ->scalarNode('class')->isRequired()->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
