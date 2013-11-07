@@ -39,7 +39,17 @@ abstract class DoctrineCommand extends BaseCommand
         $configuration->registerMigrationsFromDirectory($dir);
         $configuration->setName($container->getParameter('doctrine_migrations.name'));
         $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
-        
+
+        $bundleDirectory = str_replace("\\", "/", $configuration->getMigrationsNamespace());
+        $kernel = $container->get("kernel");
+        /* @var $kernel \Symfony\Component\HttpKernel\Kernel */
+        foreach ($kernel->getBundles() as $bundle) {
+            /* @var $bundle \Symfony\Component\HttpKernel\Bundle\Bundle */
+            $bundleDir = $bundle->getPath() . "/" . $bundleDirectory;
+            if (file_exists($bundleDir) && is_dir($bundleDir)) {
+                $configuration->registerMigrationsFromDirectory($bundleDir);
+            }
+        }
         self::injectContainerToMigrations($container, $configuration->getMigrations());
     }
 
