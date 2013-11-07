@@ -318,7 +318,7 @@ based on your doctrine entities you might need custom tables. By default such
 tables will be removed by the doctrine:migrations:diff command.
 
 If you follow a specific scheme you can configure doctrine/dbal to ignore those 
-tables. Let's say all custom tables will be prefixed by 't_'. In this case you 
+tables. Let's say all custom tables will be prefixed by 't\_'. In this case you 
 just have to add the following configuration option to your doctrine configuration:
 
 .. configuration-block::
