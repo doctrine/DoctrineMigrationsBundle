@@ -40,14 +40,18 @@ abstract class DoctrineCommand extends BaseCommand
         $configuration->setName($container->getParameter('doctrine_migrations.name'));
         $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
 
-        $bundleDirectory = str_replace("\\", "/", $configuration->getMigrationsNamespace());
-        $kernel = $container->get("kernel");
-        /* @var $kernel \Symfony\Component\HttpKernel\Kernel */
-        foreach ($kernel->getBundles() as $bundle) {
-            /* @var $bundle \Symfony\Component\HttpKernel\Bundle\Bundle */
-            $bundleDir = $bundle->getPath() . "/" . $bundleDirectory;
-            if (file_exists($bundleDir) && is_dir($bundleDir)) {
-                $configuration->registerMigrationsFromDirectory($bundleDir);
+        if ($container->getParameter('doctrine_migrations.use_bundles')) {
+            $migrationsDirectory = str_replace("\\", "/", $configuration->getMigrationsNamespace());
+            $kernel = $container->get("kernel");
+            /* @var $kernel \Symfony\Component\HttpKernel\Kernel */
+            $bundles = $container->getParameter('doctrine_migrations.bundles');
+            foreach ($bundles as $bundleName) {
+                $bundle = $kernel->getBundle($bundleName);
+                /* @var $bundle \Symfony\Component\HttpKernel\Bundle\Bundle */
+                $bundleDir = $bundle->getPath() . "/" . $migrationsDirectory;
+                if (file_exists($bundleDir) && is_dir($bundleDir)) {
+                    $configuration->registerMigrationsFromDirectory($bundleDir);
+                }
             }
         }
         self::injectContainerToMigrations($container, $configuration->getMigrations());

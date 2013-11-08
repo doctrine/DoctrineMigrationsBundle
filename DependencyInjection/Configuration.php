@@ -24,6 +24,22 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+
+    /**
+     * @var array
+     */
+    private $_bundles;
+
+    /**
+     * Constructor
+     *
+     * @param array $bundles An array of bundle names
+     */
+    public function __construct(array $bundles)
+    {
+        $this->_bundles = $bundles;
+    }
+
     /**
      * Generates the configuration tree.
      *
@@ -40,6 +56,16 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
+                ->booleanNode('use_bundles')->defaultValue(false)->end()
+                ->arrayNode('bundles')
+                    ->defaultValue($this->_bundles)
+                    ->prototype('scalar')
+                        ->validate()
+                            ->ifNotInArray($this->_bundles)
+                            ->thenInvalid('%s is not a valid bundle.')
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
