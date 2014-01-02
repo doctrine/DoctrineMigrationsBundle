@@ -288,7 +288,9 @@ to get full access to the container.
 .. code-block:: php
 
     // ...
-    
+    use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+    use Symfony\Component\DependencyInjection\ContainerInterface;
+
     class Version20130326212938 extends AbstractMigration implements ContainerAwareInterface
     {
     
