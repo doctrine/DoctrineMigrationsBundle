@@ -56,6 +56,20 @@ following:
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
         );
     }
+    
+Configuration
+-------------
+
+You can configure the path, namespace, table_name and name in your `config.yml`. The examples below are the default values.
+
+.. code-block:: yml
+
+    // app/config/config.yml
+    doctrine_migrations:
+        dir_name: %kernel.root_dir%/DoctrineMigrations
+        namespace: Application\Migrations
+        table_name: migration_versions
+        name: Application Migrations   
 
 Usage
 -----
