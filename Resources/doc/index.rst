@@ -57,6 +57,8 @@ following:
         );
     }
     
+Configuration
+-------------
 
 You can configure the path, namespace, table_name and name in your `config.yml`. The examples below are the default values.
 
