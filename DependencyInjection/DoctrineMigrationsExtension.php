@@ -32,7 +32,10 @@ class DoctrineMigrationsExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $bundles = array_keys(
+            $container->getParameter('kernel.bundles')
+        );
+        $configuration = new Configuration($bundles);
 
         $config = $this->processConfiguration($configuration, $configs);
 
