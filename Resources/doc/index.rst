@@ -62,7 +62,7 @@ Configuration
 
 You can configure the path, namespace, table_name and name in your `config.yml`. The examples below are the default values.
 
-.. code-block:: yml
+.. code-block:: yaml
 
     // app/config/config.yml
     doctrine_migrations:
