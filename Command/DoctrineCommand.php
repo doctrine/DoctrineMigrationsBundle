@@ -60,7 +60,10 @@ abstract class DoctrineCommand extends BaseCommand
         if (!$configuration->getMigrationsTableName() || !($configuration instanceof AbstractFileConfiguration)) {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
-        $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
+        // Migrations is not register from configuration loader
+        if (!($configuration instanceof AbstractFileConfiguration)) {
+            $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
+        }
 
         self::injectContainerToMigrations($container, $configuration->getMigrations());
     }
