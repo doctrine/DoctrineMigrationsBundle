@@ -29,17 +29,32 @@ abstract class DoctrineCommand extends BaseCommand
 {
     public static function configureMigrations(ContainerInterface $container, Configuration $configuration)
     {
-        $dir = $container->getParameter('doctrine_migrations.dir_name');
+        $dir = $configuration->getMigrationsDirectory();
+
+        if (is_null($dir)) {
+            $dir = $container->getParameter('doctrine_migrations.dir_name');
+
+            $configuration->setMigrationsDirectory($dir);
+            $configuration->registerMigrationsFromDirectory($dir);
+        }
+
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
 
-        $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
-        $configuration->setMigrationsDirectory($dir);
-        $configuration->registerMigrationsFromDirectory($dir);
-        $configuration->setName($container->getParameter('doctrine_migrations.name'));
-        $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
-        
+        if (is_null($configuration->getMigrationsNamespace())) {
+            $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
+        }
+
+        if (is_null($configuration->getName())) {
+            $configuration->setName($container->getParameter('doctrine_migrations.name'));
+        }
+
+        if ($configuration->getMigrationsTableName() == 'doctrine_migration_versions')
+        {
+            $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
+        }
+
         self::injectContainerToMigrations($container, $configuration->getMigrations());
     }
 
