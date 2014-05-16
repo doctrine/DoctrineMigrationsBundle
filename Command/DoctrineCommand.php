@@ -29,7 +29,7 @@ abstract class DoctrineCommand extends BaseCommand
 {
     public static function configureMigrations(ContainerInterface $container, Configuration $configuration)
     {
-        if ($configuration->getMigrationsDirectory() == null || $configuration->getMigrationsDirectory() == '') {
+        if (!$configuration->getMigrationsDirectory()) {
             $dir = $container->getParameter('doctrine_migrations.dir_name');
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
@@ -51,13 +51,13 @@ abstract class DoctrineCommand extends BaseCommand
             $configuration->setMigrationsDirectory($dir);
             $configuration->registerMigrationsFromDirectory($dir);
         }
-        if ($configuration->getMigrationsNamespace() == null || $configuration->getMigrationsNamespace() == '') {
+        if (!$configuration->getMigrationsNamespace()) {
             $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
         }
-        if ($configuration->getName() == null || $configuration->getName() == '') {
+        if (!$configuration->getName()) {
             $configuration->setName($container->getParameter('doctrine_migrations.name'));
         }
-        if ($configuration->getMigrationsTableName() == null || $configuration->getMigrationsTableName() == '') {
+        if (!$configuration->getMigrationsTableName()) {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
 
