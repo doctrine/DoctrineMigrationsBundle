@@ -35,7 +35,6 @@ abstract class DoctrineCommand extends BaseCommand
                 mkdir($dir, 0777, true);
             }
             $configuration->setMigrationsDirectory($dir);
-            $configuration->registerMigrationsFromDirectory($dir);
         } else {
             $dir = $configuration->getMigrationsDirectory();
             // class Kernel has method getKernelParameters with some of the important path parameters
@@ -49,7 +48,6 @@ abstract class DoctrineCommand extends BaseCommand
                 mkdir($dir, 0777, true);
             }
             $configuration->setMigrationsDirectory($dir);
-            $configuration->registerMigrationsFromDirectory($dir);
         }
         if (!$configuration->getMigrationsNamespace()) {
             $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
@@ -60,6 +58,7 @@ abstract class DoctrineCommand extends BaseCommand
         if (!$configuration->getMigrationsTableName()) {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
+        $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
 
         self::injectContainerToMigrations($container, $configuration->getMigrations());
     }
