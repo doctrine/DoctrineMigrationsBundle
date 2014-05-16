@@ -29,51 +29,39 @@ abstract class DoctrineCommand extends BaseCommand
 {
     public static function configureMigrations(ContainerInterface $container, Configuration $configuration)
     {
-        
-        if ($configuration->getMigrationsDirectory() == null || $configuration->getMigrationsDirectory() == '') 
-        {
+        if ($configuration->getMigrationsDirectory() == null || $configuration->getMigrationsDirectory() == '') {
             $dir = $container->getParameter('doctrine_migrations.dir_name');
-            if (!file_exists($dir)) 
-            {
+            if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
             }
             $configuration->setMigrationsDirectory($dir);
             $configuration->registerMigrationsFromDirectory($dir);
-        }
-        else
-        {
+        } else {
             $dir = $configuration->getMigrationsDirectory();
             // class Kernel has method getKernelParameters with some of the important path parameters
             $pathPlaceholderArray = array('kernel.root_dir', 'kernel.cache_dir', 'kernel.logs_dir');
-            foreach ($pathPlaceholderArray as $pathPlaceholder)
-            {
-                if ($container->hasParameter($pathPlaceholder) && preg_match('/\%'.$pathPlaceholder.'\%/', $dir)) 
-                {
+            foreach ($pathPlaceholderArray as $pathPlaceholder) {
+                if ($container->hasParameter($pathPlaceholder) && preg_match('/\%'.$pathPlaceholder.'\%/', $dir)) {
                     $dir = str_replace('%'.$pathPlaceholder.'%', $container->getParameter($pathPlaceholder), $dir);
                 }
             }
-            if (!file_exists($dir)) 
-            {
+            if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
             }
             $configuration->setMigrationsDirectory($dir);
             $configuration->registerMigrationsFromDirectory($dir);
         }
-        if ($configuration->getMigrationsNamespace() == null || $configuration->getMigrationsNamespace() == '')
-        {
+        if ($configuration->getMigrationsNamespace() == null || $configuration->getMigrationsNamespace() == '') {
             $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
         }
-        if ($configuration->getName() == null || $configuration->getName() == '')
-        {
+        if ($configuration->getName() == null || $configuration->getName() == '') {
             $configuration->setName($container->getParameter('doctrine_migrations.name'));
         }
-        if ($configuration->getMigrationsTableName() == null || $configuration->getMigrationsTableName() == '')
-        {
+        if ($configuration->getMigrationsTableName() == null || $configuration->getMigrationsTableName() == '') {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
-        
+
         self::injectContainerToMigrations($container, $configuration->getMigrations());
-        
     }
 
     /**
