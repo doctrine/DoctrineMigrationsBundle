@@ -19,6 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand as BaseCommand;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\Migrations\Configuration\AbstractFileConfiguration;
 
 /**
  * Base class for Doctrine console commands to extend from.
@@ -55,7 +56,8 @@ abstract class DoctrineCommand extends BaseCommand
         if (!$configuration->getName()) {
             $configuration->setName($container->getParameter('doctrine_migrations.name'));
         }
-        if (!$configuration->getMigrationsTableName()) {
+        // For backward compatibility, need use a table from parameters for overwrite the default configuration
+        if (!$configuration->getMigrationsTableName() || !($configuration instanceof AbstractFileConfiguration)) {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
         $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
