@@ -23,8 +23,8 @@ Standard edition. Add the following to your ``composer.json`` file:
 
     {
         "require": {
-            "doctrine/migrations": "dev-master",
-            "doctrine/doctrine-migrations-bundle": "dev-master"
+            "doctrine/migrations": "1.0.*@dev",
+            "doctrine/doctrine-migrations-bundle": "2.1.*@dev"
         }
     }
 
