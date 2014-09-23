@@ -4,7 +4,7 @@
     "description": "Symfony DoctrineMigrationsBundle",
     "keywords": ["DBAL", "Migrations", "Schema"],
     "homepage": "http://www.doctrine-project.org",
-    "license": "MIT",
+    "license": "LGPL",
     "authors": [
         {
             "name": "Fabien Potencier",
