@@ -322,8 +322,8 @@ to get full access to the container.
     
         public function postUp(Schema $schema)
         {
-            $em = $this->container->get('doctrine.orm.entity_manager');
-            // ... update the entities
+            $converter = $this->container->get('my_service.convert_data_to');
+            // ... convert the data from markdown to html for instance
         }
     }
 
