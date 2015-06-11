@@ -17,7 +17,6 @@ namespace Doctrine\Bundle\MigrationsBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Doctrine\Bundle\DoctrineBundle\Command\Proxy\DoctrineCommandHelper;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
 
 /**
@@ -34,13 +33,19 @@ class MigrationsGenerateDoctrineCommand extends GenerateCommand
 
         $this
             ->setName('doctrine:migrations:generate')
-            ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command.')
+            ->addOption('db', null, InputOption::VALUE_REQUIRED, 'The database connection to use for this command.')
+            ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
+        // EM and DB options cannot be set at same time
+        if (null !== $input->getOption('em') && null !== $input->getOption('db')) {
+            throw new \InvalidArgumentException('Cannot set both "em" and "db" for command execution.');
+        }
+
+        Helper\DoctrineCommandHelper::setApplicationHelper($this->getApplication(), $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
         DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
