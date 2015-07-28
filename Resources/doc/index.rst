@@ -64,7 +64,7 @@ You can configure the path, namespace, table_name and name in your `config.yml`.
 
 .. code-block:: yaml
 
-    // app/config/config.yml
+    # app/config/config.yml
     doctrine_migrations:
         dir_name: %kernel.root_dir%/DoctrineMigrations
         namespace: Application\Migrations
