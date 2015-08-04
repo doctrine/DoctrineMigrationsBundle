@@ -26,9 +26,8 @@
         "doctrine/migrations": "~1.0"
     },
     "autoload": {
-        "psr-0": { "Doctrine\\Bundle\\MigrationsBundle": "" }
+        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\": "" }
     },
-    "target-dir": "Doctrine/Bundle/MigrationsBundle",
     "extra": {
         "branch-alias": {
           "dev-master": "1.0-dev"
