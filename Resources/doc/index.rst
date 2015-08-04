@@ -16,23 +16,11 @@ Installation
 Doctrine migrations for Symfony are maintained in the `DoctrineMigrationsBundle`_.
 The bundle uses external `Doctrine Database Migrations`_ library.
 
-Follow these steps to install the bundle and the library in the Symfony
-Standard edition. Add the following to your ``composer.json`` file:
-
-.. code-block:: json
-
-    {
-        "require": {
-            "doctrine/migrations": "^1.0",
-            "doctrine/doctrine-migrations-bundle": "^1.0"
-        }
-    }
-
-Update the vendor libraries:
+First, install the bundle with composer:
 
 .. code-block:: bash
 
-    $ php composer.phar update
+    $ composer require doctrine/doctrine-migrations-bundle "^1.0"
 
 If everything worked, the ``DoctrineMigrationsBundle`` can now be found
 at ``vendor/doctrine/doctrine-migrations-bundle``.
@@ -56,11 +44,11 @@ following:
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
         );
     }
-    
+
 Configuration
 -------------
 
-You can configure the path, namespace, table_name and name in your `config.yml`. The examples below are the default values.
+You can configure the path, namespace, table_name and name in your ``config.yml``. The examples below are the default values.
 
 .. code-block:: yaml
 
@@ -69,7 +57,7 @@ You can configure the path, namespace, table_name and name in your `config.yml`.
         dir_name: "%kernel.root_dir%/DoctrineMigrations"
         namespace: Application\Migrations
         table_name: migration_versions
-        name: Application Migrations   
+        name: Application Migrations
 
 Usage
 -----
@@ -112,7 +100,7 @@ for you.
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:generate
+    $ php app/console doctrine:migrations:generate
     Generated new migration class to "/path/to/project/app/DoctrineMigrations/Version20100621140655.php"
 
 Have a look at the newly generated migration class and you will see something
@@ -141,7 +129,7 @@ migration to execute:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:status --show-versions
+    $ php app/console doctrine:migrations:status --show-versions
 
      == Configuration
 
@@ -165,7 +153,7 @@ finally migrate when you're ready:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:migrate 20100621140655
+    $ php app/console doctrine:migrations:migrate 20100621140655
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
@@ -268,7 +256,7 @@ running the following command:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:diff
+    $ php app/console doctrine:migrations:diff
 
 You should see a message that a new migration class was generated based on
 the schema differences. If you open this file, you'll find that it has the
@@ -277,7 +265,7 @@ to add the table to your database:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:migrate
+    $ php app/console doctrine:migrations:migrate
 
 The moral of the story is this: after each change you make to your Doctrine
 mapping information, run the ``doctrine:migrations:diff`` command to automatically
@@ -294,7 +282,7 @@ Container Aware Migrations
 
 In some cases you might need access to the container to ensure the proper update of
 your data structure. This could be necessary to update relations with some specific
-logic or to create new entities. 
+logic or to create new entities.
 
 Therefore you can just implement the ContainerAwareInterface with its needed methods
 to get full access to the container.
@@ -307,19 +295,19 @@ to get full access to the container.
 
     class Version20130326212938 extends AbstractMigration implements ContainerAwareInterface
     {
-    
+
         private $container;
-    
+
         public function setContainer(ContainerInterface $container = null)
         {
             $this->container = $container;
         }
-    
+
         public function up(Schema $schema)
         {
             // ... migration content
         }
-    
+
         public function postUp(Schema $schema)
         {
             $converter = $this->container->get('my_service.convert_data_to');
@@ -330,29 +318,29 @@ to get full access to the container.
 Manual Tables
 -------------
 
-It is a common use case, that in addition to your generated database structure 
-based on your doctrine entities you might need custom tables. By default such 
+It is a common use case, that in addition to your generated database structure
+based on your doctrine entities you might need custom tables. By default such
 tables will be removed by the doctrine:migrations:diff command.
 
-If you follow a specific scheme you can configure doctrine/dbal to ignore those 
-tables. Let's say all custom tables will be prefixed by ``t_``. In this case you 
+If you follow a specific scheme you can configure doctrine/dbal to ignore those
+tables. Let's say all custom tables will be prefixed by ``t_``. In this case you
 just have to add the following configuration option to your doctrine configuration:
 
 .. configuration-block::
 
     .. code-block:: yaml
-    
+
         doctrine:
-            dbal:        
+            dbal:
                 schema_filter: ~^(?!t_)~
-                
+
     .. code-block:: xml
-    
+
         <doctrine:dbal schema-filter="~^(?!t_)~" ... />
 
-    
+
     .. code-block:: php
-    
+
         $container->loadFromExtension('doctrine', array(
             'dbal' => array(
                 'schema_filter'  => '~^(?!t_)~',
