@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="doctrine_bundle.migrations_collector"
+                 class="Doctrine\Bundle\MigrationsBundle\Collector\MigrationsCollector"
+                 public="true"
+        >
+            <argument type="service" id="doctrine.dbal.default_connection"/>
+            <argument>%doctrine_migrations.namespace%</argument>
+            <argument>%doctrine_migrations.dir_name%</argument>
+            <argument>%doctrine_migrations.table_name%</argument>
+            <argument>%doctrine_migrations.name%</argument>
+            <tag name="data_collector" template="DoctrineMigrationsBundle::migrationsCollector.html.twig" id="doctrine_bundle.migrations_collector" priority="249"/>
+        </service>
+    </services>
+</container>
