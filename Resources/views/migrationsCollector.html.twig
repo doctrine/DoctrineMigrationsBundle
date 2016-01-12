@@ -1,0 +1,170 @@
+{% extends app.request.isXmlHttpRequest ? '@WebProfiler/Profiler/ajax_layout.html.twig' : '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set profiler_markup_version = profiler_markup_version|default(1) %}
+
+    {% set color = collector.availableMigrations == collector.executedMigrations ? 'green' : '' %}
+    {% set color = collector.executedUnavailableMigrations > 0 ? 'red' : '' %}
+    {% if color is empty %}
+        {% set color = 'yellow' %}
+    {% endif %}
+
+    {# this is the content displayed as a panel in the toolbar #}
+    {% set icon %}
+        {% if profiler_markup_version == 1 %}
+            {% set color = collector.availableMigrations == collector.executedMigrations ? 'green' : '' %}
+            {% set color = collector.executedUnavailableMigrations > 0 ? 'red' : '' %}
+            {% if color is empty %}
+                {% set color = 'yellow' %}
+            {% endif %}
+
+            <img width="20" height="28" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAYAAAB/E6/TAAABLUlEQVR42u3TP0vDQBiA8UK/gDiLzi0IhU4OEunk5OQUAhGSOBUCzqWfIKSzX8DRySF0URCcMjWLIJjFD9Cpk/D6HITecEPUuzhIAz8CIdyTP/f2iqI4qaqqDx8l5Ic2uIeP/bquezCokOAFF+oCN3t4gPzSEjc4NEPaCldQbzjELTYW0RJzHDchwwem+ons6ZBpLSJ7nueJC22h0V+FzmwWV0ee59vQNV67CGVZJmEYbkNjfpY6X6I0Qo4/3RMmTdDDspuQVsJvgkP3IdMbIkIjLPBoadG2646iKJI0Ta2wxm6OdnP0/Tk6DYJgHcfxpw21RtscDTDDnaVZ26474GkkSRIrrPEv5sgMTfHe+cA2O6wPH6vOBpYQNALneHb96XTEDI6dzpEZ0VzO0Rf3pP5LMLI4tAAAAABJRU5ErkJggg==" alt="Doctrine Migrations">
+            <span class="sf-toolbar-info-piece-additional-detail">Migrations</span>
+            <span class="sf-toolbar-value sf-toolbar-status sf-toolbar-status-{{ color }}">{{ collector.executedMigrations }} / {{ collector.availableMigrations }}</span>
+        {% else %}
+        {% endif %}
+    {% endset %}
+
+    {% set text %}
+        {# this is the content displayed when hovering the mouse over
+           the toolbar panel #}
+        {% set properties = ['previousMigration', 'currentMigration', 'nextMigration', 'latestMigration', 'executedMigrations', 'executedUnavailableMigrations', 'availableMigrations', 'newMigrations'] %}
+        {% for property in properties%}
+            {% set result = attribute(collector, 'get' ~ (property|capitalize) ) %}
+            <div class="sf-toolbar-info-piece">
+                <b>{{ property|replace({'Migrations': '', 'Migration': ''})|humanize }}</b>
+                <span>{{ result|replace({'<comment>': '', '</comment>': '', '(': '', ')': ''}) }}</span>
+            </div>
+        {% endfor %}
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't
+       show a section in the web profiler (default is 'true'). #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+{% endblock %}
+
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+
+    <span class="label">
+        <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAYAAAB/E6/TAAABLUlEQVR42u3TP0vDQBiA8UK/gDiLzi0IhU4OEunk5OQUAhGSOBUCzqWfIKSzX8DRySF0URCcMjWLIJjFD9Cpk/D6HITecEPUuzhIAz8CIdyTP/f2iqI4qaqqDx8l5Ic2uIeP/bquezCokOAFF+oCN3t4gPzSEjc4NEPaCldQbzjELTYW0RJzHDchwwem+ons6ZBpLSJ7nueJC22h0V+FzmwWV0ee59vQNV67CGVZJmEYbkNjfpY6X6I0Qo4/3RMmTdDDspuQVsJvgkP3IdMbIkIjLPBoadG2646iKJI0Ta2wxm6OdnP0/Tk6DYJgHcfxpw21RtscDTDDnaVZ26474GkkSRIrrPEv5sgMTfHe+cA2O6wPH6vOBpYQNALneHb96XTEDI6dzpEZ0VzO0Rf3pP5LMLI4tAAAAABJRU5ErkJggg==" alt=""></span>
+        <strong>Migrations</strong>
+        <span class="count">
+            <span>
+                {{ collector.executedMigrations }} / {{ collector.availableMigrations }}
+            </span>
+        </span>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {# Optional, for showing the most details. #}
+    <h2>Doctrine Migrations</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+
+        <tr>
+            <td>Database Driver</td>
+            <td>{{ collector.getDatabaseDriver }}</td>
+        </tr>
+
+        <tr>
+            <td>Database Name</td>
+            <td>{{ collector.getDatabaseName }}</td>
+        </tr>
+
+        <tr>
+            <td>Configuration Source</td>
+            <td>{{ collector.getConfigurationSource }}</td>
+        </tr>
+
+        <tr>
+            <td>Version Table Name</td>
+            <td>{{ collector.getVersionTableName }}</td>
+        </tr>
+
+        <tr>
+            <td>Version Column Name</td>
+            <td>{{ collector.getVersionColumnName }}</td>
+        </tr>
+
+        <tr>
+            <td>Migrations Namespace</td>
+            <td>{{ collector.getMigrationNamespace }}</td>
+        </tr>
+
+        <tr>
+            <td>Migrations Directory</td>
+            <td>{{ collector.getMigrationDirectory }}</td>
+        </tr>
+
+        <tr>
+            <td>Previous Version</td>
+            <td>{{ collector.getPreviousMigration|replace({'<comment>': '', '</comment>': '', '(': '', ')': ''})}}</td>
+        </tr>
+        <tr>
+            <td>Current Version</td>
+            <td>{{ collector.getCurrentMigration|replace({'<comment>': '', '</comment>': '', '(': '', ')': ''}) }}</td>
+        </tr>
+        <tr>
+            <td>Next Version</td>
+            <td>{{ collector.getNextMigration|replace({'<comment>': '', '</comment>': '', '(': '', ')': ''}) }}</td>
+        </tr>
+        <tr>
+            <td>Latest Version</td>
+            <td>{{ collector.getLatestMigration|replace({'<comment>': '', '</comment>': '', '(': '', ')': ''}) }}</td>
+        </tr>
+
+        <tr>
+            <td>Executed Migrations</td>
+            <td>{{ collector.getExecutedMigrations }}</td>
+        </tr>
+        <tr>
+            <td>Executed Unavailable Migrations</td>
+            <td>{{ collector.getExecutedUnavailableMigrations }}</td>
+        </tr>
+        <tr>
+            <td>Available Migrations</td>
+            <td>{{ collector.getExecutedUnavailableMigrations }}</td>
+        </tr>
+        <tr>
+            <td>New Migrations</td>
+            <td>{{ collector.getNewMigrations }}</td>
+        </tr>
+
+    </table>
+
+    {% if collector.getExecutedUnavailableMigrations > 0 %}
+        <h2>Executed Unavailable Migrations</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+            </tr>
+
+            {% for name in collector.getExecutedUnavailableMigrationsList %}
+                <tr>
+                    <td>{{ name }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% if collector.getNewMigrations > 0 %}
+    <h2>New Migrations Available</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+        </tr>
+
+        {% for name in collector.getNewMigrationsList %}
+            <tr>
+                <td>{{ name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+{% endblock %}
