@@ -32,7 +32,7 @@ class DoctrineMigrationsExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $configuration = $this->getConfiguration($configs, $container);
 
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -54,5 +54,13 @@ class DoctrineMigrationsExtension extends Extension
     public function getNamespace()
     {
         return 'http://symfony.com/schema/dic/doctrine/migrations';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameter('kernel.debug'));
     }
 }

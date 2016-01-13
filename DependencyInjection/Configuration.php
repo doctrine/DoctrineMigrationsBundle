@@ -24,6 +24,18 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+    private $debug;
+
+    /**
+     * Constructor
+     *
+     * @param Boolean $debug Whether to use the debug mode
+     */
+    public function __construct($debug)
+    {
+        $this->debug = (Boolean) $debug;
+    }
+
     /**
      * Generates the configuration tree.
      *
@@ -40,6 +52,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
+                ->booleanNode('profiler_enabled')->defaultValue($this->debug)->end()
             ->end()
         ;
 
