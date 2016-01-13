@@ -40,6 +40,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
+                ->scalarNode('organize_migrations')->defaultFalse()->end()
             ->end()
         ;
 
