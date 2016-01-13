@@ -22,7 +22,7 @@
         {# this is the content displayed when hovering the mouse over
            the toolbar panel #}
         {% set properties = ['previousMigration', 'currentMigration', 'nextMigration', 'latestMigration', 'executedMigrations', 'executedUnavailableMigrations', 'availableMigrations', 'newMigrations'] %}
-        {% for property in properties%}
+        {% for property in properties %}
             {% set result = attribute(collector, 'get' ~ (property|capitalize) ) %}
             <div class="sf-toolbar-info-piece">
                 <b>{{ property|replace({'Migrations': '', 'Migration': ''})|humanize }}</b>
