@@ -1,9 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mike
- * Date: 9/01/16
- * Time: 23:02
+
+/*
+ * This file is part of the Doctrine MigrationsBundle
+ *
+ * The code was originally distributed inside the Symfony framework.
+ *
+ * (c) Michael Simonson <mike@simonson.be>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
