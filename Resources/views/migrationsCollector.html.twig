@@ -31,8 +31,6 @@
         {% endfor %}
     {% endset %}
 
-    {# the 'link' value set to 'false' means that this panel doesn't
-       show a section in the web profiler (default is 'true'). #}
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
 {% endblock %}
 
