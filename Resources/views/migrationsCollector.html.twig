@@ -3,16 +3,9 @@
 {% block toolbar %}
     {% set profiler_markup_version = profiler_markup_version|default(1) %}
 
-    {% set color = collector.availableMigrations == collector.executedMigrations ? 'green' : '' %}
-    {% set color = collector.executedUnavailableMigrations > 0 ? 'red' : '' %}
-    {% if color is empty %}
-        {% set color = 'yellow' %}
-    {% endif %}
-
     {# this is the content displayed as a panel in the toolbar #}
     {% set icon %}
         {% if profiler_markup_version == 1 %}
-            {% set color = collector.availableMigrations == collector.executedMigrations ? 'green' : '' %}
             {% set color = collector.executedUnavailableMigrations > 0 ? 'red' : '' %}
             {% if color is empty %}
                 {% set color = 'yellow' %}
