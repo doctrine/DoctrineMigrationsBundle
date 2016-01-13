@@ -25,6 +25,17 @@ use function substr;
  */
 class Configuration implements ConfigurationInterface
 {
+    /** @var bool */
+    private $debug;
+
+    /**
+     * @param bool $debug Whether to use the debug mode
+     */
+    public function __construct(bool $debug)
+    {
+        $this->debug = $debug;
+    }
+
     /**
      * Generates the configuration tree.
      *
@@ -147,6 +158,7 @@ class Configuration implements ConfigurationInterface
                             })
                     ->end()
                 ->end()
+                ->booleanNode('profiler_enabled')->defaultValue($this->debug)->end()
             ->end();
 
         return $treeBuilder;
