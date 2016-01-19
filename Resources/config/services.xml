@@ -15,7 +15,7 @@
             <argument>%doctrine_migrations.dir_name%</argument>
             <argument>%doctrine_migrations.table_name%</argument>
             <argument>%doctrine_migrations.name%</argument>
-            <tag name="data_collector" template="DoctrineMigrationsBundle::migrationsCollector.html.twig" id="doctrine_bundle.migrations_collector" priority="249"/>
+            <tag name="data_collector" template="DoctrineMigrationsBundle:Collector:migrations.html.twig" id="doctrine_bundle.migrations_collector" priority="249"/>
         </service>
     </services>
 </container>
