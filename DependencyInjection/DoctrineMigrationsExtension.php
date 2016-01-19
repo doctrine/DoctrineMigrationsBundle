@@ -14,8 +14,10 @@
 
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Loader;
 
 /**
  * DoctrineMigrationsExtension.
@@ -38,6 +40,11 @@ class DoctrineMigrationsExtension extends Extension
 
         foreach ($config as $key => $value) {
             $container->setParameter($this->getAlias().'.'.$key, $value);
+        }
+
+        if ($config['profiler_enabled']) {
+            $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('services.xml');
         }
     }
 
