@@ -177,6 +177,18 @@ table of your production database. Regardless of what server you're on, you
 can always safely run this command to execute only the migrations that haven't
 been run yet on *that* particular database.
 
+Skipping Migrations
+~~~~~~~~~~~~~~~~~~~
+
+You can skip single migrations by explicitely adding them to the ``migration_versions`` table:
+
+.. code-block:: bash
+
+    $ php app/console doctrine:migrations:version YYYYMMDDHHMMSS --add
+    
+Doctrine will then assume that this migration has already been run and will ignore it.
+    
+
 Generating Migrations Automatically
 -----------------------------------
 
@@ -276,6 +288,15 @@ the first tables were loaded via a migration class), you'll always be able
 to create a fresh database and run your migrations in order to get your database
 schema fully up to date. In fact, this is an easy and dependable workflow
 for your project.
+
+If you don't want to use this workflow and instead create your schema via 
+``doctrine:schema:create``, you can tell Doctrine to skip all existing migrations:
+
+.. code-block:: bash
+
+    $ php app/console doctrine:migrations:version --add --all
+    
+Otherwise Doctrine will try to run all migrations, which probably will not work.
 
 Container Aware Migrations
 --------------------------
