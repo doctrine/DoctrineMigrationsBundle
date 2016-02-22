@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns="http://symfony.com/schema/dic/doctrine/migrations"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://symfony.com/schema/dic/doctrine/migrations"
+            elementFormDefault="qualified">
+
+    <xsd:element name="config">
+        <xsd:complexType>
+            <xsd:attribute name="dir_name" type="xsd:string" />
+            <xsd:attribute name="namespace" type="xsd:string" />
+            <xsd:attribute name="table_name" type="xsd:string" />
+            <xsd:attribute name="name" type="xsd:string" />
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
