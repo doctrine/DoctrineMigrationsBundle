@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand as BaseCommand;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Configuration\AbstractFileConfiguration;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * Base class for Doctrine console commands to extend from.
@@ -63,6 +64,22 @@ abstract class DoctrineCommand extends BaseCommand
         // Migrations is not register from configuration loader
         if (!($configuration instanceof AbstractFileConfiguration)) {
             $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
+        }
+
+        if($container->hasParameter('doctrine_migrations.organize_migrations')){
+           $organizeMigrations = $container->getParameter('doctrine_migrations.organize_migrations');
+           switch($organizeMigrations){
+                case Configuration::VERSIONS_ORGANIZATION_BY_YEAR:
+                    $configuration->setMigrationsAreOrganizedByYear(true);
+                break;
+               case Configuration::VERSIONS_ORGANIZATION_BY_YEAR_AND_MONTH:
+                    $configuration->setMigrationsAreOrganizedByYearAndMonth(true);
+                break;
+               case false:
+                   break;
+               default:
+                 throw new InvalidConfigurationException('Unrecognized option "'.$organizeMigrations.'" under "organize_migrations"');
+           }
         }
 
         self::injectContainerToMigrations($container, $configuration->getMigrations());
