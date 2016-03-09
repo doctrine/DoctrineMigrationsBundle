@@ -14,12 +14,12 @@
 
 namespace Doctrine\Bundle\MigrationsBundle\Command;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand as BaseCommand;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Configuration\AbstractFileConfiguration;
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 /**
  * Base class for Doctrine console commands to extend from.
@@ -63,6 +63,23 @@ abstract class DoctrineCommand extends BaseCommand
         // Migrations is not register from configuration loader
         if (!($configuration instanceof AbstractFileConfiguration)) {
             $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
+        }
+
+        $organizeMigrations = $container->getParameter('doctrine_migrations.organize_migrations');
+        switch ($organizeMigrations) {
+            case Configuration::VERSIONS_ORGANIZATION_BY_YEAR:
+                $configuration->setMigrationsAreOrganizedByYear(true);
+                break;
+
+            case Configuration::VERSIONS_ORGANIZATION_BY_YEAR_AND_MONTH:
+                $configuration->setMigrationsAreOrganizedByYearAndMonth(true);
+                break;
+
+            case false:
+                break;
+
+            default:
+                throw new InvalidArgumentException('Invalid value for "doctrine_migrations.organize_migrations" parameter.');
         }
 
         self::injectContainerToMigrations($container, $configuration->getMigrations());
