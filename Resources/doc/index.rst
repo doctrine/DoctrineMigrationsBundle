@@ -79,7 +79,7 @@ the ``status`` command:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:status
+    php bin/console doctrine:migrations:status
 
      == Configuration
 
@@ -100,7 +100,7 @@ for you.
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:generate
+    $ php bin/console doctrine:migrations:generate
     Generated new migration class to "/path/to/project/app/DoctrineMigrations/Version20100621140655.php"
 
 Have a look at the newly generated migration class and you will see something
@@ -129,7 +129,7 @@ migration to execute:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:status --show-versions
+    $ php bin/console doctrine:migrations:status --show-versions
 
      == Configuration
 
@@ -153,7 +153,7 @@ finally migrate when you're ready:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:migrate 20100621140655
+    $ php bin/console doctrine:migrations:migrate 20100621140655
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
@@ -184,10 +184,10 @@ You can skip single migrations by explicitely adding them to the ``migration_ver
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:version YYYYMMDDHHMMSS --add
-    
+    $ php bin/console doctrine:migrations:version YYYYMMDDHHMMSS --add
+
 Doctrine will then assume that this migration has already been run and will ignore it.
-    
+
 
 Generating Migrations Automatically
 -----------------------------------
@@ -268,7 +268,7 @@ running the following command:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:diff
+    $ php bin/console doctrine:migrations:diff
 
 You should see a message that a new migration class was generated based on
 the schema differences. If you open this file, you'll find that it has the
@@ -277,7 +277,7 @@ to add the table to your database:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:migrate
+    $ php bin/console doctrine:migrations:migrate
 
 The moral of the story is this: after each change you make to your Doctrine
 mapping information, run the ``doctrine:migrations:diff`` command to automatically
@@ -289,13 +289,13 @@ to create a fresh database and run your migrations in order to get your database
 schema fully up to date. In fact, this is an easy and dependable workflow
 for your project.
 
-If you don't want to use this workflow and instead create your schema via 
+If you don't want to use this workflow and instead create your schema via
 ``doctrine:schema:create``, you can tell Doctrine to skip all existing migrations:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:version --add --all
-    
+    $ php bin/console doctrine:migrations:version --add --all
+
 Otherwise Doctrine will try to run all migrations, which probably will not work.
 
 Container Aware Migrations
