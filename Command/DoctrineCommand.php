@@ -32,8 +32,9 @@ abstract class DoctrineCommand extends BaseCommand
     {
         if (!$configuration->getMigrationsDirectory()) {
             $dir = $container->getParameter('doctrine_migrations.dir_name');
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
+            if (!@mkdir($dir, 0777, true) && !is_dir($dir)) {
+                $error = error_get_last();
+                throw new \ErrorException($error['message']);
             }
             $configuration->setMigrationsDirectory($dir);
         } else {
@@ -45,8 +46,9 @@ abstract class DoctrineCommand extends BaseCommand
                     $dir = str_replace('%'.$pathPlaceholder.'%', $container->getParameter($pathPlaceholder), $dir);
                 }
             }
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
+            if (!@mkdir($dir, 0777, true) && !is_dir($dir)) {
+                $error = error_get_last();
+                throw new \ErrorException($error['message']);
             }
             $configuration->setMigrationsDirectory($dir);
         }
