@@ -14,6 +14,7 @@
 
 namespace Doctrine\Bundle\MigrationsBundle\Command;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,14 +44,14 @@ class MigrationsGenerateDoctrineCommand extends GenerateCommand
     {
         // EM and DB options cannot be set at same time
         if (null !== $input->getOption('em') && null !== $input->getOption('db')) {
-            throw new \InvalidArgumentException('Cannot set both "em" and "db" for command execution.');
+            throw new InvalidArgumentException('Cannot set both "em" and "db" for command execution.');
         }
 
         Helper\DoctrineCommandHelper::setApplicationHelper($this->getApplication(), $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
         DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
-
-        parent::execute($input, $output);
+    
+        return parent::execute($input, $output);
     }
 }

@@ -17,6 +17,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Command\Proxy\DoctrineCommandHelper;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\DBAL\Sharding\PoolingShardConnection;
+use LogicException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,7 +49,7 @@ class MigrationsDiffDoctrineCommand extends DiffCommand
         if ($input->getOption('shard')) {
             $connection = $this->getApplication()->getHelperSet()->get('db')->getConnection();
             if (!$connection instanceof PoolingShardConnection) {
-                throw new \LogicException(sprintf("Connection of EntityManager '%s' must implements shards configuration.", $input->getOption('em')));
+                throw new LogicException(sprintf("Connection of EntityManager '%s' must implements shards configuration.", $input->getOption('em')));
             }
 
             $connection->connect($input->getOption('shard'));
@@ -57,6 +58,6 @@ class MigrationsDiffDoctrineCommand extends DiffCommand
         $configuration = $this->getMigrationConfiguration($input, $output);
         DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
 
-        parent::execute($input, $output);
+        return parent::execute($input, $output);
     }
 }
