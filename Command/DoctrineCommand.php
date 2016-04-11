@@ -59,7 +59,7 @@ abstract class DoctrineCommand extends BaseCommand
             $configuration->setName($container->getParameter('doctrine_migrations.name'));
         }
         // For backward compatibility, need use a table from parameters for overwrite the default configuration
-        if (!$configuration->getMigrationsTableName() || !($configuration instanceof AbstractFileConfiguration)) {
+        if (!($configuration instanceof AbstractFileConfiguration) || !$configuration->getMigrationsTableName()) {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
         // Migrations is not register from configuration loader
