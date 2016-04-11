@@ -88,6 +88,9 @@ abstract class DoctrineCommand extends BaseCommand
     }
 
     /**
+     * @param ContainerInterface $container
+     * @param array $versions
+     *
      * Injects the container to migrations aware of it
      */
     private static function injectContainerToMigrations(ContainerInterface $container, array $versions)
