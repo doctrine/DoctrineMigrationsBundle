@@ -87,7 +87,7 @@ the ``status`` command:
         >> Configuration Source:                               manually configured
         >> Version Table Name:                                 migration_versions
         >> Migrations Namespace:                               Application\Migrations
-        >> Migrations Directory:                               /path/to/project/app/DoctrineMigrations
+        >> Migrations Directory:                               /path/to/project/var/DoctrineMigrations
         >> Current Version:                                    0
         >> Latest Version:                                     0
         >> Executed Migrations:                                0
@@ -137,7 +137,7 @@ migration to execute:
        >> Configuration Source:                               manually configured
        >> Version Table Name:                                 migration_versions
        >> Migrations Namespace:                               Application\Migrations
-       >> Migrations Directory:                               /path/to/project/app/DoctrineMigrations
+       >> Migrations Directory:                               /path/to/project/var/DoctrineMigrations
        >> Current Version:                                    0
        >> Latest Version:                                     2010-06-21 14:06:55 (20100621140655)
        >> Executed Migrations:                                0
@@ -184,7 +184,7 @@ You can skip single migrations by explicitely adding them to the ``migration_ver
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:version YYYYMMDDHHMMSS --add
+    $ php bin/console doctrine:migrations:version YYYYMMDDHHMMSS --add
     
 Doctrine will then assume that this migration has already been run and will ignore it.
     
