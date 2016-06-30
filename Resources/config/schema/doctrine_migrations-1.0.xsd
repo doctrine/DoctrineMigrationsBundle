@@ -10,6 +10,15 @@
             <xsd:attribute name="namespace" type="xsd:string" />
             <xsd:attribute name="table_name" type="xsd:string" />
             <xsd:attribute name="name" type="xsd:string" />
+            <xsd:attribute name="organize-migrations">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="BY_YEAR" />
+                        <xsd:enumeration value="BY_YEAR_AND_MONTH" />
+                        <xsd:enumeration value="false" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>
