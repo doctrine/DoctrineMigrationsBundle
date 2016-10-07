@@ -62,6 +62,12 @@ You can configure the path, namespace, table_name and name in your ``config.yml`
 Usage
 -----
 
+.. caution::
+
+    If your application is based on Symfony 3, replace ``php app/console`` by
+    ``php bin/console`` before executing any of the console commands included
+    in this article.
+
 All of the migrations functionality is contained in a few console commands:
 
 .. code-block:: bash
@@ -79,7 +85,7 @@ the ``status`` command:
 
 .. code-block:: bash
 
-    php bin/console doctrine:migrations:status
+    php app/console doctrine:migrations:status
 
      == Configuration
 
@@ -100,7 +106,7 @@ for you.
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:generate
+    $ php app/console doctrine:migrations:generate
     Generated new migration class to "/path/to/project/app/DoctrineMigrations/Version20100621140655.php"
 
 Have a look at the newly generated migration class and you will see something
@@ -129,7 +135,7 @@ migration to execute:
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:status --show-versions
+    $ php app/console doctrine:migrations:status --show-versions
 
      == Configuration
 
@@ -153,7 +159,7 @@ finally migrate when you're ready:
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:migrate 20100621140655
+    $ php app/console doctrine:migrations:migrate 20100621140655
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
@@ -184,7 +190,7 @@ You can skip single migrations by explicitely adding them to the ``migration_ver
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:version YYYYMMDDHHMMSS --add
+    $ php app/console doctrine:migrations:version YYYYMMDDHHMMSS --add
 
 Doctrine will then assume that this migration has already been run and will ignore it.
 
@@ -268,7 +274,7 @@ running the following command:
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:diff
+    $ php app/console doctrine:migrations:diff
 
 You should see a message that a new migration class was generated based on
 the schema differences. If you open this file, you'll find that it has the
@@ -277,7 +283,7 @@ to add the table to your database:
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:migrate
+    $ php app/console doctrine:migrations:migrate
 
 The moral of the story is this: after each change you make to your Doctrine
 mapping information, run the ``doctrine:migrations:diff`` command to automatically
@@ -294,7 +300,7 @@ If you don't want to use this workflow and instead create your schema via
 
 .. code-block:: bash
 
-    $ php bin/console doctrine:migrations:version --add --all
+    $ php app/console doctrine:migrations:version --add --all
 
 Otherwise Doctrine will try to run all migrations, which probably will not work.
 
