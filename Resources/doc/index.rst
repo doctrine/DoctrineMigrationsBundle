@@ -62,6 +62,12 @@ You can configure the path, namespace, table_name and name in your ``config.yml`
 Usage
 -----
 
+.. caution::
+
+    If your application is based on Symfony 3, replace ``php app/console`` by
+    ``php bin/console`` before executing any of the console commands included
+    in this article.
+
 All of the migrations functionality is contained in a few console commands:
 
 .. code-block:: bash
@@ -185,9 +191,9 @@ You can skip single migrations by explicitely adding them to the ``migration_ver
 .. code-block:: bash
 
     $ php app/console doctrine:migrations:version YYYYMMDDHHMMSS --add
-    
+
 Doctrine will then assume that this migration has already been run and will ignore it.
-    
+
 
 Generating Migrations Automatically
 -----------------------------------
@@ -289,13 +295,13 @@ to create a fresh database and run your migrations in order to get your database
 schema fully up to date. In fact, this is an easy and dependable workflow
 for your project.
 
-If you don't want to use this workflow and instead create your schema via 
+If you don't want to use this workflow and instead create your schema via
 ``doctrine:schema:create``, you can tell Doctrine to skip all existing migrations:
 
 .. code-block:: bash
 
     $ php app/console doctrine:migrations:version --add --all
-    
+
 Otherwise Doctrine will try to run all migrations, which probably will not work.
 
 Container Aware Migrations
