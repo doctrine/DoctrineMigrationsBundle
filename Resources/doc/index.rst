@@ -312,17 +312,22 @@ your data structure. This could be necessary to update relations with some speci
 logic or to create new entities.
 
 Therefore you can just implement the ContainerAwareInterface with its needed methods
-to get full access to the container.
+to get full access to the container or ContainerAwareTrait if you use Symfony >= 2.4.
 
 .. code-block:: php
 
     // ...
     use Symfony\Component\DependencyInjection\ContainerAwareInterface;
     use Symfony\Component\DependencyInjection\ContainerInterface;
+    // Symfony >= 2.4
+    use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
     class Version20130326212938 extends AbstractMigration implements ContainerAwareInterface
     {
-
+        // Symfony >= 2.4
+        use ContainerAwareTrait;
+        
+        // Symfony 2.3
         private $container;
 
         public function setContainer(ContainerInterface $container = null)
