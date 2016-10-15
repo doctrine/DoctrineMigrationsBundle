@@ -319,21 +319,40 @@ to get full access to the container or ContainerAwareTrait if you use Symfony >=
     // ...
     use Symfony\Component\DependencyInjection\ContainerAwareInterface;
     use Symfony\Component\DependencyInjection\ContainerInterface;
-    // Symfony >= 2.4
-    use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
     class Version20130326212938 extends AbstractMigration implements ContainerAwareInterface
     {
-        // Symfony >= 2.4
-        use ContainerAwareTrait;
-        
-        // Symfony 2.3
         private $container;
 
         public function setContainer(ContainerInterface $container = null)
         {
             $this->container = $container;
         }
+
+        public function up(Schema $schema)
+        {
+            // ... migration content
+        }
+
+        public function postUp(Schema $schema)
+        {
+            $converter = $this->container->get('my_service.convert_data_to');
+            // ... convert the data from markdown to html for instance
+        }
+    }
+
+With the trait
+
+.. code-block:: php
+
+    // ...
+    use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+    use Symfony\Component\DependencyInjection\ContainerInterface;
+    use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+
+    class Version20130326212938 extends AbstractMigration implements ContainerAwareInterface
+    {
+        use ContainerAwareTrait;
 
         public function up(Schema $schema)
         {
