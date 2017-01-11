@@ -50,11 +50,7 @@ class Configuration implements ConfigurationInterface
                                 return false;
                             }
 
-                            if (is_string($v) && in_array(strtoupper($v), $organizeMigrationModes)) {
-                                return false;
-                            }
-
-                            return true;
+                            return !(is_string($v) && in_array(strtoupper($v), $organizeMigrationModes));
                         })
                         ->thenInvalid('Invalid organize migrations mode value %s')
                     ->end()
