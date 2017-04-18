@@ -41,7 +41,7 @@ following:
     {
         $bundles = array(
             //...
-            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Doctrine\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
         );
     }
 
