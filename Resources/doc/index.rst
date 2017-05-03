@@ -183,6 +183,45 @@ table of your production database. Regardless of what server you're on, you
 can always safely run this command to execute only the migrations that haven't
 been run yet on *that* particular database.
 
+Also, you can to give it a test! First lets just do a ``dry-run`` to make sure it produces the SQL we expect:
+
+.. code-block:: bash
+
+    $ php app/console doctrine:migrations:migrate --dry-run
+    Executing dry run of migration up to 20100416130452 from 0
+
+  >> migrating 20100416130452
+
+     -> CREATE TABLE users (username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL) ENGINE = InnoDB
+
+If everything looks good, you can remove the ``–dry-run`` option and actually execute the migration:
+
+.. code-block:: bash
+
+    $ php app/console doctrine:migrations:migrate
+    WARNING! You are about to execute a database migration that could result in schema changes and data lost. Are you sure you wish to continue? (y/n)y
+    Migrating up to 20100416130452 from 0
+
+  >> migrating 20100416130452
+
+     -> CREATE TABLE users (username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL) ENGINE = InnoDB
+
+  >> migrated
+
+Alternately, if you wish to run the migrations in an unattended mode, we can add the ``–no–interaction`` option and then execute the migrations without any extra prompting from Doctrine.
+
+.. code-block:: bash
+
+    $ php app/console doctrine:migrations:migrate  --no-interaction
+    Migrating up to 20100416130452 from 0
+
+  >> migrating 20100416130452
+
+     -> CREATE TABLE users (username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL) ENGINE = InnoDB
+
+  >> migrated
+
+
 Skipping Migrations
 ~~~~~~~~~~~~~~~~~~~
 
