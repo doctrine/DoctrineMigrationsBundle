@@ -14,6 +14,7 @@
 
 namespace Doctrine\Bundle\MigrationsBundle;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
