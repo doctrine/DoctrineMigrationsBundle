@@ -55,11 +55,7 @@ abstract class DoctrineCommand extends BaseCommand
         if (!($configuration instanceof AbstractFileConfiguration)) {
             $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
         }
-
-        if (!$configuration->getCustomTemplate()) {
-            $configuration->setCustomTemplate($container->getParameter('doctrine_migrations.custom_template'));
-        }
-
+        
         $organizeMigrations = $container->getParameter('doctrine_migrations.organize_migrations');
         switch ($organizeMigrations) {
             case Configuration::VERSIONS_ORGANIZATION_BY_YEAR:
