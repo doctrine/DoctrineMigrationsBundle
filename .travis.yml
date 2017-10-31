@@ -1,0 +1,44 @@
+dist: trusty
+sudo: false
+language: php
+
+php:
+  - 5.4 
+  - 5.5 
+  - 5.6 
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+
+before_install:
+  - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{,.disabled} || echo "xdebug not available"
+  - composer self-update
+
+install: travis_retry composer update --prefer-dist
+
+script:
+  - ./vendor/bin/phpunit -v
+
+jobs:
+  include:
+    - stage: Test
+      env: DEPENDENCIES=low
+      install: travis_retry composer update --prefer-dist --prefer-lowest
+
+    - stage: Coverage
+      before_script:
+        - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
+        - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
+      script:
+        - ./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml
+      after_script:
+        - wget https://scrutinizer-ci.com/ocular.phar
+        - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+
+  allow_failures:
+    - php: nightly
+
+cache:
+  directories:
+    - $HOME/.composer/cache
