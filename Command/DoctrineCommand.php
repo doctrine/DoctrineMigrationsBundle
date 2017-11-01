@@ -56,7 +56,7 @@ abstract class DoctrineCommand extends BaseCommand
             $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
         }
 
-        if (!$configuration->getCustomTemplate()) {
+        if (method_exists($configuration, 'getCustomTemplate') && !$configuration->getCustomTemplate()) {
             $configuration->setCustomTemplate($container->getParameter('doctrine_migrations.custom_template'));
         }
 
