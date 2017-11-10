@@ -6,8 +6,9 @@ use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExten
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use PHPUnit\Framework\TestCase;
 
-class DoctrineMigrationsExtensionTest extends \PHPUnit_Framework_TestCase
+class DoctrineMigrationsExtensionTest extends TestCase
 {
     public function testOrganizeMigrations()
     {
