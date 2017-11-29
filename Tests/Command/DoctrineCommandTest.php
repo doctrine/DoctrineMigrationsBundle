@@ -30,6 +30,7 @@ class DoctrineCommandTest extends TestCase
             'doctrine_migrations.name' => 'test',
             'doctrine_migrations.table_name' => 'test',
             'doctrine_migrations.organize_migrations' => Configuration::VERSIONS_ORGANIZATION_BY_YEAR,
+            'doctrine_migrations.custom_template' => null,
         )));
     }
 }
