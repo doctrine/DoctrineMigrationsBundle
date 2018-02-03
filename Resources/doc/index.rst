@@ -48,7 +48,7 @@ following:
 Configuration
 -------------
 
-You can configure the path, namespace, table_name, name and organize_migrations in your ``config.yml``. The examples below are the default values.
+You can configure the path, namespace, table_name, name, organize_migrations and custom_template in your ``config.yml``. The examples below are the default values.
 
 .. code-block:: yaml
 
@@ -58,7 +58,8 @@ You can configure the path, namespace, table_name, name and organize_migrations 
         namespace: Application\Migrations
         table_name: migration_versions
         name: Application Migrations
-        organize_migrations: false # Version >=1.2 Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+        organize_migrations: false # Version >= 1.2, possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+        custom_template: ~ # Version >= 1.2, path to your custom migrations template
 
 Usage
 -----
