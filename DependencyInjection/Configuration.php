@@ -28,9 +28,9 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()->end()
-                ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
+                ->scalarNode('namespace')->defaultValue('App\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
-                ->scalarNode('name')->defaultValue('Application Migrations')->end()
+                ->scalarNode('name')->defaultValue('App Migrations')->end()
                 ->scalarNode('custom_template')->defaultValue(null)->end()
                 ->scalarNode('organize_migrations')->defaultValue(false)
                     ->info('Organize migrations mode. Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false')
