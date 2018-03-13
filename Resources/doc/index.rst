@@ -349,7 +349,6 @@ With the trait
 
     // ...
     use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-    use Symfony\Component\DependencyInjection\ContainerInterface;
     use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
     class Version20130326212938 extends AbstractMigration implements ContainerAwareInterface
