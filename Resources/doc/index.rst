@@ -20,7 +20,7 @@ First, install the bundle with composer:
 
 .. code-block:: bash
 
-    $ composer require doctrine/doctrine-migrations-bundle "^1.0"
+    $ composer require doctrine/doctrine-migrations-bundle "^2.0"
 
 If everything worked, the ``DoctrineMigrationsBundle`` can now be found
 at ``vendor/doctrine/doctrine-migrations-bundle``.
@@ -116,17 +116,17 @@ like the following::
 
     namespace Application\Migrations;
 
-    use Doctrine\DBAL\Migrations\AbstractMigration,
-        Doctrine\DBAL\Schema\Schema;
+    use Doctrine\DBAL\Schema\Schema;
+    use Doctrine\Migrations\AbstractMigration;
 
     class Version20100621140655 extends AbstractMigration
     {
-        public function up(Schema $schema)
+        public function up(Schema $schema) : void
         {
 
         }
 
-        public function down(Schema $schema)
+        public function down(Schema $schema) : void
         {
 
         }

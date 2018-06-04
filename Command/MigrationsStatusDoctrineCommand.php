@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Command;
 
+use Doctrine\Migrations\Tools\Console\Command\StatusCommand;
 use InvalidArgumentException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command to view the status of a set of migrations.
  *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Jonathan H. Wage <jonwage@gmail.com>
  */
 class MigrationsStatusDoctrineCommand extends StatusCommand
 {
-    protected function configure()
+    protected function configure() : void
     {
         parent::configure();
 
@@ -29,18 +29,26 @@ class MigrationsStatusDoctrineCommand extends StatusCommand
         ;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output) : void
+    {
+        /** @var Application $application */
+        $application = $this->getApplication();
+
+        Helper\DoctrineCommandHelper::setApplicationHelper($application, $input);
+
+        $configuration = $this->getMigrationConfiguration($input, $output);
+        DoctrineCommand::configureMigrations($application->getKernel()->getContainer(), $configuration);
+
+        parent::initialize($input, $output);
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output) : ?int
     {
         // EM and DB options cannot be set at same time
-        if (null !== $input->getOption('em') && null !== $input->getOption('db')) {
+        if ($input->getOption('em') !== null && $input->getOption('db') !== null) {
             throw new InvalidArgumentException('Cannot set both "em" and "db" for command execution.');
         }
 
-        Helper\DoctrineCommandHelper::setApplicationHelper($this->getApplication(), $input);
-
-        $configuration = $this->getMigrationConfiguration($input, $output);
-        DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
-    
         return parent::execute($input, $output);
     }
 }

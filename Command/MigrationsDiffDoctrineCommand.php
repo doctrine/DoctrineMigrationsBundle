@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Command;
 
-use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,12 +14,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Command for generate migration classes by comparing your current database schema
  * to your mapping information.
  *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Jonathan H. Wage <jonwage@gmail.com>
  */
 class MigrationsDiffDoctrineCommand extends DiffCommand
 {
-    protected function configure()
+    protected function configure() : void
     {
         parent::configure();
 
@@ -29,13 +29,16 @@ class MigrationsDiffDoctrineCommand extends DiffCommand
         ;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output) : void
     {
-        Helper\DoctrineCommandHelper::setApplicationHelper($this->getApplication(), $input);
+        /** @var Application $application */
+        $application = $this->getApplication();
+
+        Helper\DoctrineCommandHelper::setApplicationHelper($application, $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
-        DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
+        DoctrineCommand::configureMigrations($application->getKernel()->getContainer(), $configuration);
 
-        return parent::execute($input, $output);
+        parent::initialize($input, $output);
     }
 }

@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use function constant;
+use function in_array;
+use function is_string;
+use function strlen;
+use function strpos;
+use function strtoupper;
+use function substr;
 
 /**
  * DoctrineMigrationsExtension configuration structure.
- *
- * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  */
 class Configuration implements ConfigurationInterface
 {
@@ -18,10 +24,10 @@ class Configuration implements ConfigurationInterface
      *
      * @return TreeBuilder The config tree builder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder() : TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doctrine_migrations', 'array');
+        $rootNode    = $treeBuilder->root('doctrine_migrations', 'array');
 
         $organizeMigrationModes = $this->getOrganizeMigrationsModes();
 
@@ -36,7 +42,7 @@ class Configuration implements ConfigurationInterface
                     ->info('Organize migrations mode. Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false')
                     ->validate()
                         ->ifTrue(function ($v) use ($organizeMigrationModes) {
-                            if (false === $v) {
+                            if ($v === false) {
                                 return false;
                             }
 
@@ -51,7 +57,7 @@ class Configuration implements ConfigurationInterface
                     ->validate()
                         ->ifString()
                             ->then(function ($v) {
-                                return constant('Doctrine\DBAL\Migrations\Configuration\Configuration::VERSIONS_ORGANIZATION_'.strtoupper($v));
+                                return constant('Doctrine\Migrations\Configuration\Configuration::VERSIONS_ORGANIZATION_' . strtoupper($v));
                             })
                         ->end()
                     ->end()
@@ -65,20 +71,22 @@ class Configuration implements ConfigurationInterface
     /**
      * Find organize migrations modes for their names
      *
-     * @return array
+     * @return string[]
      */
-    private function getOrganizeMigrationsModes()
+    private function getOrganizeMigrationsModes() : array
     {
         $constPrefix = 'VERSIONS_ORGANIZATION_';
-        $prefixLen = strlen($constPrefix);
-        $refClass = new \ReflectionClass('Doctrine\DBAL\Migrations\Configuration\Configuration');
+        $prefixLen   = strlen($constPrefix);
+        $refClass    = new \ReflectionClass('Doctrine\Migrations\Configuration\Configuration');
         $constsArray = $refClass->getConstants();
-        $namesArray = array();
+        $namesArray  = [];
 
         foreach ($constsArray as $key => $value) {
-            if (strpos($key, $constPrefix) === 0) {
-                $namesArray[] = substr($key, $prefixLen);
+            if (strpos($key, $constPrefix) !== 0) {
+                continue;
             }
+
+            $namesArray[] = substr($key, $prefixLen);
         }
 
         return $namesArray;
