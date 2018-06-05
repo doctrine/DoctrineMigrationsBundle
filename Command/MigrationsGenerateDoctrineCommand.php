@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command for generating new blank migration classes
- *
  */
 class MigrationsGenerateDoctrineCommand extends GenerateCommand
 {

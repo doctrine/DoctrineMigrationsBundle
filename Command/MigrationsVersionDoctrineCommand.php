@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command for manually adding and deleting migration versions from the version table.
- *
  */
 class MigrationsVersionDoctrineCommand extends VersionCommand
 {

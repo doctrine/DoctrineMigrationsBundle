@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command to view the status of a set of migrations.
- *
  */
 class MigrationsStatusDoctrineCommand extends StatusCommand
 {

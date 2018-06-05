@@ -55,7 +55,7 @@ You can configure the path, namespace, table_name, name, organize_migrations and
     # app/config/config.yml
     doctrine_migrations:
         dir_name: "%kernel.root_dir%/Migrations"
-        namespace: "DoctrineMigrations"
+        namespace: "App\\Migrations"
         table_name: "migration_versions"
         column_name: "version"
         column_length: 14
@@ -78,13 +78,17 @@ All of the migrations functionality is contained in a few console commands:
 
 .. code-block:: bash
 
-    doctrine:migrations
-      :diff     Generate a migration by comparing your current database to your mapping information.
-      :execute  Execute a single migration version up or down manually.
-      :generate Generate a blank migration class.
-      :migrate  Execute a migration to a specified version or the latest available version.
-      :status   View the status of a set of migrations.
-      :version  Manually add and delete migration versions from the version table.
+    doctrine
+     doctrine:migrations:diff                [diff] Generate a migration by comparing your current database to your mapping information.
+     doctrine:migrations:dump-schema         [dump-schema] Dump the schema for your database to a migration.
+     doctrine:migrations:execute             [execute] Execute a single migration version up or down manually.
+     doctrine:migrations:generate            [generate] Generate a blank migration class.
+     doctrine:migrations:latest              [latest] Outputs the latest version number
+     doctrine:migrations:migrate             [migrate] Execute a migration to a specified version or the latest available version.
+     doctrine:migrations:rollup              [rollup] Rollup migrations by deleting all tracked versions and insert the one version that exists.
+     doctrine:migrations:status              [status] View the status of a set of migrations.
+     doctrine:migrations:up-to-date          [up-to-date] Tells you if your schema is up-to-date.
+     doctrine:migrations:version             [version] Manually add and delete migration versions from the version table.
 
 Start by getting the status of migrations in your application by running
 the ``status`` command:
@@ -102,7 +106,7 @@ the ``status`` command:
         >> Configuration Source:                               manually configured
         >> Version Table Name:                                 migration_versions
         >> Version Column Name:                                version
-        >> Migrations Namespace:                               DoctrineMigrations
+        >> Migrations Namespace:                               App\Migrations
         >> Migrations Directory:                               /path/to/project/app/Migrations
         >> Previous Version:                                   Already at first version
         >> Current Version:                                    0
@@ -131,7 +135,7 @@ like the following::
 
     declare(strict_types=1);
 
-    namespace DoctrineMigrations;
+    namespace App\Migrations;
 
     use Doctrine\DBAL\Schema\Schema;
     use Doctrine\Migrations\AbstractMigration;

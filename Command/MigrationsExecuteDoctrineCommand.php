@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command for executing single migrations up or down manually.
- *
  */
 class MigrationsExecuteDoctrineCommand extends ExecuteCommand
 {

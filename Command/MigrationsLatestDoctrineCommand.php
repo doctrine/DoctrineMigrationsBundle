@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command for outputting the latest version number.
- *
  */
 class MigrationsLatestDoctrineCommand extends LatestCommand
 {

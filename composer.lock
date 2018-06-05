@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f60f05ca12172b597b2c2b6516c1364",
+    "content-hash": "f9a6746c0852bff78f397fdb26259199",
     "packages": [
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -789,12 +789,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "763fa4a36700b2f7bc23401c49f9ba04ca0adbeb"
+                "reference": "38e5cd6c78a2a9e7c0ae7ecae44795a6877d33bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/763fa4a36700b2f7bc23401c49f9ba04ca0adbeb",
-                "reference": "763fa4a36700b2f7bc23401c49f9ba04ca0adbeb",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/38e5cd6c78a2a9e7c0ae7ecae44795a6877d33bd",
+                "reference": "38e5cd6c78a2a9e7c0ae7ecae44795a6877d33bd",
                 "shasum": ""
             },
             "require": {
@@ -859,7 +859,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2018-06-04T20:00:45+00:00"
+            "time": "2018-06-05T16:46:15+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -3918,16 +3918,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.2.3",
+            "version": "7.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "42bb8f5b2cb36483907a20f45e4cd1665c24d8a7"
+                "reference": "00bc0b93f0ff4f557e9ea766557fde96da9a03dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/42bb8f5b2cb36483907a20f45e4cd1665c24d8a7",
-                "reference": "42bb8f5b2cb36483907a20f45e4cd1665c24d8a7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/00bc0b93f0ff4f557e9ea766557fde96da9a03dd",
+                "reference": "00bc0b93f0ff4f557e9ea766557fde96da9a03dd",
                 "shasum": ""
             },
             "require": {
@@ -3998,7 +3998,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-06-03T06:05:05+00:00"
+            "time": "2018-06-05T03:40:05+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command for executing a migration to a specified version or the latest available version.
- *
  */
 class MigrationsMigrateDoctrineCommand extends MigrateCommand
 {
