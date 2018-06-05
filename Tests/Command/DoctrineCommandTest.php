@@ -49,8 +49,28 @@ class DoctrineCommandTest extends TestCase
             ->with('test');
 
         $configurationMock->expects($this->once())
+            ->method('setMigrationsColumnName')
+            ->with('version');
+
+        $configurationMock->expects($this->once())
+            ->method('setMigrationsColumnLength')
+            ->with(255);
+
+        $configurationMock->expects($this->once())
+            ->method('setMigrationsColumnLength')
+            ->with(255);
+
+        $configurationMock->expects($this->once())
+            ->method('setMigrationsExecutedAtColumnName')
+            ->with('executed_at');
+
+        $configurationMock->expects($this->once())
             ->method('setMigrationsAreOrganizedByYear')
             ->with(true);
+
+        $configurationMock->expects($this->once())
+            ->method('setAllOrNothing')
+            ->with(false);
 
         DoctrineCommand::configureMigrations($this->getContainer(), $configurationMock);
     }
@@ -62,8 +82,12 @@ class DoctrineCommandTest extends TestCase
             'doctrine_migrations.namespace' => 'test',
             'doctrine_migrations.name' => 'test',
             'doctrine_migrations.table_name' => 'test',
+            'doctrine_migrations.column_name' => 'version',
+            'doctrine_migrations.column_length' => 255,
+            'doctrine_migrations.executed_at_column_name' => 'executed_at',
             'doctrine_migrations.organize_migrations' => Configuration::VERSIONS_ORGANIZATION_BY_YEAR,
             'doctrine_migrations.custom_template' => null,
+            'doctrine_migrations.all_or_nothing' => false,
         ]));
     }
 }
