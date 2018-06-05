@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Command;
 
-use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\Migrations\Tools\Console\Command\RollupCommand;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,19 +12,18 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Command for generate migration classes by comparing your current database schema
- * to your mapping information.
+ * Command for rolling up your historical migration versions and inserting the dumped schema version.
  */
-class MigrationsDiffDoctrineCommand extends DiffCommand
+class MigrationsRollupDoctrineCommand extends RollupCommand
 {
     protected function configure() : void
     {
         parent::configure();
 
         $this
-            ->setName('doctrine:migrations:diff')
+            ->setName('doctrine:migrations:rollup')
             ->addOption('db', null, InputOption::VALUE_REQUIRED, 'The database connection to use for this command.')
-            ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command.')
+            ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
             ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.')
         ;
     }

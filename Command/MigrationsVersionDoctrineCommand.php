@@ -1,23 +1,22 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Command;
 
+use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
 use InvalidArgumentException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command for manually adding and deleting migration versions from the version table.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Jonathan H. Wage <jonwage@gmail.com>
  */
 class MigrationsVersionDoctrineCommand extends VersionCommand
 {
-    protected function configure()
+    protected function configure() : void
     {
         parent::configure();
 
@@ -29,17 +28,25 @@ class MigrationsVersionDoctrineCommand extends VersionCommand
         ;
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output) : void
     {
-        // EM and DB options cannot be set at same time
-        if (null !== $input->getOption('em') && null !== $input->getOption('db')) {
-            throw new InvalidArgumentException('Cannot set both "em" and "db" for command execution.');
-        }
+        /** @var Application $application */
+        $application = $this->getApplication();
 
-        Helper\DoctrineCommandHelper::setApplicationHelper($this->getApplication(), $input);
+        Helper\DoctrineCommandHelper::setApplicationHelper($application, $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
-        DoctrineCommand::configureMigrations($this->getApplication()->getKernel()->getContainer(), $configuration);
+        DoctrineCommand::configureMigrations($application->getKernel()->getContainer(), $configuration);
+
+        parent::initialize($input, $output);
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output) : ?int
+    {
+        // EM and DB options cannot be set at same time
+        if ($input->getOption('em') !== null && $input->getOption('db') !== null) {
+            throw new InvalidArgumentException('Cannot set both "em" and "db" for command execution.');
+        }
 
         return parent::execute($input, $output);
     }

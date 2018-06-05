@@ -20,7 +20,7 @@ First, install the bundle with composer:
 
 .. code-block:: bash
 
-    $ composer require doctrine/doctrine-migrations-bundle "^1.0"
+    $ composer require doctrine/doctrine-migrations-bundle "^2.0"
 
 If everything worked, the ``DoctrineMigrationsBundle`` can now be found
 at ``vendor/doctrine/doctrine-migrations-bundle``.
@@ -54,12 +54,16 @@ You can configure the path, namespace, table_name, name, organize_migrations and
 
     # app/config/config.yml
     doctrine_migrations:
-        dir_name: "%kernel.root_dir%/DoctrineMigrations"
-        namespace: Application\Migrations
-        table_name: migration_versions
+        dir_name: "%kernel.root_dir%/Migrations"
+        namespace: "App\\Migrations"
+        table_name: "migration_versions"
+        column_name: "version"
+        column_length: 14
+        executed_at_column_name: "executed_at"
         name: Application Migrations
         organize_migrations: false # Version >= 1.2, possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         custom_template: ~ # Version >= 1.2, path to your custom migrations template
+        all_or_nothing: false
 
 Usage
 -----
@@ -74,31 +78,42 @@ All of the migrations functionality is contained in a few console commands:
 
 .. code-block:: bash
 
-    doctrine:migrations
-      :diff     Generate a migration by comparing your current database to your mapping information.
-      :execute  Execute a single migration version up or down manually.
-      :generate Generate a blank migration class.
-      :migrate  Execute a migration to a specified version or the latest available version.
-      :status   View the status of a set of migrations.
-      :version  Manually add and delete migration versions from the version table.
+    doctrine
+     doctrine:migrations:diff                [diff] Generate a migration by comparing your current database to your mapping information.
+     doctrine:migrations:dump-schema         [dump-schema] Dump the schema for your database to a migration.
+     doctrine:migrations:execute             [execute] Execute a single migration version up or down manually.
+     doctrine:migrations:generate            [generate] Generate a blank migration class.
+     doctrine:migrations:latest              [latest] Outputs the latest version number
+     doctrine:migrations:migrate             [migrate] Execute a migration to a specified version or the latest available version.
+     doctrine:migrations:rollup              [rollup] Rollup migrations by deleting all tracked versions and insert the one version that exists.
+     doctrine:migrations:status              [status] View the status of a set of migrations.
+     doctrine:migrations:up-to-date          [up-to-date] Tells you if your schema is up-to-date.
+     doctrine:migrations:version             [version] Manually add and delete migration versions from the version table.
 
 Start by getting the status of migrations in your application by running
 the ``status`` command:
 
 .. code-block:: bash
 
-    php app/console doctrine:migrations:status
+    $ php app/console doctrine:migrations:status
 
      == Configuration
 
         >> Name:                                               Application Migrations
+        >> Database Driver:                                    pdo_mysql
+        >> Database Host:                                      127.0.0.1
+        >> Database Name:                                      symfony_migrations
         >> Configuration Source:                               manually configured
         >> Version Table Name:                                 migration_versions
-        >> Migrations Namespace:                               Application\Migrations
-        >> Migrations Directory:                               /path/to/project/app/DoctrineMigrations
+        >> Version Column Name:                                version
+        >> Migrations Namespace:                               App\Migrations
+        >> Migrations Directory:                               /path/to/project/app/Migrations
+        >> Previous Version:                                   Already at first version
         >> Current Version:                                    0
+        >> Next Version:                                       Already at latest version
         >> Latest Version:                                     0
         >> Executed Migrations:                                0
+        >> Executed Unavailable Migrations:                    0
         >> Available Migrations:                               0
         >> New Migrations:                                     0
 
@@ -109,25 +124,41 @@ for you.
 .. code-block:: bash
 
     $ php app/console doctrine:migrations:generate
-    Generated new migration class to "/path/to/project/app/DoctrineMigrations/Version20100621140655.php"
+    Generated new migration class to "/path/to/project/app/Migrations/Version20180605025653.php"
+
+    To run just this migration for testing purposes, you can use migrations:execute --up 20180605025653
+
+    To revert the migration you can use migrations:execute --down 20180605025653
 
 Have a look at the newly generated migration class and you will see something
 like the following::
 
-    namespace Application\Migrations;
+    declare(strict_types=1);
 
-    use Doctrine\DBAL\Migrations\AbstractMigration,
-        Doctrine\DBAL\Schema\Schema;
+    namespace App\Migrations;
 
-    class Version20100621140655 extends AbstractMigration
+    use Doctrine\DBAL\Schema\Schema;
+    use Doctrine\Migrations\AbstractMigration;
+
+    /**
+     * Auto-generated Migration: Please modify to your needs!
+     */
+    final class Version20180605025653 extends AbstractMigration
     {
-        public function up(Schema $schema)
+        public function getDescription() : string
         {
+            return '';
+        }
+
+        public function up(Schema $schema) : void
+        {
+            // this up() migration is auto-generated, please modify it to your needs
 
         }
 
-        public function down(Schema $schema)
+        public function down(Schema $schema) : void
         {
+            // this down() migration is auto-generated, please modify it to your needs
 
         }
     }
@@ -141,27 +172,34 @@ migration to execute:
 
      == Configuration
 
-       >> Name:                                               Application Migrations
-       >> Configuration Source:                               manually configured
-       >> Version Table Name:                                 migration_versions
-       >> Migrations Namespace:                               Application\Migrations
-       >> Migrations Directory:                               /path/to/project/app/DoctrineMigrations
-       >> Current Version:                                    0
-       >> Latest Version:                                     2010-06-21 14:06:55 (20100621140655)
-       >> Executed Migrations:                                0
-       >> Available Migrations:                               1
-       >> New Migrations:                                     1
+        >> Name:                                               Application Migrations
+        >> Database Driver:                                    pdo_mysql
+        >> Database Host:                                      127.0.0.1
+        >> Database Name:                                      symfony_migrations
+        >> Configuration Source:                               manually configured
+        >> Version Table Name:                                 migration_versions
+        >> Version Column Name:                                version
+        >> Migrations Namespace:                               DoctrineMigrations
+        >> Migrations Directory:                               /path/to/project/app/Migrations
+        >> Previous Version:                                   Already at first version
+        >> Current Version:                                    0
+        >> Next Version:                                       2018-06-05 02:56:53 (20180605025653)
+        >> Latest Version:                                     2018-06-05 02:56:53 (20180605025653)
+        >> Executed Migrations:                                0
+        >> Executed Unavailable Migrations:                    0
+        >> Available Migrations:                               1
+        >> New Migrations:                                     1
 
-    == Migration Versions
+     == Available Migration Versions
 
-       >> 2010-06-21 14:06:55 (20100621140655)                not migrated
+        >> 2018-06-05 02:56:53 (20180605025653)                not migrated
 
 Now you can add some migration code to the ``up()`` and ``down()`` methods and
 finally migrate when you're ready:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:migrate 20100621140655
+    $ php app/console doctrine:migrations:migrate 20180605025653
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
@@ -196,7 +234,6 @@ You can skip single migrations by explicitely adding them to the ``migration_ver
 
 Doctrine will then assume that this migration has already been run and will ignore it.
 
-
 Generating Migrations Automatically
 -----------------------------------
 
@@ -228,13 +265,12 @@ for Doctrine's ORM:
              * @ORM\Column(type="integer")
              * @ORM\GeneratedValue(strategy="AUTO")
              */
-            protected $id;
+            private $id;
 
             /**
              * @ORM\Column(type="string", length=255)
              */
-            protected $name;
-        }
+            private $name;
 
     .. code-block:: yaml
 
@@ -406,6 +442,6 @@ This ignores the tables on the DBAL level and they will be ignored by the diff c
 Note that if you have multiple connections configured then the ``schema_filter`` configuration
 will need to be placed per-connection.
 
-.. _documentation: http://docs.doctrine-project.org/projects/doctrine-migrations/en/latest/index.html
+.. _documentation: https://www.doctrine-project.org/projects/doctrine-migrations/en/current/index.html
 .. _DoctrineMigrationsBundle: https://github.com/doctrine/DoctrineMigrationsBundle
 .. _`Doctrine Database Migrations`: https://github.com/doctrine/migrations

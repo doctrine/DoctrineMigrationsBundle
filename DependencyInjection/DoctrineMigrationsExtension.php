@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
@@ -10,25 +11,22 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * DoctrineMigrationsExtension.
- *
- * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  */
 class DoctrineMigrationsExtension extends Extension
 {
     /**
      * Responds to the migrations configuration parameter.
      *
-     * @param array            $configs
-     * @param ContainerBuilder $container
+     * @param string[][] $configs
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container) : void
     {
         $configuration = new Configuration();
 
         $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($config as $key => $value) {
-            $container->setParameter($this->getAlias().'.'.$key, $value);
+            $container->setParameter($this->getAlias() . '.' . $key, $value);
         }
 
         $locator = new FileLocator(__DIR__ . '/../Resources/config/');
@@ -42,12 +40,12 @@ class DoctrineMigrationsExtension extends Extension
      *
      * @return string The XSD base path
      */
-    public function getXsdValidationBasePath()
+    public function getXsdValidationBasePath() : string
     {
-        return __DIR__.'/../Resources/config/schema';
+        return __DIR__ . '/../Resources/config/schema';
     }
 
-    public function getNamespace()
+    public function getNamespace() : string
     {
         return 'http://symfony.com/schema/dic/doctrine/migrations';
     }
