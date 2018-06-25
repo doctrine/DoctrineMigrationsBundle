@@ -23,7 +23,7 @@
         "php": "^7.1",
         "symfony/framework-bundle": "~3.4|~4.0",
         "doctrine/doctrine-bundle": "~1.0",
-        "doctrine/migrations": "^2.0@dev"
+        "doctrine/migrations": "^2.0@alpha"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7|^6.4|^7.0",
