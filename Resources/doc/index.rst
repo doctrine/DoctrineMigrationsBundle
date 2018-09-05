@@ -1,78 +1,63 @@
 DoctrineMigrationsBundle
 ========================
 
-The database migrations feature is an extension of the database abstraction
-layer and offers you the ability to programmatically deploy new versions of
-your database schema in a safe, easy and standardized way.
+Database migrations are a way to safely update your database schema both locally
+and on production. Instead of running the ``doctrine:schema:update`` command or
+applying the database changes manually with SQL statements, migrations allow to
+replicate the changes in your database schema in a safe manner.
 
-.. tip::
-
-    You can read more about the Doctrine Database Migrations on the project's
-    `documentation`_.
+Migrations are available in Symfony applications via the `DoctrineMigrationsBundle`_,
+which uses the external `Doctrine Database Migrations`_ library. Read the
+`documentation`_ of that library if you need a general introduction about migrations.
 
 Installation
 ------------
 
-Doctrine migrations for Symfony are maintained in the `DoctrineMigrationsBundle`_.
-The bundle uses external `Doctrine Database Migrations`_ library.
-
-First, install the bundle with composer:
+Run this command in your terminal:
 
 .. code-block:: bash
 
     $ composer require doctrine/doctrine-migrations-bundle "^2.0"
 
-If everything worked, the ``DoctrineMigrationsBundle`` can now be found
-at ``vendor/doctrine/doctrine-migrations-bundle``.
-
-.. note::
-
-    ``DoctrineMigrationsBundle`` installs
-    `Doctrine Database Migrations`_ library. The library can be found
-    at ``vendor/doctrine/migrations``.
-
-Finally, be sure to enable the bundle in ``AppKernel.php`` by including the
-following:
+If you don't use Symfony Flex, you must enable the bundle manually in the application:
 
 .. code-block:: php
 
-    // app/AppKernel.php
-    public function registerBundles()
-    {
-        $bundles = array(
-            //...
-            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
-        );
-    }
+    // config/bundles.php
+    // in older Symfony apps, enable the bundle in app/AppKernel.php
+    return [
+        // ...
+        Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
+    ];
 
 Configuration
 -------------
 
-You can configure the path, namespace, table_name, name, organize_migrations and custom_template in your ``config.yml``. The examples below are the default values.
+If you use Symfony Flex, the ``doctrine_migrations.yaml`` config file is created
+automatically. Otherwise, create the following file and configure it for your
+application:
 
 .. code-block:: yaml
 
-    # app/config/config.yml
+    # config/packages/doctrine_migrations.yaml
     doctrine_migrations:
-        dir_name: "%kernel.root_dir%/Migrations"
-        namespace: "App\\Migrations"
-        table_name: "migration_versions"
-        column_name: "version"
+        dir_name: '%kernel.project_dir%/src/Migrations'
+        # namespace is arbitrary but should be different from App\Migrations
+        # as migrations classes should NOT be autoloaded
+        namespace: DoctrineMigrations
+        table_name: 'migration_versions'
+        column_name: 'version'
         column_length: 14
-        executed_at_column_name: "executed_at"
-        name: Application Migrations
-        organize_migrations: false # Version >= 1.2, possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
-        custom_template: ~ # Version >= 1.2, path to your custom migrations template
+        executed_at_column_name: "'executed_at'
+        name: 'Application Migrations'
+        # available in version >= 1.2. Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+        organize_migrations: false
+        # available in version >= 1.2. Path to your custom migrations template
+        custom_template: ~
         all_or_nothing: false
 
 Usage
 -----
-
-.. caution::
-
-    If your application is based on Symfony 3, replace ``php app/console`` by
-    ``php bin/console`` before executing any of the console commands included
-    in this article.
 
 All of the migrations functionality is contained in a few console commands:
 
@@ -95,7 +80,7 @@ the ``status`` command:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:status
+    $ php bin/console doctrine:migrations:status
 
      == Configuration
 
@@ -123,7 +108,7 @@ for you.
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:generate
+    $ php bin/console doctrine:migrations:generate
     Generated new migration class to "/path/to/project/app/Migrations/Version20180605025653.php"
 
     To run just this migration for testing purposes, you can use migrations:execute --up 20180605025653
@@ -168,7 +153,7 @@ migration to execute:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:status --show-versions
+    $ php bin/console doctrine:migrations:status --show-versions
 
      == Configuration
 
@@ -199,7 +184,7 @@ finally migrate when you're ready:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:migrate 20180605025653
+    $ php bin/console doctrine:migrations:migrate 20180605025653
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
@@ -226,11 +211,11 @@ been run yet on *that* particular database.
 Skipping Migrations
 ~~~~~~~~~~~~~~~~~~~
 
-You can skip single migrations by explicitely adding them to the ``migration_versions`` table:
+You can skip single migrations by explicitly adding them to the ``migration_versions`` table:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:version YYYYMMDDHHMMSS --add
+    $ php bin/console doctrine:migrations:version YYYYMMDDHHMMSS --add
 
 Doctrine will then assume that this migration has already been run and will ignore it.
 
@@ -249,8 +234,8 @@ for Doctrine's ORM:
 
     .. code-block:: php-annotations
 
-        // src/Acme/HelloBundle/Entity/User.php
-        namespace Acme\HelloBundle\Entity;
+        // src/Entity/User.php
+        namespace App\Entity;
 
         use Doctrine\ORM\Mapping as ORM;
 
@@ -274,10 +259,10 @@ for Doctrine's ORM:
 
     .. code-block:: yaml
 
-        # src/Acme/HelloBundle/Resources/config/doctrine/User.orm.yml
-        Acme\HelloBundle\Entity\User:
+        # config/doctrine/User.orm.yml
+        App\Entity\User:
             type: entity
-            table: hello_user
+            table: user
             id:
                 id:
                     type: integer
@@ -290,13 +275,13 @@ for Doctrine's ORM:
 
     .. code-block:: xml
 
-        <!-- src/Acme/HelloBundle/Resources/config/doctrine/User.orm.xml -->
+        <!-- config/doctrine/User.orm.xml -->
         <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                             http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-            <entity name="Acme\HelloBundle\Entity\User" table="hello_user">
+            <entity name="App\Entity\User" table="user">
                 <id name="id" type="integer" column="id">
                     <generator strategy="AUTO"/>
                 </id>
@@ -306,22 +291,22 @@ for Doctrine's ORM:
         </doctrine-mapping>
 
 With this information, Doctrine is now ready to help you persist your new
-``User`` object to and from the ``hello_user`` table. Of course, this table
+``User`` object to and from the ``user`` table. Of course, this table
 doesn't exist yet! Generate a new migration for this table automatically by
 running the following command:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:diff
+    $ php bin/console doctrine:migrations:diff
 
 You should see a message that a new migration class was generated based on
 the schema differences. If you open this file, you'll find that it has the
-SQL code needed to create the ``hello_user`` table. Next, run the migration
+SQL code needed to create the ``user`` table. Next, run the migration
 to add the table to your database:
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:migrate
+    $ php bin/console doctrine:migrations:migrate
 
 The moral of the story is this: after each change you make to your Doctrine
 mapping information, run the ``doctrine:migrations:diff`` command to automatically
@@ -338,7 +323,7 @@ If you don't want to use this workflow and instead create your schema via
 
 .. code-block:: bash
 
-    $ php app/console doctrine:migrations:version --add --all
+    $ php bin/console doctrine:migrations:version --add --all
 
 Otherwise Doctrine will try to run all migrations, which probably will not work.
 
