@@ -133,6 +133,8 @@ for you.
 Have a look at the newly generated migration class and you will see something
 like the following::
 
+.. code-block:: php
+
     declare(strict_types=1);
 
     namespace App\Migrations;
