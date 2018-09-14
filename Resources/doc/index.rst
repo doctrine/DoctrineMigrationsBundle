@@ -116,7 +116,7 @@ for you.
     To revert the migration you can use migrations:execute --down 20180605025653
 
 Have a look at the newly generated migration class and you will see something
-like the following::
+like the following:
 
 .. code-block:: php
 
