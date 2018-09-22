@@ -48,7 +48,7 @@ application:
         table_name: 'migration_versions'
         column_name: 'version'
         column_length: 14
-        executed_at_column_name: "'executed_at'
+        executed_at_column_name: 'executed_at'
         name: 'Application Migrations'
         # available in version >= 1.2. Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         organize_migrations: false
