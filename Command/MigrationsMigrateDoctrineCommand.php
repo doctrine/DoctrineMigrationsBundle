@@ -24,8 +24,7 @@ class MigrationsMigrateDoctrineCommand extends MigrateCommand
             ->setName('doctrine:migrations:migrate')
             ->addOption('db', null, InputOption::VALUE_REQUIRED, 'The database connection to use for this command.')
             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
-            ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.')
-        ;
+            ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.');
     }
 
     public function initialize(InputInterface $input, OutputInterface $output) : void

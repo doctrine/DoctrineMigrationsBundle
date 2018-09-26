@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
+use ReflectionClass;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use function constant;
@@ -45,7 +46,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('organize_migrations')->defaultValue(false)
                     ->info('Organize migrations mode. Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false')
                     ->validate()
-                        ->ifTrue(function ($v) use ($organizeMigrationModes) {
+                        ->ifTrue(static function ($v) use ($organizeMigrationModes) {
                             if ($v === false) {
                                 return false;
                             }
@@ -60,13 +61,12 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->validate()
                         ->ifString()
-                            ->then(function ($v) {
+                            ->then(static function ($v) {
                                 return constant('Doctrine\Migrations\Configuration\Configuration::VERSIONS_ORGANIZATION_' . strtoupper($v));
                             })
                         ->end()
                     ->end()
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }
@@ -81,7 +81,7 @@ class Configuration implements ConfigurationInterface
     {
         $constPrefix = 'VERSIONS_ORGANIZATION_';
         $prefixLen   = strlen($constPrefix);
-        $refClass    = new \ReflectionClass('Doctrine\Migrations\Configuration\Configuration');
+        $refClass    = new ReflectionClass('Doctrine\Migrations\Configuration\Configuration');
         $constsArray = $refClass->getConstants();
         $namesArray  = [];
 
