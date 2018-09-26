@@ -25,8 +25,7 @@ class MigrationsDiffDoctrineCommand extends DiffCommand
             ->setName('doctrine:migrations:diff')
             ->addOption('db', null, InputOption::VALUE_REQUIRED, 'The database connection to use for this command.')
             ->addOption('em', null, InputOption::VALUE_OPTIONAL, 'The entity manager to use for this command.')
-            ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.')
-        ;
+            ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.');
     }
 
     public function initialize(InputInterface $input, OutputInterface $output) : void
