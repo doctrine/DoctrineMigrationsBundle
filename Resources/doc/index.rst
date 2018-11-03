@@ -286,12 +286,12 @@ to add the table to your database:
 
     $ php app/console doctrine:migrations:migrate
 
-The moral of the story is this: after each change you make to your Doctrine
+The moral of the story is this: After each change you make to your Doctrine
 mapping information, run the ``doctrine:migrations:diff`` command to automatically
 generate your migration classes.
 
 If you do this from the very beginning of your project (i.e. so that even
-the first tables were loaded via a migration class), you'll always be able
+the first tables were created via a migration class), you'll always be able
 to create a fresh database and run your migrations in order to get your database
 schema fully up to date. In fact, this is an easy and dependable workflow
 for your project.
@@ -312,8 +312,8 @@ In some cases you might need access to the container to ensure the proper update
 your data structure. This could be necessary to update relations with some specific
 logic or to create new entities.
 
-Therefore you can just implement the ContainerAwareInterface with its needed methods
-to get full access to the container or ContainerAwareTrait if you use Symfony >= 2.4.
+Therefore you can just implement the ``ContainerAwareInterface`` with its needed methods
+to get full access to the container or ``ContainerAwareTrait``.
 
 .. code-block:: php
 
@@ -342,7 +342,7 @@ to get full access to the container or ContainerAwareTrait if you use Symfony >=
         }
     }
 
-With the trait
+Or with the trait (since Symfony 2.4):
 
 .. code-block:: php
 
@@ -372,7 +372,7 @@ Manual Tables
 
 It is a common use case, that in addition to your generated database structure
 based on your doctrine entities you might need custom tables. By default such
-tables will be removed by the doctrine:migrations:diff command.
+tables will be removed by the ``doctrine:migrations:diff`` command.
 
 If you follow a specific scheme you can configure doctrine/dbal to ignore those
 tables. Let's say all custom tables will be prefixed by ``t_``. In this case you
@@ -401,10 +401,10 @@ just have to add the following configuration option to your doctrine configurati
             // ...
         ));
 
-This ignores the tables on the DBAL level and they will be ignored by the diff command.
+This ignores the tables on the DBAL level and they will be ignored by the ``diff`` command.
 
-Note that if you have multiple connections configured then the ``schema_filter`` configuration
-will need to be placed per-connection.
+Note that if you have multiple connections configured, the ``schema_filter`` configuration
+must be placed for each connection.
 
 .. _documentation: http://docs.doctrine-project.org/projects/doctrine-migrations/en/latest/index.html
 .. _DoctrineMigrationsBundle: https://github.com/doctrine/DoctrineMigrationsBundle
