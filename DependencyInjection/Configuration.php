@@ -10,6 +10,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use function constant;
 use function in_array;
 use function is_string;
+use function method_exists;
 use function strlen;
 use function strpos;
 use function strtoupper;
@@ -27,8 +28,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder() : TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('doctrine_migrations', 'array');
+        $treeBuilder = new TreeBuilder('doctrine_migrations');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('doctrine_migrations', 'array');
+        }
 
         $organizeMigrationModes = $this->getOrganizeMigrationsModes();
 
