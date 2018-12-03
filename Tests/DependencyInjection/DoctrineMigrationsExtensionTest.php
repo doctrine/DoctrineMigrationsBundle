@@ -4,10 +4,11 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
-class DoctrineMigrationsExtensionTest extends \PHPUnit_Framework_TestCase
+class DoctrineMigrationsExtensionTest extends TestCase
 {
     public function testOrganizeMigrations()
     {
