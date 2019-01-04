@@ -64,8 +64,8 @@ class Configuration implements ConfigurationInterface
                             ->then(static function ($v) {
                                 return constant('Doctrine\Migrations\Configuration\Configuration::VERSIONS_ORGANIZATION_' . strtoupper($v));
                             })
-                        ->end()
                     ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;
