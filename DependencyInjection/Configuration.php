@@ -38,7 +38,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
                 ->scalarNode('column_name')->defaultValue('version')->end()
-                ->scalarNode('column_length')->defaultValue(255)->end()
+                ->scalarNode('column_length')->defaultValue(14)->end()
                 ->scalarNode('executed_at_column_name')->defaultValue('executed_at')->end()
                 ->scalarNode('all_or_nothing')->defaultValue(false)->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
