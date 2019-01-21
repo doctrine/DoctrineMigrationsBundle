@@ -33,10 +33,13 @@
         "phpstan/phpstan-strict-rules": "^0.9"
     },
     "autoload": {
-        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\": "" }
+        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
     "autoload-dev": {
-        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "" }
+        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "Tests" }
     },
     "extra": {
         "branch-alias": {
