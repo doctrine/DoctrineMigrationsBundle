@@ -52,7 +52,7 @@ application:
         name: 'Application Migrations'
         # available in version >= 1.2. Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         organize_migrations: false
-        # available in version >= 1.2. Path to your custom migrations template
+        # available in version >= 1.3. Path to your custom migrations template
         custom_template: ~
         all_or_nothing: false
 
