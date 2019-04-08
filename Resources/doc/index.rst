@@ -194,7 +194,7 @@ fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migratio
 
 .. tip::
     If you need to use another database connection to execute migrations you may use option ``--db="doctrine-connection-name"`` 
-    where ``doctrine-connection-name`` is valid doctrine connection defined in doctrine.yaml
+    where ``doctrine-connection-name`` is valid Doctrine connection defined in doctrine.yaml
 
 Running Migrations during Deployment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
