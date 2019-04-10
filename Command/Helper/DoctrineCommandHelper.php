@@ -29,6 +29,12 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
 
         $managerNames = $doctrine->getManagerNames();
 
+        $connectionName = $container->getParameter('doctrine_migrations.connection');
+
+        if (null !== $connectionName) {
+            self::setApplicationConnection($application, $connectionName);
+        }
+
         if ($input->getOption('db') !== null || count($managerNames) === 0) {
             self::setApplicationConnection($application, $input->getOption('db'));
         } else {

@@ -73,6 +73,7 @@ class Configuration implements ConfigurationInterface
                             })
                     ->end()
                 ->end()
+                ->scalarNode('connection')->defaultValue(null)->end()
             ->end();
 
         return $treeBuilder;
