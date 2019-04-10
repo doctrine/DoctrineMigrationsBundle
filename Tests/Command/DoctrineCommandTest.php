@@ -88,6 +88,7 @@ class DoctrineCommandTest extends TestCase
             'doctrine_migrations.organize_migrations' => Configuration::VERSIONS_ORGANIZATION_BY_YEAR,
             'doctrine_migrations.custom_template' => null,
             'doctrine_migrations.all_or_nothing' => false,
+            'doctrine_migrations.connection' => 'connection',
         ]));
     }
 }
