@@ -34,9 +34,9 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
         if ($input->getOption('db') !== null || count($managerNames) === 0) {
             self::setApplicationConnection($application, $input->getOption('db'));
         } elseif ($connectionName !== null) {
-            self::setApplicationConnection($application, $connectionName);
-        } else {
             self::setApplicationEntityManager($application, $input->getOption('em'));
+        } else {
+            self::setApplicationConnection($application, $connectionName);
         }
 
         if ($input->getOption('shard') === null) {
