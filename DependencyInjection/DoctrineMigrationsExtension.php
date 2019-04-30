@@ -54,7 +54,7 @@ class DoctrineMigrationsExtension extends Extension
     }
 
     /**
-     * @param string[][] $configs
+     * @param string[] $config
      */
     private function configureSchemaProvider(array $config, ContainerBuilder $container) : void
     {
