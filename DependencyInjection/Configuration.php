@@ -73,6 +73,7 @@ class Configuration implements ConfigurationInterface
                             })
                     ->end()
                 ->end()
+                ->scalarNode('schema_provider')->defaultValue(null)->end()
             ->end();
 
         return $treeBuilder;

@@ -24,6 +24,7 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>
+            <xsd:attribute name="schema-provider" type="xsd:string" />
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>
