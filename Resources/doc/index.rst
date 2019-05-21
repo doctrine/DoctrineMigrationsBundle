@@ -42,8 +42,6 @@ application:
     # config/packages/doctrine_migrations.yaml
     doctrine_migrations:
         dir_name: '%kernel.project_dir%/src/Migrations'
-        # namespace is arbitrary but should be different from App\Migrations
-        # as migrations classes should NOT be autoloaded
         namespace: DoctrineMigrations
         table_name: 'migration_versions'
         column_name: 'version'
