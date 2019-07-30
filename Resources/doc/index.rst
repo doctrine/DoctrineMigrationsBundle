@@ -91,7 +91,7 @@ the ``status`` command:
         >> Configuration Source:                               manually configured
         >> Version Table Name:                                 migration_versions
         >> Version Column Name:                                version
-        >> Migrations Namespace:                               App\Migrations
+        >> Migrations Namespace:                               DoctrineMigrations
         >> Migrations Directory:                               /path/to/project/app/Migrations
         >> Previous Version:                                   Already at first version
         >> Current Version:                                    0
@@ -122,7 +122,7 @@ like the following:
 
     declare(strict_types=1);
 
-    namespace App\Migrations;
+    namespace DoctrineMigrations;
 
     use Doctrine\DBAL\Schema\Schema;
     use Doctrine\Migrations\AbstractMigration;
