@@ -3,7 +3,6 @@ sudo: false
 language: php
 
 php:
-  - 7.1
   - 7.2
   - 7.3
   - 7.4snapshot
@@ -50,4 +49,4 @@ jobs:
     - stage: Code Quality
       env: STATIC_ANALYSIS
       install: travis_retry composer install --prefer-dist
-      script: vendor/bin/phpstan analyse -l 7 -c phpstan.neon Command Tests
+      script: vendor/bin/phpstan analyse

@@ -3,7 +3,7 @@ build:
         analysis:
             environment:
                 php:
-                    version: 7.1
+                    version: 7.2
             cache:
                 disabled: false
                 directories:
@@ -14,6 +14,11 @@ build:
                 override:
                     - php-scrutinizer-run
                     - phpcs-run
+        tests:
+            environment:
+                php:
+                    version: 7.2
+
     dependencies:
         override:
             - composer install --ignore-platform-reqs --no-interaction

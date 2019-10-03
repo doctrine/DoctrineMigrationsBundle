@@ -1,0 +1,18 @@
+parameters:
+    level: 7
+    paths:
+        - %currentWorkingDirectory%/DependencyInjection
+        - %currentWorkingDirectory%/Tests
+
+    ignoreErrors:
+        - '~.*TreeBuilder.*getRootNode.*~'
+        - '~.*TreeBuilder::root.*~'
+        - '~Parameter \#1 \$configs.*DoctrineMigrationsExtension::load.*~'
+
+    excludes_analyse:
+        - Tests/Fixtures/CustomEntityManager.php
+
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon

@@ -17,7 +17,7 @@ Run this command in your terminal:
 
 .. code-block:: terminal
 
-    $ composer require doctrine/doctrine-migrations-bundle "^2.0"
+    $ composer require doctrine/doctrine-migrations-bundle "^3.0"
 
 If you don't use `Symfony Flex`_, you must enable the bundle manually in the application:
 
@@ -40,20 +40,55 @@ application:
 .. code-block:: yaml
 
     # config/packages/doctrine_migrations.yaml
+
+
     doctrine_migrations:
-        dir_name: '%kernel.project_dir%/src/Migrations'
-        namespace: DoctrineMigrations
-        table_name: 'migration_versions'
-        column_name: 'version'
-        column_length: 14
-        executed_at_column_name: 'executed_at'
         name: 'Application Migrations'
-        # available in version >= 1.2. Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+
+        # List of namespace/path pairs to search for migrations, at least one required
+        migrations_paths:
+            'App\Migrations': 'src/App'
+            'AnotherApp\Migrations': '/path/to/other/migrations'
+
+        # List of additional migration classes to be loaded, optional
+        migrations:
+            - 'App\Migrations\Version123'
+            - 'App\Migrations\Version123'
+
+        # Connection to use for the migrations
+        connection: default
+
+        # Entity manager to use for migrations. This overrides the "connection" setting.
+        em: default
+
+        storage:
+            # Default (SQL table) metadata storage configuration
+            table_storage:
+                table_name: 'migration_versions'
+                version_column_name: 'version'
+                version_column_length: 1024
+                executed_at_column_name: 'executed_at'
+                execution_time_column_name: 'execution_time'
+
+        # Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         organize_migrations: false
-        # available in version >= 1.3. Path to your custom migrations template
+
+        # Path to your custom migrations template
         custom_template: ~
+
+        # Run all migrations in a transaction.
         all_or_nothing: false
         check_database_platform: true
+
+        # Adds an extra check in the generated migrations to ensure that is executed on the same database type.
+        check_database_platform: true
+
+        services:
+            # Custom migration sorting service id
+            'Doctrine\Migrations\Version\Comparator': ~
+
+            # Custom migration classes factory
+            'Doctrine\Migrations\Version\MigrationFactory': ~
 
 Usage
 -----
@@ -63,16 +98,17 @@ All of the migrations functionality is contained in a few console commands:
 .. code-block:: terminal
 
     doctrine
-     doctrine:migrations:diff                [diff] Generate a migration by comparing your current database to your mapping information.
-     doctrine:migrations:dump-schema         [dump-schema] Dump the schema for your database to a migration.
-     doctrine:migrations:execute             [execute] Execute a single migration version up or down manually.
-     doctrine:migrations:generate            [generate] Generate a blank migration class.
-     doctrine:migrations:latest              [latest] Outputs the latest version number
-     doctrine:migrations:migrate             [migrate] Execute a migration to a specified version or the latest available version.
-     doctrine:migrations:rollup              [rollup] Rollup migrations by deleting all tracked versions and insert the one version that exists.
-     doctrine:migrations:status              [status] View the status of a set of migrations.
-     doctrine:migrations:up-to-date          [up-to-date] Tells you if your schema is up-to-date.
-     doctrine:migrations:version             [version] Manually add and delete migration versions from the version table.
+     doctrine:migrations:diff                   [diff] Generate a migration by comparing your current database to your mapping information.
+     doctrine:migrations:dump-schema            [dump-schema] Dump the schema for your database to a migration.
+     doctrine:migrations:execute                [execute] Execute a single migration version up or down manually.
+     doctrine:migrations:generate               [generate] Generate a blank migration class.
+     doctrine:migrations:latest                 [latest] Outputs the latest version number
+     doctrine:migrations:migrate                [migrate] Execute a migration to a specified version or the latest available version.
+     doctrine:migrations:rollup                 [rollup] Roll migrations up by deleting all tracked versions and insert the one version that exists.
+     doctrine:migrations:status                 [status] View the status of a set of migrations.
+     doctrine:migrations:up-to-date             [up-to-date] Tells you if your schema is up-to-date.
+     doctrine:migrations:version                [version] Manually add and delete migration versions from the version table.
+     doctrine:migrations:sync-metadata-storage  [sync-metadata-storage] Ensures that the metadata storage is at the latest version.
 
 Start by getting the status of migrations in your application by running
 the ``status`` command:
@@ -81,25 +117,8 @@ the ``status`` command:
 
     $ php bin/console doctrine:migrations:status
 
-     == Configuration
-
-        >> Name:                                               Application Migrations
-        >> Database Driver:                                    pdo_mysql
-        >> Database Host:                                      127.0.0.1
-        >> Database Name:                                      symfony_migrations
-        >> Configuration Source:                               manually configured
-        >> Version Table Name:                                 migration_versions
-        >> Version Column Name:                                version
-        >> Migrations Namespace:                               DoctrineMigrations
-        >> Migrations Directory:                               /path/to/project/app/Migrations
-        >> Previous Version:                                   Already at first version
-        >> Current Version:                                    0
-        >> Next Version:                                       Already at latest version
-        >> Latest Version:                                     0
-        >> Executed Migrations:                                0
-        >> Executed Unavailable Migrations:                    0
-        >> Available Migrations:                               0
-        >> New Migrations:                                     0
+This command will show you generic information about the migration status, as how many migrations have been
+already executed, which still need to run, and the database in use.
 
 Now, you can start working with migrations by generating a new blank migration
 class. Later, you'll learn how Doctrine can generate migrations automatically
@@ -108,11 +127,6 @@ for you.
 .. code-block:: terminal
 
     $ php bin/console doctrine:migrations:generate
-    Generated new migration class to "/path/to/project/app/Migrations/Version20180605025653.php"
-
-    To run just this migration for testing purposes, you can use migrations:execute --up 20180605025653
-
-    To revert the migration you can use migrations:execute --down 20180605025653
 
 Have a look at the newly generated migration class and you will see something
 like the following:
@@ -149,52 +163,23 @@ like the following:
         }
     }
 
-If you run the ``status`` command it will now show that you have one new
+If you run the ``status`` command again it will now show that you have one new
 migration to execute:
 
 .. code-block:: terminal
 
     $ php bin/console doctrine:migrations:status --show-versions
 
-     == Configuration
-
-        >> Name:                                               Application Migrations
-        >> Database Driver:                                    pdo_mysql
-        >> Database Host:                                      127.0.0.1
-        >> Database Name:                                      symfony_migrations
-        >> Configuration Source:                               manually configured
-        >> Version Table Name:                                 migration_versions
-        >> Version Column Name:                                version
-        >> Migrations Namespace:                               DoctrineMigrations
-        >> Migrations Directory:                               /path/to/project/app/Migrations
-        >> Previous Version:                                   Already at first version
-        >> Current Version:                                    0
-        >> Next Version:                                       2018-06-05 02:56:53 (20180605025653)
-        >> Latest Version:                                     2018-06-05 02:56:53 (20180605025653)
-        >> Executed Migrations:                                0
-        >> Executed Unavailable Migrations:                    0
-        >> Available Migrations:                               1
-        >> New Migrations:                                     1
-
-     == Available Migration Versions
-
-        >> 2018-06-05 02:56:53 (20180605025653)                not migrated
-
 Now you can add some migration code to the ``up()`` and ``down()`` methods and
 finally migrate when you're ready:
 
 .. code-block:: terminal
 
-    $ php bin/console doctrine:migrations:migrate 20180605025653
+    $ php bin/console doctrine:migrations:migrate 'DoctrineMigrations\Version20180605025653'
 
 For more information on how to write the migrations themselves (i.e. how to
 fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migrations
 `documentation`_.
-
-.. tip::
-
-    If you need to use another database connection to execute migrations you may use option ``--db="doctrine-connection-name"`` 
-    where ``doctrine-connection-name`` is valid Doctrine connection defined in doctrine.yaml
 
 Running Migrations during Deployment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -221,7 +206,13 @@ You can skip single migrations by explicitly adding them to the ``migration_vers
 
 .. code-block:: terminal
 
-    $ php bin/console doctrine:migrations:version YYYYMMDDHHMMSS --add
+    $ php bin/console doctrine:migrations:version 'App\Migrations\Version123' --add
+
+.. tip::
+
+    Pay attention to the single quotes (``'``) used in the command above, without them
+    or with the double quotes (``"``) the command will not work properly.
+
 
 Doctrine will then assume that this migration has already been run and will ignore it.
 

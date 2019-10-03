@@ -1,7 +1,0 @@
-parameters:
-    ignoreErrors:
-        # This is due to a bug in DoctrineBundle
-        - '~Parameter \#2 \$connName of static method Doctrine\\Bundle\\DoctrineBundle\\Command\\Proxy\\DoctrineCommandHelper::setApplicationConnection\(\) expects string, array\<string\>\|bool\|string\|null given\.~'
-        - '~Parameter \#2 \$emName of static method Doctrine\\Bundle\\DoctrineBundle\\Command\\Proxy\\DoctrineCommandHelper::setApplicationEntityManager\(\) expects string, array\<string\>\|bool\|string\|null given\.~'
-includes:
-    - vendor/phpstan/phpstan-strict-rules/rules.neon

@@ -9,9 +9,10 @@
     <!-- Ignore warnings, show progress of the run and show sniff names -->
     <arg value="nps"/>
 
-    <file>Command</file>
     <file>DependencyInjection</file>
     <file>Tests</file>
+
+    <exclude-pattern>Tests/Fixtures/CustomEntityManager.php</exclude-pattern>
 
     <rule ref="Doctrine"/>
 </ruleset>
