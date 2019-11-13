@@ -11,6 +11,8 @@ use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use function assert;
 use function count;
 use function sprintf;
 
@@ -23,6 +25,7 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
     public static function setApplicationHelper(Application $application, InputInterface $input) : void
     {
         $container = $application->getKernel()->getContainer();
+        assert($container instanceof ContainerInterface);
 
         /** @var Registry $doctrine */
         $doctrine = $container->get('doctrine');
@@ -30,9 +33,9 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
         $managerNames = $doctrine->getManagerNames();
 
         if ($input->getOption('db') !== null || count($managerNames) === 0) {
-            self::setApplicationConnection($application, $input->getOption('db'));
+            self::setApplicationConnection($application, (string) $input->getOption('db'));
         } else {
-            self::setApplicationEntityManager($application, $input->getOption('em'));
+            self::setApplicationEntityManager($application, (string) $input->getOption('em'));
         }
 
         if ($input->getOption('shard') === null) {
@@ -58,6 +61,6 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
             ));
         }
 
-        $connection->connect($input->getOption('shard'));
+        $connection->connect((string) $input->getOption('shard'));
     }
 }

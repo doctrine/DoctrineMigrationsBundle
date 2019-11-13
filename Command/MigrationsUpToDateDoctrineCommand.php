@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use function assert;
 
 /**
  * Command for checking if your database is up to date or not.
@@ -35,7 +37,9 @@ class MigrationsUpToDateDoctrineCommand extends UpToDateCommand
         Helper\DoctrineCommandHelper::setApplicationHelper($application, $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
-        DoctrineCommand::configureMigrations($application->getKernel()->getContainer(), $configuration);
+        $container     = $application->getKernel()->getContainer();
+        assert($container instanceof ContainerInterface);
+        DoctrineCommand::configureMigrations($container, $configuration);
 
         parent::initialize($input, $output);
     }

@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use function assert;
 
 /**
  * Command for dumping your current database schema to a migration.
@@ -35,7 +37,9 @@ class MigrationsDumpSchemaDoctrineCommand extends DumpSchemaCommand
         Helper\DoctrineCommandHelper::setApplicationHelper($application, $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
-        DoctrineCommand::configureMigrations($application->getKernel()->getContainer(), $configuration);
+        $container     = $application->getKernel()->getContainer();
+        assert($container instanceof ContainerInterface);
+        DoctrineCommand::configureMigrations($container, $configuration);
 
         parent::initialize($input, $output);
     }
