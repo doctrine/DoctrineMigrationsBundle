@@ -33,9 +33,9 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
         $managerNames = $doctrine->getManagerNames();
 
         if ($input->getOption('db') !== null || count($managerNames) === 0) {
-            self::setApplicationConnection($application, (string) $input->getOption('db'));
+            self::setApplicationConnection($application, $input->getOption('db'));
         } else {
-            self::setApplicationEntityManager($application, (string) $input->getOption('em'));
+            self::setApplicationEntityManager($application, $input->getOption('em'));
         }
 
         if ($input->getOption('shard') === null) {
@@ -61,6 +61,6 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
             ));
         }
 
-        $connection->connect((string) $input->getOption('shard'));
+        $connection->connect($input->getOption('shard'));
     }
 }
