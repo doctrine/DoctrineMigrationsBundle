@@ -33,7 +33,7 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
         $managerNames = $doctrine->getManagerNames();
 
         if ($input->getOption('db') !== null || count($managerNames) === 0) {
-            self::setApplicationConnection($application, (string) $input->getOption('db'));
+            self::setApplicationConnection($application, $input->getOption('db'));
         } else {
             self::setApplicationEntityManager($application, $input->getOption('em'));
         }
