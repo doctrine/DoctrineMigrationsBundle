@@ -6,7 +6,7 @@ php:
   - 7.1
   - 7.2
   - 7.3
-  - nightly
+  - 7.4snapshot
 
 cache:
   directories:
@@ -24,9 +24,6 @@ script:
   - ./vendor/bin/phpunit
 
 jobs:
-  allow_failures:
-    - php: nightly
-
   include:
     - stage: Test
       env: DEPENDENCIES=low
