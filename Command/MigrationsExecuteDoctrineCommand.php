@@ -18,12 +18,14 @@ use function assert;
  */
 class MigrationsExecuteDoctrineCommand extends ExecuteCommand
 {
+    /** @var string */
+    protected static $defaultName = 'doctrine:migrations:execute';
+
     protected function configure() : void
     {
         parent::configure();
 
         $this
-            ->setName('doctrine:migrations:execute')
             ->addOption('db', null, InputOption::VALUE_REQUIRED, 'The database connection to use for this command.')
             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
             ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.');

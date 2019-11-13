@@ -18,12 +18,14 @@ use function assert;
  */
 class MigrationsGenerateDoctrineCommand extends GenerateCommand
 {
+    /** @var string */
+    protected static $defaultName = 'doctrine:migrations:generate';
+
     protected function configure() : void
     {
         parent::configure();
 
         $this
-            ->setName('doctrine:migrations:generate')
             ->addOption('db', null, InputOption::VALUE_REQUIRED, 'The database connection to use for this command.')
             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.')
             ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.');
