@@ -8,6 +8,7 @@ use ReflectionClass;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use function constant;
+use function count;
 use function in_array;
 use function is_string;
 use function method_exists;
@@ -41,14 +42,75 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()->end()
-                ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
-                ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
-                ->scalarNode('column_name')->defaultValue('version')->end()
-                ->scalarNode('column_length')->defaultValue(14)->end()
-                ->scalarNode('executed_at_column_name')->defaultValue('executed_at')->end()
-                ->scalarNode('all_or_nothing')->defaultValue(false)->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
+
+                // 3.x forward compatibility layer
+                ->arrayNode('migrations_paths')
+                    ->info('A list of pairs namespace/path where to look for migrations.')
+                    ->useAttributeAsKey('name')
+                    ->defaultValue([])
+                    ->prototype('scalar')->end()
+                    ->validate()
+                        ->ifTrue(static function ($v) {
+                            return count($v) === 0;
+                        })
+                        ->thenInvalid('At least one migrations path must be specified.')
+
+                        ->ifTrue(static function ($v) {
+                            return count($v) >  1;
+                        })
+                        ->thenInvalid('Maximum one migration path can be specified with the 2.x version.')
+                    ->end()
+                ->end()
+
+                ->arrayNode('storage')
+                    ->info('Storage to use for migration status metadata.')
+                    ->children()
+                        ->arrayNode('table_storage')
+                            ->info('The default metadata storage, implemented as table in the database.')
+                            ->children()
+                                ->scalarNode('table_name')->defaultValue(null)->cannotBeEmpty()->end()
+                                ->scalarNode('version_column_name')->defaultValue(null)->end()
+                                ->scalarNode('version_column_length')
+                                    ->defaultValue(null)
+                                    ->validate()
+                                        ->ifTrue(static function ($v) {
+                                            return $v< 1024;
+                                        })
+                                        ->thenInvalid('The minimum length for the version column is 1024.')
+                                    ->end()
+                                ->end()
+                                ->scalarNode('executed_at_column_name')->defaultValue(null)->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+
+                ->scalarNode('dir_name')
+                    ->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()
+                    ->setDeprecated('The "%node%" option is deprecated. Use "migrations_paths" instead.')
+                ->end()
+                ->scalarNode('namespace')
+                    ->defaultValue('Application\Migrations')->cannotBeEmpty()
+                    ->setDeprecated('The "%node%" option is deprecated. Use "migrations_paths" instead.')
+                ->end()
+                ->scalarNode('table_name')
+                    ->defaultValue('migration_versions')->cannotBeEmpty()
+                    ->setDeprecated('The "%node%" option is deprecated. Use "storage.table_storage.table_name" instead.')
+                ->end()
+                ->scalarNode('column_name')
+                    ->defaultValue('version')
+                    ->setDeprecated('The "%node%" option is deprecated. Use "storage.table_storage.version_column_name" instead.')
+                ->end()
+                ->scalarNode('column_length')
+                    ->defaultValue(14)
+                    ->setDeprecated('The "%node%" option is deprecated. Use "storage.table_storage.version_column_length" instead.')
+                ->end()
+                ->scalarNode('executed_at_column_name')
+                    ->defaultValue('executed_at')
+                    ->setDeprecated('The "%node%" option is deprecated. Use "storage.table_storage.executed_at_column_name" instead.')
+                ->end()
+                ->scalarNode('all_or_nothing')->defaultValue(false)->end()
                 ->scalarNode('custom_template')->defaultValue(null)->end()
                 ->scalarNode('organize_migrations')->defaultValue(false)
                     ->info('Organize migrations mode. Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false')
