@@ -23,6 +23,12 @@ class DoctrineMigrationsExtension extends Extension
     {
         $configuration = new Configuration();
 
+        if ($container->hasParameter('kernel.root_dir')) {
+            $container->setParameter('doctrine.migrations.dir', '%kernel.root_dir%/DoctrineMigrations');
+        } else {
+            $container->setParameter('doctrine.migrations.dir', '%kernel.project_dir%/src/Migrations');
+        }
+
         $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($config as $key => $value) {
