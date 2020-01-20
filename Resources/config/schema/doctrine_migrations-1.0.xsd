@@ -15,6 +15,7 @@
             <xsd:attribute name="all_or_nothing" type="xsd:boolean" />
             <xsd:attribute name="name" type="xsd:string" />
             <xsd:attribute name="custom_template" type="xsd:string" />
+            <xsd:attribute name="check_database_platform" type="xsd:boolean" />
             <xsd:attribute name="organize-migrations">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">

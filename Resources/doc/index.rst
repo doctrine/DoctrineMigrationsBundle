@@ -53,6 +53,7 @@ application:
         # available in version >= 1.3. Path to your custom migrations template
         custom_template: ~
         all_or_nothing: false
+        check_database_platform: true
 
 Usage
 -----

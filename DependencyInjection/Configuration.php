@@ -50,6 +50,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('all_or_nothing')->defaultValue(false)->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
                 ->scalarNode('custom_template')->defaultValue(null)->end()
+                ->scalarNode('check_database_platform')->defaultValue(true)->end()
                 ->scalarNode('organize_migrations')->defaultValue(false)
                     ->info('Organize migrations mode. Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false')
                     ->validate()

@@ -85,6 +85,7 @@ abstract class DoctrineCommand extends BaseCommand
         $configuration->setMigrationsColumnLength($container->getParameter('doctrine_migrations.column_length'));
         $configuration->setMigrationsExecutedAtColumnName($container->getParameter('doctrine_migrations.executed_at_column_name'));
         $configuration->setAllOrNothing($container->getParameter('doctrine_migrations.all_or_nothing'));
+        $configuration->setCheckDatabasePlatform($container->getParameter('doctrine_migrations.check_database_platform'));
 
         // Migrations is not register from configuration loader
         if (! ($configuration instanceof AbstractFileConfiguration)) {

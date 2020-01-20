@@ -72,6 +72,10 @@ class DoctrineCommandTest extends TestCase
             ->method('setAllOrNothing')
             ->with(false);
 
+        $configurationMock->expects($this->once())
+            ->method('setCheckDatabasePlatform')
+            ->with(true);
+
         DoctrineCommand::configureMigrations($this->getContainer(), $configurationMock);
     }
 
@@ -88,6 +92,7 @@ class DoctrineCommandTest extends TestCase
             'doctrine_migrations.organize_migrations' => Configuration::VERSIONS_ORGANIZATION_BY_YEAR,
             'doctrine_migrations.custom_template' => null,
             'doctrine_migrations.all_or_nothing' => false,
+            'doctrine_migrations.check_database_platform' => true,
         ]));
     }
 }
