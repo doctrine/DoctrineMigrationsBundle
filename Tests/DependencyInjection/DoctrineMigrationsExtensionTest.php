@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use function assert;
 use function method_exists;
+use function print_r;
 use function sys_get_temp_dir;
 
 class DoctrineMigrationsExtensionTest extends TestCase
@@ -91,6 +92,28 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $this->assertConfigs($config);
     }
 
+    public function testNoConfig() : void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The child node "migrations_paths" at path "doctrine_migrations" must be configured.');
+
+        $container = $this->getContainer();
+        $extension = new DoctrineMigrationsExtension();
+
+        $conn = $this->createMock(Connection::class);
+        $container->set('doctrine.dbal.default_connection', $conn);
+
+        $extension->load([], $container);
+
+        $container->getDefinition('doctrine.migrations.configuration')->setPublic(true);
+        $container->compile();
+
+        $config = $container->get('doctrine.migrations.configuration');
+
+        print_r($config);
+    }
+
+
     private function assertConfigs(?object $config) : void
     {
         self::assertInstanceOf(Configuration::class, $config);
@@ -122,6 +145,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $extension = new DoctrineMigrationsExtension();
 
         $config = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
             'services' => [Comparator::class => 'my_sorter'],
         ];
 
@@ -151,7 +175,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container = $this->getContainer();
         $extension = new DoctrineMigrationsExtension();
 
-        $config = ['connection' => 'custom'];
+        $config = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+            'connection' => 'custom',
+        ];
 
         $extension->load(['doctrine_migrations' => $config], $container);
 
@@ -176,7 +203,11 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $em = $this->createMock(EntityManager::class);
         $container->set('doctrine.orm.default_entity_manager', $em);
 
-        $extension->load(['doctrine_migrations' => []], $container);
+        $extension->load([
+            'doctrine_migrations' => [
+                'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+            ],
+        ], $container);
 
         $container->getDefinition('doctrine.migrations.dependency_factory')->setPublic(true);
 
@@ -193,7 +224,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container = $this->getContainer();
         $extension = new DoctrineMigrationsExtension();
 
-        $config = ['em' => 'custom'];
+        $config = [
+            'em' => 'custom',
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+        ];
 
         $em = new Definition(CustomEntityManager::class);
         $container->setDefinition('doctrine.orm.custom_entity_manager', $em);
@@ -221,6 +255,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $extension = new DoctrineMigrationsExtension();
 
         $config = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
             'services' => [MetadataStorage::class => 'mock_storage_service'],
         ];
 
@@ -249,6 +284,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $extension = new DoctrineMigrationsExtension();
 
         $config = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
             'services' => ['foo' => 'mock_storage_service'],
         ];
 
@@ -268,6 +304,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $extension = new DoctrineMigrationsExtension();
 
         $config = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
             'em' => 'custom',
             'connection' => 'custom',
         ];

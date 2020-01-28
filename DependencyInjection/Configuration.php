@@ -49,11 +49,10 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
 
                 ->arrayNode('migrations_paths')
-
                     ->info('A list of namespace/path pairs where to look for migrations.')
+                    ->isRequired()
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('namespace')
-                    ->defaultValue(['%kernel.project_dir%/src/Migrations' => 'App\Migrations'])
                     ->prototype('scalar')->end()
                 ->end()
 
