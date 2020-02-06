@@ -104,7 +104,7 @@ All of the migrations functionality is contained in a few console commands:
      doctrine:migrations:generate               [generate] Generate a blank migration class.
      doctrine:migrations:latest                 [latest] Outputs the latest version number
      doctrine:migrations:migrate                [migrate] Execute a migration to a specified version or the latest available version.
-     doctrine:migrations:rollup                 [rollup] Roll migrations up by deleting all tracked versions and insert the one version that exists.
+     doctrine:migrations:rollup                 [rollup] Roll migrations up by deleting all tracked versions and inserting the one version that exists.
      doctrine:migrations:status                 [status] View the status of a set of migrations.
      doctrine:migrations:up-to-date             [up-to-date] Tells you if your schema is up-to-date.
      doctrine:migrations:version                [version] Manually add and delete migration versions from the version table.
@@ -117,7 +117,7 @@ the ``status`` command:
 
     $ php bin/console doctrine:migrations:status
 
-This command will show you generic information about the migration status, as how many migrations have been
+This command will show you generic information about the migration status, such as how many migrations have been
 already executed, which still need to run, and the database in use.
 
 Now, you can start working with migrations by generating a new blank migration
