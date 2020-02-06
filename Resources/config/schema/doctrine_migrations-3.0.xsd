@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns="http://symfony.com/schema/dic/doctrine/migrations/3.0"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://symfony.com/schema/dic/doctrine/migrations/3.0"
+            elementFormDefault="qualified"
+>
+
+    <xsd:element name="config">
+        <xsd:complexType>
+
+            <xsd:sequence>
+                <xsd:element name="migrations-path" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <xsd:attribute name="namespace" type="xsd:string"/>
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+
+                <xsd:element name="services" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <xsd:attribute name="service" type="xsd:string"/>
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+
+
+                <xsd:element name="migration" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
+
+                <xsd:element name="storage" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="table-storage" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:attribute name="table-name" type="xsd:string"/>
+                                    <xsd:attribute name="version-column-name" type="xsd:string"/>
+                                    <xsd:attribute name="version-column-length" type="xsd:positiveInteger"/>
+                                    <xsd:attribute name="executed-at-column-name" type="xsd:string"/>
+                                    <xsd:attribute name="execution-time-column-name" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+
+            <xsd:attribute name="name" type="xsd:string"/>
+            <xsd:attribute name="em" type="xsd:string"/>
+            <xsd:attribute name="connection" type="xsd:string"/>
+            <xsd:attribute name="sorter" type="xsd:string"/>
+            <xsd:attribute name="all_or_nothing" type="xsd:boolean"/>
+            <xsd:attribute name="check_database_platform" type="xsd:boolean"/>
+            <xsd:attribute name="custom_template" type="xsd:string"/>
+            <xsd:attribute name="organize-migrations">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="BY_YEAR"/>
+                        <xsd:enumeration value="BY_YEAR_AND_MONTH"/>
+                        <xsd:enumeration value="false"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+
+</xsd:schema>

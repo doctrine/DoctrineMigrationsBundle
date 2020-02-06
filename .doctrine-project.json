@@ -4,8 +4,14 @@
   "slug": "doctrine-migrations-bundle",
   "versions": [
     {
-      "name": "2.2",
+      "name": "3.0",
       "branchName": "master",
+      "slug": "3.0",
+      "upcoming": true
+    },
+    {
+      "name": "2.2",
+      "branchName": "2.2.x",
       "slug": "2.2",
       "upcoming": true
     },
