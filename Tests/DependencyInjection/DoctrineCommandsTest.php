@@ -65,17 +65,13 @@ class DoctrineCommandsTest extends TestCase
      */
     private function getKernel(ContainerBuilder $container)
     {
-        $kernel = $this
-            ->getMockBuilder(KernelInterface::class)
-            ->getMock();
+        $kernel = $this->createMock(KernelInterface::class);
 
         $kernel
-            ->expects(self::any())
             ->method('getContainer')
             ->willReturn($container);
 
         $kernel
-            ->expects(self::once())
             ->method('getBundles')
             ->willReturn([]);
 
