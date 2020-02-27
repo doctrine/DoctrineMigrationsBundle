@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
-use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use InvalidArgumentException;
@@ -14,7 +13,6 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use function sprintf;
 
 /**
  * DoctrineMigrationsExtension.
@@ -98,22 +96,8 @@ class DoctrineMigrationsExtension extends Extension
             );
         }
 
-        $emID = sprintf('doctrine.orm.%s_entity_manager', $config['em'] ?: 'default');
-
-        if ($container->has($emID)) {
-            $container->getDefinition('doctrine.migrations.em_loader')
-                ->setArgument(0, new Reference($emID));
-
-            $diDefinition->setFactory([DependencyFactory::class, 'fromEntityManager']);
-            $diDefinition->setArgument(1, new Reference('doctrine.migrations.em_loader'));
-        } else {
-            $connectionId = sprintf('doctrine.dbal.%s_connection', $config['connection'] ?? 'default');
-            $container->getDefinition('doctrine.migrations.connection_loader')
-                ->setArgument(0, new Reference($connectionId));
-
-            $diDefinition->setFactory([DependencyFactory::class, 'fromConnection']);
-            $diDefinition->setArgument(1, new Reference('doctrine.migrations.connection_loader'));
-        }
+        $container->setParameter('doctrine.migrations.preferred_em', $config['em']);
+        $container->setParameter('doctrine.migrations.preferred_connection', $config['connection']);
     }
 
     /**

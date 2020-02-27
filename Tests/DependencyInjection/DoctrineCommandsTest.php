@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
+use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\ConfigureDependencyFactoryPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand;
@@ -104,6 +105,7 @@ class DoctrineCommandsTest extends TestCase
             ],
         ], $container);
 
+        $container->addCompilerPass(new ConfigureDependencyFactoryPass());
         $container->compile();
 
         return $application;
