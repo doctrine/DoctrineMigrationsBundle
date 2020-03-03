@@ -53,7 +53,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
     public function testFullConfig() : void
     {
         $config = [
-            'name' => 'Doctrine Sandbox Migrations',
             'storage' => [
                 'table_storage' => [
                     'table_name'                 => 'doctrine_migration_versions_test',
@@ -106,7 +105,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
     private function assertConfigs(?object $config) : void
     {
         self::assertInstanceOf(Configuration::class, $config);
-        self::assertSame('Doctrine Sandbox Migrations', $config->getName());
         self::assertSame([
             'DoctrineMigrationsTest' => 'a',
             'DoctrineMigrationsTest2' => 'b',

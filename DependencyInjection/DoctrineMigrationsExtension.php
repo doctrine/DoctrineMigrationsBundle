@@ -37,8 +37,6 @@ class DoctrineMigrationsExtension extends Extension
 
         $configurationDefinition = $container->getDefinition('doctrine.migrations.configuration');
 
-        $configurationDefinition->addMethodCall('setName', [$config['name']]);
-
         foreach ($config['migrations_paths'] as $ns => $path) {
             $configurationDefinition->addMethodCall('addMigrationsDirectory', [$ns, $path]);
         }
