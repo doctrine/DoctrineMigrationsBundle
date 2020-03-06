@@ -42,7 +42,10 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('name')->defaultValue('Application Migrations')->end()
+                ->scalarNode('name')
+                    ->setDeprecated('The "%node%" option is deprecated.')
+                    ->defaultValue('Application Migrations')
+                ->end()
 
                 // 3.x forward compatibility layer
                 ->arrayNode('migrations_paths')
