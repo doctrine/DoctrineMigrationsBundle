@@ -54,12 +54,12 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue([])
                     ->prototype('scalar')->end()
                     ->validate()
-                        ->ifTrue(static function ($v) {
+                        ->ifTrue(static function ($v) : bool {
                             return count($v) === 0;
                         })
-                        ->thenInvalid('At least one migrations path must be specified.')
+                        ->thenInvalid('At least one migration path must be specified.')
 
-                        ->ifTrue(static function ($v) {
+                        ->ifTrue(static function ($v) : bool {
                             return count($v) >  1;
                         })
                         ->thenInvalid('Maximum one migration path can be specified with the 2.x version.')
@@ -70,15 +70,15 @@ class Configuration implements ConfigurationInterface
                     ->info('Storage to use for migration status metadata.')
                     ->children()
                         ->arrayNode('table_storage')
-                            ->info('The default metadata storage, implemented as table in the database.')
+                            ->info('The default metadata storage, implemented as database table.')
                             ->children()
                                 ->scalarNode('table_name')->defaultValue(null)->cannotBeEmpty()->end()
                                 ->scalarNode('version_column_name')->defaultValue(null)->end()
                                 ->scalarNode('version_column_length')
                                     ->defaultValue(null)
                                     ->validate()
-                                        ->ifTrue(static function ($v) {
-                                            return $v< 1024;
+                                        ->ifTrue(static function ($v) : bool {
+                                            return $v < 1024;
                                         })
                                         ->thenInvalid('The minimum length for the version column is 1024.')
                                     ->end()
