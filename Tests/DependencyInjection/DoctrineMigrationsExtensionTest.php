@@ -38,7 +38,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
                 'table_storage' => [
                     'table_name'                 => 'doctrine_migration_versions_test',
                     'version_column_name'        => 'doctrine_migration_column_test',
-                    'version_column_length'      => 2000,
+                    'version_column_length'      => '2000',
                     'executed_at_column_name'    => 'doctrine_migration_executed_at_column_test',
                 ],
             ],

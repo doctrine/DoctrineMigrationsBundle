@@ -20,7 +20,7 @@ class DoctrineMigrationsExtension extends Extension
     /**
      * Responds to the migrations configuration parameter.
      *
-     * @param string[][] $configs
+     * @param string[][]|array<string, array<string, array<string, string>|string>>> $configs
      */
     public function load(array $configs, ContainerBuilder $container) : void
     {
