@@ -41,13 +41,36 @@ application:
 
     # config/packages/doctrine_migrations.yaml
     doctrine_migrations:
-        dir_name: '%kernel.project_dir%/src/Migrations'
-        namespace: DoctrineMigrations
-        table_name: 'migration_versions'
-        column_name: 'version'
-        column_length: 14
-        executed_at_column_name: 'executed_at'
         name: 'Application Migrations'
+
+        # Namespace/path to search for migrations
+        migrations_paths:
+            'DoctrineMigrations': '%kernel.project_dir%/src/Migrations'
+
+        # Deprecated since v2.2, use "migrations_paths" instead (array value)
+        dir_name: '%kernel.project_dir%/src/Migrations'
+
+        # Deprecated since v2.2, use "migrations_paths" instead (array key)
+        namespace: DoctrineMigrations
+
+        storage:
+            # Default (SQL table) metadata storage configuration
+            table_storage:
+                table_name: 'migration_versions'
+                version_column_name: 'version'
+                version_column_length: 1024
+                executed_at_column_name: 'executed_at'
+                execution_time_column_name: 'execution_time'
+
+        # Deprecated since v2.2, use "storage.table_storage.table_name" instead
+        table_name: 'migration_versions'
+        # Deprecated since v2.2, use "storage.table_storage.version_column_name" instead
+        column_name: 'version'
+        # Deprecated since v2.2, use "storage.table_storage.version_column_length" instead (minimum value has to be at least 1024)
+        column_length: 14
+        # Deprecated since v2.2, use "storage.table_storage.execution_time_column_name" instead
+        executed_at_column_name: 'executed_at'
+
         # available in version >= 1.2. Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         organize_migrations: false
         # available in version >= 1.3. Path to your custom migrations template
@@ -192,7 +215,7 @@ fill in the ``up()`` and ``down()`` methods), see the official Doctrine Migratio
 
 .. tip::
 
-    If you need to use another database connection to execute migrations you may use option ``--db="doctrine-connection-name"`` 
+    If you need to use another database connection to execute migrations you may use option ``--db="doctrine-connection-name"``
     where ``doctrine-connection-name`` is valid Doctrine connection defined in doctrine.yaml
 
 Running Migrations during Deployment
