@@ -109,6 +109,7 @@ All of the migrations functionality is contained in a few console commands:
      doctrine:migrations:up-to-date             [up-to-date] Tells you if your schema is up-to-date.
      doctrine:migrations:version                [version] Manually add and delete migration versions from the version table.
      doctrine:migrations:sync-metadata-storage  [sync-metadata-storage] Ensures that the metadata storage is at the latest version.
+     doctrine:migrations:list                   [list-migrations] Display a list of all available migrations and their status.
 
 Start by getting the status of migrations in your application by running
 the ``status`` command:
