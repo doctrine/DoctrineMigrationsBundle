@@ -64,7 +64,7 @@ application:
         storage:
             # Default (SQL table) metadata storage configuration
             table_storage:
-                table_name: 'migration_versions'
+                table_name: 'doctrine_migration_versions'
                 version_column_name: 'version'
                 version_column_length: 1024
                 executed_at_column_name: 'executed_at'
