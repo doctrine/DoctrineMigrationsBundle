@@ -8,7 +8,6 @@
 
 
     <doctrine:config
-            name="Doctrine Sandbox Migrations"
             all_or_nothing="true"
             check_database_platform="true"
             organize-migrations="BY_YEAR_AND_MONTH"
