@@ -43,8 +43,6 @@ application:
 
 
     doctrine_migrations:
-        name: 'Application Migrations'
-
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
             'App\Migrations': 'src/App'
@@ -78,7 +76,6 @@ application:
 
         # Run all migrations in a transaction.
         all_or_nothing: false
-        check_database_platform: true
 
         # Adds an extra check in the generated migrations to ensure that is executed on the same database type.
         check_database_platform: true
