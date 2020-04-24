@@ -87,20 +87,19 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $this->assertConfigs($config);
     }
 
-    public function testNoConfig() : void
+    public function testNoConfigsAreNeeded() : void
     {
-        $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The child node "migrations_paths" at path "doctrine_migrations" must be configured.');
-
         $container = $this->getContainer([]);
 
         $conn = $this->createMock(Connection::class);
         $container->set('doctrine.dbal.default_connection', $conn);
         $container->compile();
 
-        $container->get('doctrine.migrations.configuration');
-    }
+        $config = $container->get('doctrine.migrations.configuration');
 
+        self::assertInstanceOf(Configuration::class, $config);
+        self::assertSame([], $config->getMigrationDirectories());
+    }
 
     private function assertConfigs(?object $config) : void
     {
