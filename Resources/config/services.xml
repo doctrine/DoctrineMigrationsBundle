@@ -52,6 +52,14 @@
             <tag name="console.command" command="doctrine:migrations:list" />
         </service>
 
+        <service id="doctrine_migrations.current_command" class="Doctrine\Migrations\Tools\Console\Command\CurrentCommand">
+
+            <argument type="service" id="doctrine.migrations.dependency_factory"/>
+            <argument>doctrine:migrations:current</argument>
+
+            <tag name="console.command"  command="doctrine:migrations:current"/>
+        </service>
+
         <service id="doctrine_migrations.dump_schema_command" class="Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand">
 
             <argument type="service" id="doctrine.migrations.dependency_factory"/>

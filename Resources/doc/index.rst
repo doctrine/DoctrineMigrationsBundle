@@ -95,6 +95,7 @@ All of the migrations functionality is contained in a few console commands:
 .. code-block:: terminal
 
     doctrine
+     doctrine:migrations:current                [current] Outputs the current version.
      doctrine:migrations:diff                   [diff] Generate a migration by comparing your current database to your mapping information.
      doctrine:migrations:dump-schema            [dump-schema] Dump the schema for your database to a migration.
      doctrine:migrations:execute                [execute] Execute a single migration version up or down manually.

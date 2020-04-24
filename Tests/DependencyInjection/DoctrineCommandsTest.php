@@ -6,6 +6,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\ConfigureDependencyFactoryPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
+use Doctrine\Migrations\Tools\Console\Command\CurrentCommand;
 use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand;
 use Doctrine\Migrations\Tools\Console\Command\ExecuteCommand;
@@ -47,6 +48,7 @@ class DoctrineCommandsTest extends TestCase
     {
         return [
             ['doctrine:migrations:diff', DiffCommand::class],
+            ['doctrine:migrations:current', CurrentCommand::class],
             ['doctrine:migrations:dump-schema', DumpSchemaCommand::class],
             ['doctrine:migrations:execute', ExecuteCommand::class],
             ['doctrine:migrations:generate', GenerateCommand::class],
