@@ -7,12 +7,19 @@ namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use function array_keys;
+use function explode;
+use function implode;
+use function sprintf;
+use function strlen;
+use function substr;
 
 /**
  * DoctrineMigrationsExtension.
@@ -38,6 +45,7 @@ class DoctrineMigrationsExtension extends Extension
         $configurationDefinition = $container->getDefinition('doctrine.migrations.configuration');
 
         foreach ($config['migrations_paths'] as $ns => $path) {
+            $path = $this->checkIfBundleRelativePath($path, $container);
             $configurationDefinition->addMethodCall('addMigrationsDirectory', [$ns, $path]);
         }
 
@@ -96,6 +104,34 @@ class DoctrineMigrationsExtension extends Extension
 
         $container->setParameter('doctrine.migrations.preferred_em', $config['em']);
         $container->setParameter('doctrine.migrations.preferred_connection', $config['connection']);
+    }
+
+    private function checkIfBundleRelativePath(string $path, ContainerBuilder $container) : string
+    {
+        if (isset($path[0]) && $path[0] === '@') {
+            $pathParts  = explode('/', $path);
+            $bundleName = substr($pathParts[0], 1);
+
+            $bundlePath = $this->getBundlePath($bundleName, $container);
+            return $bundlePath . substr($path, strlen('@' . $bundleName));
+        }
+
+        return $path;
+    }
+
+    private function getBundlePath(string $bundleName, ContainerBuilder $container) : string
+    {
+        $bundleMetadata = $container->getParameter('kernel.bundles_metadata');
+
+        if (! isset($bundleMetadata[$bundleName])) {
+            throw new RuntimeException(sprintf(
+                'The bundle "%s" has not been registered, available bundles: %s',
+                $bundleName,
+                implode(', ', array_keys($bundleMetadata))
+            ));
+        }
+
+        return $bundleMetadata[$bundleName]['path'];
     }
 
     /**
