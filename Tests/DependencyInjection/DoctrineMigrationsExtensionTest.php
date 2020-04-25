@@ -7,6 +7,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\CustomEntityManager;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
 use Doctrine\DBAL\Connection;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\DependencyFactory;
@@ -99,6 +100,30 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         self::assertInstanceOf(Configuration::class, $config);
         self::assertSame([], $config->getMigrationDirectories());
+    }
+
+    public function testBundleRelativePathResolution() : void
+    {
+        $container = $this->getContainer([
+            'migrations_paths' => [
+                'DoctrineMigrationsTest' => '@TestBundle',
+                'DoctrineMigrationsTestAnother' => '@TestBundle/another-path',
+            ],
+        ]);
+
+        $conn = $this->createMock(Connection::class);
+        $container->set('doctrine.dbal.default_connection', $conn);
+        $container->compile();
+
+        $config = $container->get('doctrine.migrations.configuration');
+        $bundle = new TestBundle();
+
+        self::assertInstanceOf(Configuration::class, $config);
+        self::assertSame([
+            'DoctrineMigrationsTest' => $bundle->getPath(),
+            'DoctrineMigrationsTestAnother' => $bundle->getPath() . '/another-path',
+
+        ], $config->getMigrationDirectories());
     }
 
     private function assertConfigs(?object $config) : void
@@ -288,9 +313,16 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
     private function getContainerBuilder() : ContainerBuilder
     {
+        $bundle = new TestBundle();
         return new ContainerBuilder(new ParameterBag([
             'kernel.debug' => false,
-            'kernel.bundles' => [],
+            'kernel.bundles' => [$bundle->getName() => TestBundle::class],
+            'kernel.bundles_metadata' => [
+                $bundle->getName() => [
+                    'path' => $bundle->getPath(),
+                    'namespace' => $bundle->getNamespace(),
+                ],
+            ],
             'kernel.cache_dir' => sys_get_temp_dir(),
             'kernel.environment' => 'test',
             'kernel.project_dir' => __DIR__ . '/../',
