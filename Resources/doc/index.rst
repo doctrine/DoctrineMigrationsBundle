@@ -358,7 +358,7 @@ just have to add the following configuration option to your doctrine configurati
             // ...
         ));
 
-This ignores the tables on the DBAL level and they will be ignored by the diff command.
+This ignores the tables, and any named objects such as sequences, on the DBAL level and they will be ignored by the diff command.
 
 Note that if you have multiple connections configured then the ``schema_filter`` configuration
 will need to be placed per-connection.
