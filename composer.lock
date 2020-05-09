@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "155f8f074ef83976e2fc76adbb846758",
+    "content-hash": "fcd136cab5439091b73d67034420f2a2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -554,12 +554,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "79ff97d5b19e8871c52ad13eb4be5bb43b72406d"
+                "reference": "ebd2551c7767375fcbc762b48d7dee4c18ceae97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/79ff97d5b19e8871c52ad13eb4be5bb43b72406d",
-                "reference": "79ff97d5b19e8871c52ad13eb4be5bb43b72406d",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/ebd2551c7767375fcbc762b48d7dee4c18ceae97",
+                "reference": "ebd2551c7767375fcbc762b48d7dee4c18ceae97",
                 "shasum": ""
             },
             "require": {
@@ -575,8 +575,8 @@
             "require-dev": {
                 "doctrine/coding-standard": "^7.0",
                 "doctrine/orm": "^2.6",
+                "doctrine/sql-formatter": "^1.0",
                 "ext-pdo_sqlite": "*",
-                "jdorn/sql-formatter": "^1.1",
                 "phpstan/phpstan": "^0.12",
                 "phpstan/phpstan-deprecation-rules": "^0.12",
                 "phpstan/phpstan-phpunit": "^0.12",
@@ -587,7 +587,7 @@
                 "symfony/yaml": "^3.4||^4.0||^5.0"
             },
             "suggest": {
-                "jdorn/sql-formatter": "Allows to generate formatted SQL with the diff command.",
+                "doctrine/sql-formatter": "Allows to generate formatted SQL with the diff command.",
                 "symfony/yaml": "Allows the use of yaml for migration configuration files."
             },
             "bin": [
@@ -630,7 +630,7 @@
                 "migrations",
                 "php"
             ],
-            "time": "2020-04-23T21:07:38+00:00"
+            "time": "2020-05-08T05:23:04+00:00"
         },
         {
             "name": "doctrine/persistence",

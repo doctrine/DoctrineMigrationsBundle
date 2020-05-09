@@ -16,6 +16,7 @@ use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Doctrine\Migrations\Version\Comparator;
 use Doctrine\Migrations\Version\Version;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -25,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\Reference;
 use function assert;
 use function method_exists;
 use function sys_get_temp_dir;
@@ -173,6 +175,34 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
         self::assertSame($sorter, $di->getVersionComparator());
+    }
+
+    public function testServicesAreLazy() : void
+    {
+        $config    = [
+            'services' => [Comparator::class => 'my_sorter'],
+        ];
+        $container = $this->getContainer($config);
+
+        $conn = $this->createMock(Connection::class);
+        $container->set('doctrine.dbal.default_connection', $conn);
+
+        $sorterFactory = new class() {
+            public function __invoke() : void
+            {
+                throw new Exception('This method should not be invoked.');
+            }
+        };
+        $container->set('my_sorter_factory', $sorterFactory);
+
+        $sorterDefinition = new Definition(Comparator::class);
+        $sorterDefinition->setFactory(new Reference('my_sorter_factory'));
+        $container->setDefinition('my_sorter', $sorterDefinition);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
     }
 
     public function testCustomConnection() : void
