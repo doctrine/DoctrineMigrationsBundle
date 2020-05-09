@@ -71,6 +71,10 @@ class DoctrineMigrationsExtension extends Extension
             $diDefinition->addMethodCall('setDefinition', [$doctrineId, new ServiceClosureArgument(new Reference($symfonyId))]);
         }
 
+        foreach ($config['factories'] as $doctrineId => $symfonyId) {
+            $diDefinition->addMethodCall('setDefinition', [$doctrineId, new Reference($symfonyId)]);
+        }
+
         if (! isset($config['services'][MetadataStorage::class])) {
             $storageConfiguration = $config['storage']['table_storage'];
 

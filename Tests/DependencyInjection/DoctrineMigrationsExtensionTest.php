@@ -205,6 +205,41 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertInstanceOf(DependencyFactory::class, $di);
     }
 
+    public function testServiceFactory() : void
+    {
+        $mockComparator = $this->createMock(Comparator::class);
+        $config         = [
+            'factories' => [Comparator::class => 'my_sorter'],
+        ];
+
+        $container = $this->getContainer($config);
+
+        $conn = $this->createMock(Connection::class);
+        $container->set('doctrine.dbal.default_connection', $conn);
+
+        $sorterFactory = new class($mockComparator) {
+            /** @var Comparator */
+            private $comparator;
+
+            public function __construct(Comparator $comparator)
+            {
+                $this->comparator = $comparator;
+            }
+
+            public function __invoke(DependencyFactory $di) : Comparator
+            {
+                return $this->comparator;
+            }
+        };
+        $container->set('my_sorter', $sorterFactory);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
+        self::assertSame($mockComparator, $di->getVersionComparator());
+    }
+
     public function testCustomConnection() : void
     {
         $config    = [
