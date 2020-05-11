@@ -68,6 +68,21 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
 
+                ->arrayNode('factories')
+                    ->info('A set of callables to pass to the underlying doctrine/migrations library as services, allowing to change its behaviour.')
+                    ->useAttributeAsKey('factory')
+                    ->defaultValue([])
+                    ->validate()
+                        ->ifTrue(static function ($v) {
+                            return count(array_filter(array_keys($v), static function (string $doctrineService) : bool {
+                                return strpos($doctrineService, 'Doctrine\Migrations\\') !==0;
+                            }));
+                        })
+                        ->thenInvalid('Valid callables for the DoctrineMigrationsBundle must be in the "Doctrine\Migrations" namespace.')
+                    ->end()
+                    ->prototype('scalar')->end()
+                ->end()
+
                 ->arrayNode('storage')
                     ->addDefaultsIfNotSet()
                     ->info('Storage to use for migration status metadata.')

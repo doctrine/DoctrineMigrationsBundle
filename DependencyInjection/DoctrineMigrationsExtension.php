@@ -9,6 +9,7 @@ use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -67,7 +68,11 @@ class DoctrineMigrationsExtension extends Extension
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
 
         foreach ($config['services'] as $doctrineId => $symfonyId) {
-            $diDefinition->addMethodCall('setService', [$doctrineId, new Reference($symfonyId)]);
+            $diDefinition->addMethodCall('setDefinition', [$doctrineId, new ServiceClosureArgument(new Reference($symfonyId))]);
+        }
+
+        foreach ($config['factories'] as $doctrineId => $symfonyId) {
+            $diDefinition->addMethodCall('setDefinition', [$doctrineId, new Reference($symfonyId)]);
         }
 
         if (! isset($config['services'][MetadataStorage::class])) {

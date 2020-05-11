@@ -43,6 +43,11 @@
     "autoload-dev": {
         "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "Tests" }
     },
+    "config": {
+        "platform": {
+            "php": "7.2.5"
+        }
+    },
     "extra": {
         "branch-alias": {
           "dev-master": "3.0.x-dev"
