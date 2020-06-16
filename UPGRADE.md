@@ -55,3 +55,17 @@ doctrine_migrations:
 After
 
 The parameter `name` has been dropped.
+
+- Custom migration templates:
+
+Before
+
+```php
+final class Version<version> extends AbstractMigration
+```
+
+After
+
+```php
+final class <className> extends AbstractMigration
+```
