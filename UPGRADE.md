@@ -40,7 +40,7 @@ doctrine_migrations:
         table_storage:
             table_name: 'migration_versions'
             version_column_name: 'version'
-            version_column_length: 1024
+            version_column_length: 191
             executed_at_column_name: 'executed_at'
 ```
 - The migration name has been dropped:
@@ -55,6 +55,17 @@ doctrine_migrations:
 After
 
 The parameter `name` has been dropped.
+
+
+- The default for `table_name` changed from `migration_versions` to `doctrine_migration_versions`. If you did not
+specify the `table_name` option, you now need to declare it explicitly to not lose migration data.
+
+```yaml
+doctrine_migrations:
+    storage:
+        table_storage:
+            table_name: 'migration_versions'
+```
 
 - Custom migration templates:
 
