@@ -67,16 +67,8 @@ doctrine_migrations:
             table_name: 'migration_versions'
 ```
 
-- Custom migration templates:
+### Underlying doctrine/migrations library
 
-Before
-
-```php
-final class Version<version> extends AbstractMigration
-```
-
-After
-
-```php
-final class <className> extends AbstractMigration
-```
+Upgrading this bundle to `3.0` will also update the `doctrine/migrations` library to the version `3.0`.
+Backward incompatible changes in `doctrine/migrations` 3.0 
+are documented in the dedicated [UPGRADE](https://github.com/doctrine/migrations/blob/3.0.x/UPGRADE.md) document. 
