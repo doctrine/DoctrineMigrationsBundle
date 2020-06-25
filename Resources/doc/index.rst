@@ -388,7 +388,7 @@ just have to add the following configuration option to your doctrine configurati
 
     .. code-block:: xml
 
-        <doctrine:dbal schema-filter="~^(?!t_)~" ... />
+        <doctrine:dbal schema-filter="~^(?!t_)~" />
 
 
     .. code-block:: php
