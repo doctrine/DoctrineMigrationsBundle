@@ -97,6 +97,7 @@ application:
 
 - The ``services`` node allows you to provide custom services to the underlying ``DependencyFactory`` part of ``doctrine/migrations``.
 - The node ``factories`` is similar to ``services``, with the difference that it accepts only callables.
+
 The provided callable must return the service to be passed to the ``DependencyFactory``.
 The callable will receive as first argument the ``DependencyFactory`` itself,
 allowing you to fetch other dependencies from the factory while instantiating your custom dependencies.
@@ -358,7 +359,7 @@ just have to add the following configuration option to your doctrine configurati
 
     .. code-block:: xml
 
-        <doctrine:dbal schema-filter="~^(?!t_)~" ... />
+        <doctrine:dbal schema-filter="~^(?!t_)~" />
 
 
     .. code-block:: php
