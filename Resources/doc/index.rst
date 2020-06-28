@@ -232,9 +232,9 @@ Doctrine will then assume that this migration has already been run and will igno
 Migration Dependencies
 ----------------------
 
-Migrations can have dependencies on external services (as geolocation, mailer, data processing services...) that
+Migrations can have dependencies on external services (such as geolocation, mailer, data processing services...) that
 can be used to have more powerful migrations. Those dependencies are not automatically injected into your migrations
-but needs to be done using custom migrations factories.
+but need to be injected using custom migrations factories.
 
 Here is an example on how to inject the service container into your migrations:
 
