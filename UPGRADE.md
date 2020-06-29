@@ -40,7 +40,7 @@ doctrine_migrations:
         table_storage:
             table_name: 'migration_versions'
             version_column_name: 'version'
-            version_column_length: 1024
+            version_column_length: 191
             executed_at_column_name: 'executed_at'
 ```
 - The migration name has been dropped:
@@ -56,16 +56,19 @@ After
 
 The parameter `name` has been dropped.
 
-- Custom migration templates:
 
-Before
+- The default for `table_name` changed from `migration_versions` to `doctrine_migration_versions`. If you did not
+specify the `table_name` option, you now need to declare it explicitly to not lose migration data.
 
-```php
-final class Version<version> extends AbstractMigration
+```yaml
+doctrine_migrations:
+    storage:
+        table_storage:
+            table_name: 'migration_versions'
 ```
 
-After
+### Underlying doctrine/migrations library
 
-```php
-final class <className> extends AbstractMigration
-```
+Upgrading this bundle to `3.0` will also update the `doctrine/migrations` library to the version `3.0`.
+Backward incompatible changes in `doctrine/migrations` 3.0 
+are documented in the dedicated [UPGRADE](https://github.com/doctrine/migrations/blob/3.0.x/UPGRADE.md) document. 
