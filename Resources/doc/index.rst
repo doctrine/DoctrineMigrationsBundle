@@ -229,6 +229,67 @@ You can skip single migrations by explicitly adding them to the ``migration_vers
 
 Doctrine will then assume that this migration has already been run and will ignore it.
 
+Migration Dependencies
+----------------------
+
+Migrations can have dependencies on external services (such as geolocation, mailer, data processing services...) that
+can be used to have more powerful migrations. Those dependencies are not automatically injected into your migrations
+but need to be injected using custom migrations factories.
+
+Here is an example on how to inject the service container into your migrations:
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        # config/packages/doctrine_migrations.yml
+        doctrine_migrations:
+            services:
+                 'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\Factory\MigrationFactoryDecorator'
+
+        # config/services.yml
+        services:
+            Doctrine\Migrations\Version\DbalMigrationFactory: ~
+            App\Migrations\Factory\MigrationFactoryDecorator:
+                decorates: Doctrine\Migrations\Version\DbalMigrationFactory
+                arguments: ['@App\Migrations\Factory\MigrationFactoryDecorator.inner', '@service_container']
+
+
+.. code-block:: php
+
+    declare(strict_types=1);
+
+    namespace App\Migrations\Factory;
+
+    use Doctrine\Migrations\AbstractMigration;
+    use Doctrine\Migrations\Version\MigrationFactory;
+    use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+    use Symfony\Component\DependencyInjection\ContainerInterface;
+
+    class MigrationFactoryDecorator implements MigrationFactory
+    {
+        private $migrationFactory;
+        private $container;
+
+        public function __construct(MigrationFactory $migrationFactory, ContainerInterface $container)
+        {
+            $this->migrationFactory = $migrationFactory;
+            $this->container        = $container;
+        }
+
+        public function createVersion(string $migrationClassName): AbstractMigration
+        {
+            $instance = $this->migrationFactory->createVersion($migrationClassName);
+
+            if ($instance instanceof ContainerAwareInterface) {
+                $instance->setContainer($this->container);
+            }
+
+            return $instance;
+        }
+    }
+
+
 Generating Migrations Automatically
 -----------------------------------
 
