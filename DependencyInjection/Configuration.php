@@ -44,7 +44,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('name')
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated.'))
                     ->defaultValue('Application Migrations')
                 ->end()
 
@@ -92,27 +92,27 @@ class Configuration implements ConfigurationInterface
 
                 ->scalarNode('dir_name')
                     ->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated. Use "migrations_paths" instead.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated. Use "migrations_paths" instead.'))
                 ->end()
                 ->scalarNode('namespace')
                     ->defaultValue('Application\Migrations')->cannotBeEmpty()
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated. Use "migrations_paths" instead.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated. Use "migrations_paths" instead.'))
                 ->end()
                 ->scalarNode('table_name')
                     ->defaultValue('migration_versions')->cannotBeEmpty()
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated. Use "storage.table_storage.table_name" instead.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated. Use "storage.table_storage.table_name" instead.'))
                 ->end()
                 ->scalarNode('column_name')
                     ->defaultValue('version')
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated. Use "storage.table_storage.version_column_name" instead.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated. Use "storage.table_storage.version_column_name" instead.'))
                 ->end()
                 ->scalarNode('column_length')
                     ->defaultValue(14)
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated. Use "storage.table_storage.version_column_length" instead.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated. Use "storage.table_storage.version_column_length" instead.'))
                 ->end()
                 ->scalarNode('executed_at_column_name')
                     ->defaultValue('executed_at')
-                    ->setDeprecated(...$this->getParamDeprecationMsg('The "%node%" option is deprecated. Use "storage.table_storage.executed_at_column_name" instead.'))
+                    ->setDeprecated(...$this->getDeprecationParams('The "%node%" option is deprecated. Use "storage.table_storage.executed_at_column_name" instead.'))
                 ->end()
                 ->scalarNode('all_or_nothing')->defaultValue(false)->end()
                 ->scalarNode('custom_template')->defaultValue(null)->end()
@@ -179,7 +179,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return string[]
      */
-    private function getParamDeprecationMsg(string $message) : array
+    private function getDeprecationParams(string $message) : array
     {
         if (method_exists(BaseNode::class, 'getDeprecation')) {
             return [
