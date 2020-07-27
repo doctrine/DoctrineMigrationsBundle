@@ -170,12 +170,12 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Returns the correct deprecation param's as an array for setDeprecated.
+     * Returns the correct deprecation params as an array for setDeprecated().
      *
-     * Symfony/Config v5.1 introduces a deprecation notice when calling
-     * setDeprecation() with less than 3 args and the getDeprecation method was
+     * symfony/config v5.1 introduces a deprecation notice when calling
+     * setDeprecated() with less than 3 args and the getDeprecation() method was
      * introduced at the same time. By checking if getDeprecation() exists,
-     * we can determine the correct param count to use when calling setDeprecated.
+     * we can determine the correct param count to use when calling setDeprecated().
      *
      * @return string[]
      */
