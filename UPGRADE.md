@@ -43,6 +43,15 @@ doctrine_migrations:
             version_column_length: 191
             executed_at_column_name: 'executed_at'
 ```
+If your project did not originally specify its own table definition configuration, you will need to configure the table name after the upgrade:
+
+```yaml
+doctrine_migrations:
+    storage:
+        table_storage:
+            table_name: 'migration_versions'
+```
+and then run the `doctrine:migrations:sync-metadata-storage` command.
 - The migration name has been dropped:
 
 Before
