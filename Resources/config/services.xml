@@ -25,6 +25,11 @@
 
         </service>
 
+        <service id="doctrine.migrations.registry_loader" class="Doctrine\Migrations\Configuration\EntityManager\ManagerRegistryEntityManager" public="false">
+            <factory class="Doctrine\Migrations\Configuration\EntityManager\ManagerRegistryEntityManager" method="withSimpleDefault"/>
+            <argument type="service" id="doctrine"/>
+        </service>
+
         <service id="doctrine.migrations.configuration" class="Doctrine\Migrations\Configuration\Configuration" public="false">
         </service>
 
