@@ -17,7 +17,7 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
         $preferredEm  = $container->getParameter('doctrine.migrations.preferred_em');
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
 
-        $emID = sprintf('doctrine.orm.%s_entity_manager', $preferredEm ?: 'default');
+        $emID = sprintf('doctrine.orm.%s_entity_manager', $preferredEm ?? 'default');
 
         if ($container->has($emID)) {
             $container->getDefinition('doctrine.migrations.em_loader')
@@ -27,7 +27,7 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
             $diDefinition->setArgument(1, new Reference('doctrine.migrations.em_loader'));
         } else {
             $preferredConnection = $container->getParameter('doctrine.migrations.preferred_connection');
-            $connectionId        = sprintf('doctrine.dbal.%s_connection', $preferredConnection ?: 'default');
+            $connectionId        = sprintf('doctrine.dbal.%s_connection', $preferredConnection ?? 'default');
             $container->getDefinition('doctrine.migrations.connection_loader')
                 ->setArgument(0, new Reference($connectionId));
 
