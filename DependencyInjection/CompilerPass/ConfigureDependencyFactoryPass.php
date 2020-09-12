@@ -8,11 +8,12 @@ use Doctrine\Migrations\DependencyFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+
 use function sprintf;
 
 class ConfigureDependencyFactoryPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container) : void
+    public function process(ContainerBuilder $container): void
     {
         $preferredEm  = $container->getParameter('doctrine.migrations.preferred_em');
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');

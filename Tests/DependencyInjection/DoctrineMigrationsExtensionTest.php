@@ -27,13 +27,14 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
+
 use function assert;
 use function method_exists;
 use function sys_get_temp_dir;
 
 class DoctrineMigrationsExtensionTest extends TestCase
 {
-    public function testXmlConfigs() : void
+    public function testXmlConfigs(): void
     {
         $container = $this->getContainerBuilder();
 
@@ -53,7 +54,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $this->assertConfigs($config);
     }
 
-    public function testFullConfig() : void
+    public function testFullConfig(): void
     {
         $config = [
             'storage' => [
@@ -90,7 +91,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $this->assertConfigs($config);
     }
 
-    public function testNoConfigsAreNeeded() : void
+    public function testNoConfigsAreNeeded(): void
     {
         $container = $this->getContainer([]);
 
@@ -104,7 +105,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame([], $config->getMigrationDirectories());
     }
 
-    public function testBundleRelativePathResolution() : void
+    public function testBundleRelativePathResolution(): void
     {
         $container = $this->getContainer([
             'migrations_paths' => [
@@ -128,7 +129,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         ], $config->getMigrationDirectories());
     }
 
-    private function assertConfigs(?object $config) : void
+    private function assertConfigs(?object $config): void
     {
         self::assertInstanceOf(Configuration::class, $config);
         self::assertSame([
@@ -152,7 +153,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame('doctrine_migration_executed_at_column_test', $storage->getExecutedAtColumnName());
     }
 
-    public function testCustomSorter() : void
+    public function testCustomSorter(): void
     {
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
@@ -163,8 +164,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $conn = $this->createMock(Connection::class);
         $container->set('doctrine.dbal.default_connection', $conn);
 
-        $sorter = new class() implements Comparator{
-            public function compare(Version $a, Version $b) : int
+        $sorter = new class () implements Comparator{
+            public function compare(Version $a, Version $b): int
             {
                 return 1;
             }
@@ -178,7 +179,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($sorter, $di->getVersionComparator());
     }
 
-    public function testServicesAreLazy() : void
+    public function testServicesAreLazy(): void
     {
         $config    = [
             'services' => [Comparator::class => 'my_sorter'],
@@ -188,8 +189,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $conn = $this->createMock(Connection::class);
         $container->set('doctrine.dbal.default_connection', $conn);
 
-        $sorterFactory = new class() {
-            public function __invoke() : void
+        $sorterFactory = new class () {
+            public function __invoke(): void
             {
                 throw new Exception('This method should not be invoked.');
             }
@@ -206,7 +207,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertInstanceOf(DependencyFactory::class, $di);
     }
 
-    public function testServiceFactory() : void
+    public function testServiceFactory(): void
     {
         $mockComparator = $this->createMock(Comparator::class);
         $config         = [
@@ -218,7 +219,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $conn = $this->createMock(Connection::class);
         $container->set('doctrine.dbal.default_connection', $conn);
 
-        $sorterFactory = new class($mockComparator) {
+        $sorterFactory = new class ($mockComparator) {
             /** @var Comparator */
             private $comparator;
 
@@ -227,7 +228,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
                 $this->comparator = $comparator;
             }
 
-            public function __invoke(DependencyFactory $di) : Comparator
+            public function __invoke(DependencyFactory $di): Comparator
             {
                 return $this->comparator;
             }
@@ -241,7 +242,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($mockComparator, $di->getVersionComparator());
     }
 
-    public function testCustomConnection() : void
+    public function testCustomConnection(): void
     {
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
@@ -259,8 +260,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($conn, $di->getConnection());
     }
 
-
-    public function testPrefersEntityManagerOverConnection() : void
+    public function testPrefersEntityManagerOverConnection(): void
     {
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
@@ -278,7 +278,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($em, $di->getEntityManager());
     }
 
-    public function testCustomEntityManager() : void
+    public function testCustomEntityManager(): void
     {
         $config    = [
             'em' => 'custom',
@@ -302,7 +302,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($em, $di->getConnection()->getEm());
     }
 
-    public function testCustomMetadataStorage() : void
+    public function testCustomMetadataStorage(): void
     {
         $config = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
@@ -324,7 +324,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($mockStorage, $di->getMetadataStorage());
     }
 
-    public function testInvalidService() : void
+    public function testInvalidService(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Invalid configuration for path "doctrine_migrations.services": Valid services for the DoctrineMigrationsBundle must be in the "Doctrine\Migrations" namespace.');
@@ -341,7 +341,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container->compile();
     }
 
-    public function testCanNotSpecifyBothEmAndConnection() : void
+    public function testCanNotSpecifyBothEmAndConnection(): void
     {
         $this->expectExceptionMessage('You cannot specify both "connection" and "em" in the DoctrineMigrationsBundle configurations');
         $this->expectException(InvalidArgumentException::class);
@@ -360,7 +360,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
     /**
      * @param mixed[] $config
      */
-    private function getContainer(array $config) : ContainerBuilder
+    private function getContainer(array $config): ContainerBuilder
     {
         $container = $this->getContainerBuilder();
 
@@ -377,9 +377,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
         return $container;
     }
 
-    private function getContainerBuilder() : ContainerBuilder
+    private function getContainerBuilder(): ContainerBuilder
     {
         $bundle = new TestBundle();
+
         return new ContainerBuilder(new ParameterBag([
             'kernel.debug' => false,
             'kernel.bundles' => [$bundle->getName() => TestBundle::class],
