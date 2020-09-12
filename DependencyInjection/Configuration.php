@@ -130,7 +130,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(false)
                     ->info('Organize migrations mode. Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false')
                     ->validate()
-                        ->ifTrue(static function ($v) use ($organizeMigrationModes) {
+                        ->ifTrue(static function ($v) use ($organizeMigrationModes): bool {
                             if ($v === false) {
                                 return false;
                             }
