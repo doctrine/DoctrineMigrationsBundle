@@ -166,6 +166,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $sorter = new class() implements Comparator{
             public function compare(Version $a, Version $b) : int
             {
+                return 1;
             }
         };
         $container->set('my_sorter', $sorter);
