@@ -15,5 +15,12 @@
     <exclude-pattern>Tests/Fixtures/CustomEntityManager.php</exclude-pattern>
 
     <rule ref="Doctrine"/>
+
+    <!-- Disable the rules that will require PHP 7.4 -->
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
+        <properties>
+            <property name="enableNativeTypeHint" value="false"/>
+        </properties>
+    </rule>
 </ruleset>
 
