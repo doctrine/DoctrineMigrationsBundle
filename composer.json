@@ -27,11 +27,11 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6.4|^7.0",
-        "doctrine/coding-standard": "^5.0",
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-deprecation-rules": "^0.11",
-        "phpstan/phpstan-phpunit": "^0.11",
-        "phpstan/phpstan-strict-rules": "^0.11",
+        "doctrine/coding-standard": "^8.0",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-deprecation-rules": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12",
         "doctrine/orm": "^2.6"
     },
     "autoload": {
