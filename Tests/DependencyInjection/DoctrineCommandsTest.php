@@ -27,6 +27,7 @@ use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpKernel\KernelInterface;
+
 use function sys_get_temp_dir;
 
 class DoctrineCommandsTest extends TestCase
@@ -34,7 +35,7 @@ class DoctrineCommandsTest extends TestCase
     /**
      * @dataProvider getCommands
      */
-    public function testCommandRegistered(string $name, string $instance) : void
+    public function testCommandRegistered(string $name, string $instance): void
     {
         $application = $this->getApplication();
 
@@ -44,7 +45,7 @@ class DoctrineCommandsTest extends TestCase
     /**
      * @return string[][]
      */
-    public function getCommands() : array
+    public function getCommands(): array
     {
         return [
             ['doctrine:migrations:diff', DiffCommand::class],
@@ -81,7 +82,7 @@ class DoctrineCommandsTest extends TestCase
         return $kernel;
     }
 
-    private function getApplication() : Application
+    private function getApplication(): Application
     {
         $container = new ContainerBuilder(new ParameterBag([
             'kernel.debug' => false,
