@@ -43,11 +43,6 @@ jobs:
         - php ocular.phar code-coverage:upload --format=php-clover clover.xml
 
     - stage: Code Quality
-      env: CODING_STANDARDS
-      install: travis_retry composer install --prefer-dist
-      script: ./vendor/bin/phpcs
-
-    - stage: Code Quality
       env: STATIC_ANALYSIS
       install: travis_retry composer install --prefer-dist
       script: vendor/bin/phpstan analyse -l 7 -c phpstan.neon Command Tests
