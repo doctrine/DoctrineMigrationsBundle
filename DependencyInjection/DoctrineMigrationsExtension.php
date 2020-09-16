@@ -6,6 +6,7 @@ namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
+use Doctrine\Migrations\Version\MigrationFactory;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
@@ -69,6 +70,10 @@ class DoctrineMigrationsExtension extends Extension
         $configurationDefinition->addMethodCall('setCheckDatabasePlatform', [$config['check_database_platform']]);
 
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
+
+        if (! isset($config['services'][MigrationFactory::class])) {
+            $config['services'][MigrationFactory::class] = 'doctrine.migrations.migrations_factory';
+        }
 
         foreach ($config['services'] as $doctrineId => $symfonyId) {
             $diDefinition->addMethodCall('setDefinition', [$doctrineId, new ServiceClosureArgument(new Reference($symfonyId))]);

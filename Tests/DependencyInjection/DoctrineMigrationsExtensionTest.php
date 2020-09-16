@@ -7,6 +7,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\CustomEntityManager;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\Migration001;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
 use Doctrine\DBAL\Connection;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -177,6 +178,27 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
         self::assertSame($sorter, $di->getVersionComparator());
+    }
+
+    public function testContainerAwareMigrations(): void
+    {
+        $config    = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+        ];
+        $container = $this->getContainer($config);
+
+        $conn = $this->createMock(Connection::class);
+        $container->set('doctrine.dbal.default_connection', $conn);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
+
+        $migration = $di->getMigrationFactory()->createVersion(Migration001::class);
+
+        self::assertInstanceOf(Migration001::class, $migration);
+        self::assertSame($container, $migration->getContainer());
     }
 
     public function testServicesAreLazy(): void

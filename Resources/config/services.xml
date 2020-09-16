@@ -28,6 +28,18 @@
         <service id="doctrine.migrations.configuration" class="Doctrine\Migrations\Configuration\Configuration" public="false">
         </service>
 
+        <service id="doctrine.migrations.migrations_factory" class="Doctrine\Migrations\Version\MigrationFactory">
+            <factory service="doctrine.migrations.dependency_factory" method="getMigrationFactory"/>
+        </service>
+
+        <service id="doctrine.migrations.container_aware_migrations_factory"
+                 class="Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ContainerAwareMigrationFactory"
+                 decorates="doctrine.migrations.migrations_factory"
+        >
+            <argument id="doctrine.migrations.container_aware_migrations_factory.inner" type="service"/>
+            <argument id="service_container" type="service"/>
+        </service>
+
         <service id="doctrine_migrations.diff_command" class="Doctrine\Migrations\Tools\Console\Command\DiffCommand">
 
             <argument type="service" id="doctrine.migrations.dependency_factory"/>
