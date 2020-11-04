@@ -251,8 +251,9 @@ Here is an example on how to inject the service container into your migrations:
         services:
             Doctrine\Migrations\Version\DbalMigrationFactory: ~
             App\Migrations\Factory\MigrationFactoryDecorator:
-                decorates: Doctrine\Migrations\Version\DbalMigrationFactory
-                arguments: ['@App\Migrations\Factory\MigrationFactoryDecorator.inner', '@service_container']
+                arguments: ['@Doctrine\Migrations\Version\DbalMigrationFactory', '@service_container']
+                tags:
+                    - 'container.service_subscriber'
 
 
 .. code-block:: php
@@ -263,10 +264,12 @@ Here is an example on how to inject the service container into your migrations:
 
     use Doctrine\Migrations\AbstractMigration;
     use Doctrine\Migrations\Version\MigrationFactory;
-    use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+    use Doctrine\ORM\EntityManagerInterface;
+    use Psr\Container\ContainerInterface;
     use Symfony\Component\DependencyInjection\ContainerInterface;
+    use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-    class MigrationFactoryDecorator implements MigrationFactory
+    class MigrationFactoryDecorator implements MigrationFactory, ServiceSubscriberInterface
     {
         private $migrationFactory;
         private $container;
@@ -275,6 +278,14 @@ Here is an example on how to inject the service container into your migrations:
         {
             $this->migrationFactory = $migrationFactory;
             $this->container        = $container;
+        }
+        
+        public static function getSubscribedServices(): array
+        {
+            return [
+                // put services needed by your migrations here
+                'doctrine.orm.default_entity_manager' => EntityManagerInterface::class,
+            ];
         }
 
         public function createVersion(string $migrationClassName): AbstractMigration
