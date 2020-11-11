@@ -11,8 +11,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
-use function assert;
-
 class DoctrineCommandTest extends TestCase
 {
     /** @var string */
@@ -28,8 +26,6 @@ class DoctrineCommandTest extends TestCase
     public function testConfigureMigrations(): void
     {
         $configurationMock = $this->createMock(Configuration::class);
-        assert($configurationMock instanceof Configuration);
-
         $configurationMock->method('getMigrations')
             ->willReturn([]);
 
