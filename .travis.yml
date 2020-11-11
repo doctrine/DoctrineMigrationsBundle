@@ -39,8 +39,3 @@ jobs:
       after_script:
         - wget https://scrutinizer-ci.com/ocular.phar
         - php ocular.phar code-coverage:upload --format=php-clover clover.xml
-
-    - stage: Code Quality
-      env: STATIC_ANALYSIS
-      install: travis_retry composer update --prefer-dist
-      script: vendor/bin/phpstan analyse
