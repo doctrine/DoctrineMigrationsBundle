@@ -45,4 +45,4 @@ jobs:
     - stage: Code Quality
       env: STATIC_ANALYSIS
       install: travis_retry composer install --prefer-dist
-      script: vendor/bin/phpstan analyse -l 7 -c phpstan.neon Command Tests
+      script: vendor/bin/phpstan analyse

@@ -8,6 +8,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+
 use function count;
 use function current;
 use function key;
@@ -20,16 +21,18 @@ class DoctrineMigrationsExtension extends Extension
     /**
      * Responds to the migrations configuration parameter.
      *
-     * @param string[][]|array<string, array<string, array<string, string>|string>>> $configs
+     * @param mixed[][] $configs
+     *
+     * @psalm-param array<string, array<string, array<string, string>|string>>> $configs
      */
-    public function load(array $configs, ContainerBuilder $container) : void
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
 
         $config = $this->processConfiguration($configuration, $configs);
 
         // 3.x forward compatibility layer
-        if (isset($config['migrations_paths']) && count($config['migrations_paths'])>0) {
+        if (isset($config['migrations_paths']) && count($config['migrations_paths']) > 0) {
             $config['namespace'] = key($config['migrations_paths']);
             $config['dir_name']  = current($config['migrations_paths']);
             unset($config['migrations_paths']);
@@ -40,15 +43,19 @@ class DoctrineMigrationsExtension extends Extension
             if (isset($storageConfig['table_name'])) {
                 $config['table_name'] = $storageConfig['table_name'];
             }
+
             if (isset($storageConfig['version_column_name'])) {
                 $config['column_name'] = $storageConfig['version_column_name'];
             }
+
             if (isset($storageConfig['version_column_length'])) {
                 $config['column_length'] = $storageConfig['version_column_length'];
             }
+
             if (isset($storageConfig['executed_at_column_name'])) {
                 $config['executed_at_column_name'] = $storageConfig['executed_at_column_name'];
             }
+
             unset($config['storage']);
         }
 
@@ -67,12 +74,12 @@ class DoctrineMigrationsExtension extends Extension
      *
      * @return string The XSD base path
      */
-    public function getXsdValidationBasePath() : string
+    public function getXsdValidationBasePath(): string
     {
         return __DIR__ . '/../Resources/config/schema';
     }
 
-    public function getNamespace() : string
+    public function getNamespace(): string
     {
         return 'http://symfony.com/schema/dic/doctrine/migrations';
     }

@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use function assert;
 
 /**
@@ -21,7 +21,7 @@ class MigrationsUpToDateDoctrineCommand extends UpToDateCommand
     /** @var string */
     protected static $defaultName = 'doctrine:migrations:up-to-date';
 
-    protected function configure() : void
+    protected function configure(): void
     {
         parent::configure();
 
@@ -31,22 +31,21 @@ class MigrationsUpToDateDoctrineCommand extends UpToDateCommand
             ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.');
     }
 
-    public function initialize(InputInterface $input, OutputInterface $output) : void
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        /** @var Application $application */
         $application = $this->getApplication();
+        assert($application instanceof Application);
 
         Helper\DoctrineCommandHelper::setApplicationHelper($application, $input);
 
         $configuration = $this->getMigrationConfiguration($input, $output);
         $container     = $application->getKernel()->getContainer();
-        assert($container instanceof ContainerInterface);
         DoctrineCommand::configureMigrations($container, $configuration);
 
         parent::initialize($input, $output);
     }
 
-    public function execute(InputInterface $input, OutputInterface $output) : ?int
+    public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         // EM and DB options cannot be set at same time
         if ($input->getOption('em') !== null && $input->getOption('db') !== null) {

@@ -1,4 +1,8 @@
 parameters:
+    level: 7
+    paths:
+        - %currentWorkingDirectory%/Command
+        - %currentWorkingDirectory%/Tests
     ignoreErrors:
         # This is due to a bug in DoctrineBundle
         - '~Parameter \#2 \$connName of static method Doctrine\\Bundle\\DoctrineBundle\\Command\\Proxy\\DoctrineCommandHelper::setApplicationConnection\(\) expects string, array\<string\>\|bool\|string\|null given\.~'

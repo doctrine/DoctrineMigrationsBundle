@@ -12,9 +12,9 @@ use ErrorException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+
 use function error_get_last;
 use function is_dir;
-use function method_exists;
 use function mkdir;
 use function preg_match;
 use function sprintf;
@@ -25,11 +25,11 @@ use function str_replace;
  */
 abstract class DoctrineCommand extends BaseCommand
 {
-    public static function configureMigrations(ContainerInterface $container, Configuration $configuration) : void
+    public static function configureMigrations(ContainerInterface $container, Configuration $configuration): void
     {
         $dir = $configuration->getMigrationsDirectory();
 
-        if (empty($dir)) {
+        if ($dir === null) {
             $dir = $container->getParameter('doctrine_migrations.dir_name');
 
             if (! is_dir($dir) && ! @mkdir($dir, 0777, true) && ! is_dir($dir)) {
@@ -48,7 +48,7 @@ abstract class DoctrineCommand extends BaseCommand
             $pathPlaceholderArray = ['kernel.root_dir', 'kernel.cache_dir', 'kernel.logs_dir'];
 
             foreach ($pathPlaceholderArray as $pathPlaceholder) {
-                if (! $container->hasParameter($pathPlaceholder) || ! preg_match('/\%' . $pathPlaceholder . '\%/', $dir)) {
+                if (! $container->hasParameter($pathPlaceholder) || preg_match('/\%' . $pathPlaceholder . '\%/', $dir) === 0) {
                     continue;
                 }
 
@@ -68,16 +68,16 @@ abstract class DoctrineCommand extends BaseCommand
             $configuration->setMigrationsDirectory($dir);
         }
 
-        if (empty($configuration->getMigrationsNamespace())) {
+        if ($configuration->getMigrationsNamespace() === null) {
             $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
         }
 
-        if (empty($configuration->getName())) {
+        if ($configuration->getName() === null) {
             $configuration->setName($container->getParameter('doctrine_migrations.name'));
         }
 
         // For backward compatibility, need use a table from parameters for overwrite the default configuration
-        if (! ($configuration instanceof AbstractFileConfiguration) || empty($configuration->getMigrationsTableName())) {
+        if (! ($configuration instanceof AbstractFileConfiguration) || $configuration->getMigrationsTableName() === '') {
             $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
         }
 
@@ -95,7 +95,7 @@ abstract class DoctrineCommand extends BaseCommand
             }
         }
 
-        if (method_exists($configuration, 'getCustomTemplate') && empty($configuration->getCustomTemplate())) {
+        if ($configuration->getCustomTemplate() === null) {
             $configuration->setCustomTemplate($container->getParameter('doctrine_migrations.custom_template'));
         }
 
@@ -125,7 +125,7 @@ abstract class DoctrineCommand extends BaseCommand
      *
      * Injects the container to migrations aware of it
      */
-    private static function injectContainerToMigrations(ContainerInterface $container, array $versions) : void
+    private static function injectContainerToMigrations(ContainerInterface $container, array $versions): void
     {
         foreach ($versions as $version) {
             $migration = $version->getMigration();
