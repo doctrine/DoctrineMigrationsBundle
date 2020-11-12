@@ -11,9 +11,10 @@ use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use function assert;
 use function count;
+use function is_string;
 use function sprintf;
 
 /**
@@ -22,13 +23,11 @@ use function sprintf;
  */
 abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
 {
-    public static function setApplicationHelper(Application $application, InputInterface $input) : void
+    public static function setApplicationHelper(Application $application, InputInterface $input): void
     {
         $container = $application->getKernel()->getContainer();
-        assert($container instanceof ContainerInterface);
-
-        /** @var Registry $doctrine */
-        $doctrine = $container->get('doctrine');
+        $doctrine  = $container->get('doctrine');
+        assert($doctrine instanceof Registry);
 
         $managerNames = $doctrine->getManagerNames();
 
@@ -42,25 +41,34 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
             return;
         }
 
-        /** @var ConnectionHelper $dbHelper */
         $dbHelper = $application->getHelperSet()->get('db');
+        assert($dbHelper instanceof ConnectionHelper);
 
         $connection = $dbHelper->getConnection();
 
         if (! $connection instanceof PoolingShardConnection) {
             if (count($managerNames) === 0) {
+                $db = $input->getOption('db');
+                assert(is_string($db));
+
                 throw new LogicException(sprintf(
                     "Connection '%s' must implement shards configuration.",
-                    $input->getOption('db')
+                    $db
                 ));
             }
 
+            $em = $input->getOption('em');
+            assert(is_string($em));
+
             throw new LogicException(sprintf(
                 "Connection of EntityManager '%s' must implement shards configuration.",
-                $input->getOption('em')
+                $em
             ));
         }
 
-        $connection->connect($input->getOption('shard'));
+        $shard = $input->getOption('shard');
+        assert(is_string($shard));
+
+        $connection->connect($shard);
     }
 }

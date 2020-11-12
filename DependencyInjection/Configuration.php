@@ -8,6 +8,7 @@ use ReflectionClass;
 use Symfony\Component\Config\Definition\BaseNode;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+
 use function constant;
 use function count;
 use function in_array;
@@ -28,7 +29,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return TreeBuilder The config tree builder
      */
-    public function getConfigTreeBuilder() : TreeBuilder
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('doctrine_migrations');
 
@@ -55,12 +56,12 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue([])
                     ->prototype('scalar')->end()
                     ->validate()
-                        ->ifTrue(static function ($v) : bool {
+                        ->ifTrue(static function ($v): bool {
                             return count($v) === 0;
                         })
                         ->thenInvalid('At least one migration path must be specified.')
 
-                        ->ifTrue(static function ($v) : bool {
+                        ->ifTrue(static function ($v): bool {
                             return count($v) >  1;
                         })
                         ->thenInvalid('Maximum one migration path can be specified with the 2.x version.')
@@ -78,7 +79,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('version_column_length')
                                     ->defaultValue(null)
                                     ->validate()
-                                        ->ifTrue(static function ($v) : bool {
+                                        ->ifTrue(static function ($v): bool {
                                             return $v < 1024;
                                         })
                                         ->thenInvalid('The minimum length for the version column is 1024.')
@@ -124,11 +125,7 @@ class Configuration implements ConfigurationInterface
                                 return false;
                             }
 
-                            if (is_string($v) && in_array(strtoupper($v), $organizeMigrationModes)) {
-                                return false;
-                            }
-
-                            return true;
+                            return ! is_string($v) || ! in_array(strtoupper($v), $organizeMigrationModes);
                         })
                         ->thenInvalid('Invalid organize migrations mode value %s')
                     ->end()
@@ -144,13 +141,12 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-
     /**
      * Find organize migrations modes for their names
      *
      * @return string[]
      */
-    private function getOrganizeMigrationsModes() : array
+    private function getOrganizeMigrationsModes(): array
     {
         $constPrefix = 'VERSIONS_ORGANIZATION_';
         $prefixLen   = strlen($constPrefix);
@@ -179,7 +175,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return string[]
      */
-    private function getDeprecationParams(string $message) : array
+    private function getDeprecationParams(string $message): array
     {
         if (method_exists(BaseNode::class, 'getDeprecation')) {
             return [
