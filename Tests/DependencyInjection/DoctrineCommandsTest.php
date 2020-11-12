@@ -8,6 +8,7 @@ use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\ConfigureD
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Migrations\Tools\Console\Command\CurrentCommand;
 use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\Migrations\Tools\Console\Command\DoctrineCommand;
 use Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand;
 use Doctrine\Migrations\Tools\Console\Command\ExecuteCommand;
 use Doctrine\Migrations\Tools\Console\Command\GenerateCommand;
@@ -33,6 +34,8 @@ use function sys_get_temp_dir;
 class DoctrineCommandsTest extends TestCase
 {
     /**
+     * @param class-string<DoctrineCommand> $instance
+     *
      * @dataProvider getCommands
      */
     public function testCommandRegistered(string $name, string $instance): void
@@ -44,6 +47,8 @@ class DoctrineCommandsTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return list<array{string, class-string<DoctrineCommand>}>
      */
     public function getCommands(): array
     {
