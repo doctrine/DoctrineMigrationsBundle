@@ -17,6 +17,7 @@ use function error_get_last;
 use function is_dir;
 use function mkdir;
 use function preg_match;
+use function preg_quote;
 use function sprintf;
 use function str_replace;
 
@@ -48,7 +49,7 @@ abstract class DoctrineCommand extends BaseCommand
             $pathPlaceholderArray = ['kernel.root_dir', 'kernel.cache_dir', 'kernel.logs_dir'];
 
             foreach ($pathPlaceholderArray as $pathPlaceholder) {
-                if (! $container->hasParameter($pathPlaceholder) || preg_match('/\%' . $pathPlaceholder . '\%/', $dir) === 0) {
+                if (! $container->hasParameter($pathPlaceholder) || preg_match('/\%' . preg_quote($pathPlaceholder) . '\%/', $dir) === 0) {
                     continue;
                 }
 
