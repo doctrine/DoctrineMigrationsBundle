@@ -15,20 +15,20 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        $preferredEm  = $container->getParameter('doctrine.migrations.preferred_em');
-        $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
+        $preferredEm         = $container->getParameter('doctrine.migrations.preferred_em');
+        $preferredConnection = $container->getParameter('doctrine.migrations.preferred_connection');
+        $diDefinition        = $container->getDefinition('doctrine.migrations.dependency_factory');
 
         $emID = sprintf('doctrine.orm.%s_entity_manager', $preferredEm ?? 'default');
 
-        if ($container->has($emID)) {
+        if ($preferredConnection === null && $container->has($emID)) {
             $container->getDefinition('doctrine.migrations.em_loader')
                 ->setArgument(0, new Reference($emID));
 
             $diDefinition->setFactory([DependencyFactory::class, 'fromEntityManager']);
             $diDefinition->setArgument(1, new Reference('doctrine.migrations.em_loader'));
         } else {
-            $preferredConnection = $container->getParameter('doctrine.migrations.preferred_connection');
-            $connectionId        = sprintf('doctrine.dbal.%s_connection', $preferredConnection ?? 'default');
+            $connectionId = sprintf('doctrine.dbal.%s_connection', $preferredConnection ?? 'default');
             $container->getDefinition('doctrine.migrations.connection_loader')
                 ->setArgument(0, new Reference($connectionId));
 

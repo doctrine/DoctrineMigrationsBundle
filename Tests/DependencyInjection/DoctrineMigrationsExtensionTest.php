@@ -260,6 +260,29 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($conn, $di->getConnection());
     }
 
+    public function testCustomConnectionWhenDefaultEntityManagerExists(): void
+    {
+        $config    = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+            'connection' => 'custom',
+        ];
+        $container = $this->getContainer($config);
+
+        $conn = $this->createMock(Connection::class);
+        $container->set('doctrine.dbal.custom_connection', $conn);
+
+        $em     = $this->createMock(EntityManager::class);
+        $emConn = $this->createMock(Connection::class);
+        $em->method('getConnection')->willReturn($emConn);
+        $container->set('doctrine.orm.default_entity_manager', $em);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
+        self::assertSame($conn, $di->getConnection());
+    }
+
     public function testPrefersEntityManagerOverConnection(): void
     {
         $config    = [
