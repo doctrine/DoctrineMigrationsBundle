@@ -60,7 +60,6 @@ application:
                 version_column_name: 'version'
                 version_column_length: 1024
                 executed_at_column_name: 'executed_at'
-                execution_time_column_name: 'execution_time'
 
         # Deprecated since v2.2, use "storage.table_storage.table_name" instead
         table_name: 'migration_versions'
@@ -68,7 +67,7 @@ application:
         column_name: 'version'
         # Deprecated since v2.2, use "storage.table_storage.version_column_length" instead (minimum value has to be at least 1024)
         column_length: 14
-        # Deprecated since v2.2, use "storage.table_storage.execution_time_column_name" instead
+        # Deprecated since v2.2, use "storage.table_storage.executed_at_column_name" instead
         executed_at_column_name: 'executed_at'
 
         # available in version >= 1.2. Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
