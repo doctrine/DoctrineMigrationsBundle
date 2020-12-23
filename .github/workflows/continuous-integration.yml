@@ -31,6 +31,8 @@ jobs:
         include:
           - deps: "low"
             php-version: "7.1"
+          - deps: "dev"
+            php-version: "8.0"
 
     steps:
       - name: "Checkout"
@@ -61,9 +63,13 @@ jobs:
           key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
           restore-keys: "php-${{ matrix.php-version }}-composer-locked-"
 
+      - name: "Allow installing dev dependencies"
+        run: "composer config minimum-stability dev"
+        if: "${{ matrix.deps == 'dev' }}"
+
       - name: "Install dependencies with composer"
         run: "composer update --no-interaction --prefer-dist"
-        if: "${{ matrix.deps == 'normal' }}"
+        if: "${{ matrix.deps != 'low' }}"
 
       - name: "Install lowest possible dependencies with composer"
         run: "composer update --no-interaction --prefer-dist --prefer-lowest"
