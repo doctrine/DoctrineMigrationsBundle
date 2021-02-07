@@ -18,8 +18,10 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 use function array_keys;
+use function assert;
 use function explode;
 use function implode;
+use function is_array;
 use function sprintf;
 use function strlen;
 use function substr;
@@ -140,6 +142,8 @@ class DoctrineMigrationsExtension extends Extension
     private function getBundlePath(string $bundleName, ContainerBuilder $container): string
     {
         $bundleMetadata = $container->getParameter('kernel.bundles_metadata');
+
+        assert(is_array($bundleMetadata));
 
         if (! isset($bundleMetadata[$bundleName])) {
             throw new RuntimeException(sprintf(
