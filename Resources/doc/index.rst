@@ -67,7 +67,6 @@ application:
                 version_column_name: 'version'
                 version_column_length: 1024
                 executed_at_column_name: 'executed_at'
-                execution_time_column_name: 'execution_time'
 
         # Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         organize_migrations: false
@@ -243,12 +242,12 @@ Here is an example on how to inject the service container into your migrations:
 
     .. code-block:: yaml
 
-        # config/packages/doctrine_migrations.yml
+        # config/packages/doctrine_migrations.yaml
         doctrine_migrations:
             services:
                  'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\Factory\MigrationFactoryDecorator'
 
-        # config/services.yml
+        # config/services.yaml
         services:
             Doctrine\Migrations\Version\DbalMigrationFactory: ~
             App\Migrations\Factory\MigrationFactoryDecorator:
@@ -331,7 +330,7 @@ for Doctrine's ORM:
 
     .. code-block:: yaml
 
-        # config/doctrine/User.orm.yml
+        # config/doctrine/User.orm.yaml
         App\Entity\User:
             type: entity
             table: user
