@@ -45,7 +45,7 @@ application:
     doctrine_migrations:
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
-            'App\Migrations': 'src/App'
+            'App\Migrations': '%kernel.project_dir%/src/Migrations'
             'AnotherApp\Migrations': '/path/to/other/migrations'
             'SomeBundle\Migrations': '@SomeBundle/Migrations'
 
@@ -135,6 +135,12 @@ already executed, which still need to run, and the database in use.
 Now, you can start working with migrations by generating a new blank migration
 class. Later, you'll learn how Doctrine can generate migrations automatically
 for you.
+
+.. code-block:: terminal
+
+    $ php bin/console make:migration
+    
+or by using doctrine migrations directly
 
 .. code-block:: terminal
 
