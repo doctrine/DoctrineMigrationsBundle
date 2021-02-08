@@ -6,6 +6,7 @@ namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
+use Doctrine\Migrations\Version\MigrationFactory;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
@@ -17,8 +18,10 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 use function array_keys;
+use function assert;
 use function explode;
 use function implode;
+use function is_array;
 use function sprintf;
 use function strlen;
 use function substr;
@@ -69,6 +72,10 @@ class DoctrineMigrationsExtension extends Extension
         $configurationDefinition->addMethodCall('setCheckDatabasePlatform', [$config['check_database_platform']]);
 
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
+
+        if (! isset($config['services'][MigrationFactory::class])) {
+            $config['services'][MigrationFactory::class] = 'doctrine.migrations.migrations_factory';
+        }
 
         foreach ($config['services'] as $doctrineId => $symfonyId) {
             $diDefinition->addMethodCall('setDefinition', [$doctrineId, new ServiceClosureArgument(new Reference($symfonyId))]);
@@ -135,6 +142,8 @@ class DoctrineMigrationsExtension extends Extension
     private function getBundlePath(string $bundleName, ContainerBuilder $container): string
     {
         $bundleMetadata = $container->getParameter('kernel.bundles_metadata');
+
+        assert(is_array($bundleMetadata));
 
         if (! isset($bundleMetadata[$bundleName])) {
             throw new RuntimeException(sprintf(
