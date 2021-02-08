@@ -17,27 +17,41 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        $preferredEm  = $container->getParameter('doctrine.migrations.preferred_em');
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
+
+        $preferredEm = $container->getParameter('doctrine.migrations.preferred_em');
+        if ($container->has('doctrine')) {
+            $loaderDefinition = $container->getDefinition('doctrine.migrations.registry_loader');
+            $loaderDefinition->setArgument(0, new Reference('doctrine'));
+            if ($preferredEm !== null) {
+                $loaderDefinition->setArgument(1, $preferredEm);
+            }
+
+            $diDefinition->setFactory([DependencyFactory::class, 'fromEntityManager']);
+            $diDefinition->setArgument(1, new Reference('doctrine.migrations.registry_loader'));
+
+            return;
+        }
 
         assert(is_string($preferredEm) || $preferredEm === null);
         $emID = sprintf('doctrine.orm.%s_entity_manager', $preferredEm ?? 'default');
-
         if ($container->has($emID)) {
             $container->getDefinition('doctrine.migrations.em_loader')
                 ->setArgument(0, new Reference($emID));
 
             $diDefinition->setFactory([DependencyFactory::class, 'fromEntityManager']);
             $diDefinition->setArgument(1, new Reference('doctrine.migrations.em_loader'));
-        } else {
-            $preferredConnection = $container->getParameter('doctrine.migrations.preferred_connection');
+
+            return;
+        }
+
+        $preferredConnection = $container->getParameter('doctrine.migrations.preferred_connection');
             assert(is_string($preferredConnection) || $preferredConnection === null);
             $connectionId = sprintf('doctrine.dbal.%s_connection', $preferredConnection ?? 'default');
-            $container->getDefinition('doctrine.migrations.connection_loader')
-                ->setArgument(0, new Reference($connectionId));
+        $container->getDefinition('doctrine.migrations.connection_loader')
+            ->setArgument(0, new Reference($connectionId));
 
-            $diDefinition->setFactory([DependencyFactory::class, 'fromConnection']);
-            $diDefinition->setArgument(1, new Reference('doctrine.migrations.connection_loader'));
-        }
+        $diDefinition->setFactory([DependencyFactory::class, 'fromConnection']);
+        $diDefinition->setArgument(1, new Reference('doctrine.migrations.connection_loader'));
     }
 }

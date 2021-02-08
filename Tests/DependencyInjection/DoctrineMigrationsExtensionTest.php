@@ -17,6 +17,7 @@ use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Doctrine\Migrations\Version\Comparator;
 use Doctrine\Migrations\Version\Version;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -297,6 +298,68 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
 
         self::assertInstanceOf(DependencyFactory::class, $di);
+        self::assertSame($em, $di->getEntityManager());
+    }
+
+    /**
+     * @return array<array{string|null}>
+     */
+    public function getEmNames(): array
+    {
+        return [
+            [null],
+            ['custom'],
+        ];
+    }
+
+    /**
+     * @dataProvider getEmNames
+     */
+    public function testPrefersManagerRegistry(?string $emName): void
+    {
+        $config    = ['em' => $emName];
+        $container = $this->getContainer($config);
+
+        $em           = $this->createMock(EntityManager::class);
+        $registryMock = $this->createMock(ManagerRegistry::class);
+
+        $registryMock->expects(self::once())
+            ->method('getManager')
+            ->with($emName)
+            ->willReturn($em);
+
+        $container->set('doctrine', $registryMock);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+
+        self::assertInstanceOf(DependencyFactory::class, $di);
+        self::assertSame($em, $di->getEntityManager());
+    }
+
+    public function testManagerRegistryThrowsExceptionOnUnknownEm(): void
+    {
+        $config    = ['em' => 'foo'];
+        $container = $this->getContainer($config);
+
+        $em           = $this->createMock(EntityManager::class);
+        $registryMock = $this->createMock(ManagerRegistry::class);
+
+        $registryMock->expects(self::once())
+            ->method('getManager')
+            ->with('foo')
+            ->willThrowException(new InvalidArgumentException());
+
+        $container->set('doctrine', $registryMock);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+
+        self::assertInstanceOf(DependencyFactory::class, $di);
+
+        $this->expectException(InvalidArgumentException::class);
         self::assertSame($em, $di->getEntityManager());
     }
 
