@@ -138,10 +138,6 @@ for you.
 
 .. code-block:: terminal
 
-    $ php bin/console make:migration
-    
-or by using doctrine migrations directly
-
 .. code-block:: terminal
 
     $ php bin/console doctrine:migrations:generate
