@@ -138,8 +138,6 @@ for you.
 
 .. code-block:: terminal
 
-.. code-block:: terminal
-
     $ php bin/console doctrine:migrations:generate
 
 Have a look at the newly generated migration class and you will see something
