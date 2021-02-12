@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\Command\Helper;
 
 use Doctrine\Bundle\DoctrineBundle\Command\Proxy\DoctrineCommandHelper as BaseDoctrineCommandHelper;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Sharding\PoolingShardConnection;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\Persistence\ManagerRegistry;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,7 +27,7 @@ abstract class DoctrineCommandHelper extends BaseDoctrineCommandHelper
     {
         $container = $application->getKernel()->getContainer();
         $doctrine  = $container->get('doctrine');
-        assert($doctrine instanceof Registry);
+        assert($doctrine instanceof ManagerRegistry);
 
         $managerNames = $doctrine->getManagerNames();
 
