@@ -13,8 +13,12 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
+use function assert;
 use function error_get_last;
+use function is_bool;
 use function is_dir;
+use function is_int;
+use function is_string;
 use function mkdir;
 use function preg_match;
 use function preg_quote;
@@ -31,7 +35,7 @@ abstract class DoctrineCommand extends BaseCommand
         $dir = $configuration->getMigrationsDirectory();
 
         if ($dir === null) {
-            $dir = $container->getParameter('doctrine_migrations.dir_name');
+            $dir = self::getStringParameter($container, 'doctrine_migrations.dir_name');
 
             if (! is_dir($dir) && ! @mkdir($dir, 0777, true) && ! is_dir($dir)) {
                 $error = error_get_last();
@@ -53,7 +57,10 @@ abstract class DoctrineCommand extends BaseCommand
                     continue;
                 }
 
-                $dir = str_replace('%' . $pathPlaceholder . '%', $container->getParameter($pathPlaceholder), $dir);
+                $dir = str_replace('%' . $pathPlaceholder . '%', self::getStringParameter(
+                    $container,
+                    $pathPlaceholder
+                ), $dir);
             }
 
             if (! is_dir($dir) && ! @mkdir($dir, 0777, true) && ! is_dir($dir)) {
@@ -70,22 +77,32 @@ abstract class DoctrineCommand extends BaseCommand
         }
 
         if ($configuration->getMigrationsNamespace() === null) {
-            $configuration->setMigrationsNamespace($container->getParameter('doctrine_migrations.namespace'));
+            $configuration->setMigrationsNamespace(self::getStringParameter(
+                $container,
+                'doctrine_migrations.namespace'
+            ));
         }
 
         if ($configuration->getName() === null) {
-            $configuration->setName($container->getParameter('doctrine_migrations.name'));
+            $configuration->setName(self::getStringParameter(
+                $container,
+                'doctrine_migrations.name'
+            ));
         }
 
         // For backward compatibility, need use a table from parameters for overwrite the default configuration
         if (! ($configuration instanceof AbstractFileConfiguration) || $configuration->getMigrationsTableName() === '') {
-            $configuration->setMigrationsTableName($container->getParameter('doctrine_migrations.table_name'));
+            $configuration->setMigrationsTableName(self::getStringParameter($container, 'doctrine_migrations.table_name'));
         }
 
-        $configuration->setMigrationsColumnName($container->getParameter('doctrine_migrations.column_name'));
-        $configuration->setMigrationsColumnLength($container->getParameter('doctrine_migrations.column_length'));
-        $configuration->setMigrationsExecutedAtColumnName($container->getParameter('doctrine_migrations.executed_at_column_name'));
-        $configuration->setAllOrNothing($container->getParameter('doctrine_migrations.all_or_nothing'));
+        $configuration->setMigrationsColumnName(self::getStringParameter($container, 'doctrine_migrations.column_name'));
+        $columnLength = $container->getParameter('doctrine_migrations.column_length');
+        assert(is_int($columnLength));
+        $configuration->setMigrationsColumnLength($columnLength);
+        $configuration->setMigrationsExecutedAtColumnName(self::getStringParameter($container, 'doctrine_migrations.executed_at_column_name'));
+        $allOrNothing = $container->getParameter('doctrine_migrations.all_or_nothing');
+        assert(is_bool($allOrNothing));
+        $configuration->setAllOrNothing($allOrNothing);
 
         // Migrations is not register from configuration loader
         if (! ($configuration instanceof AbstractFileConfiguration)) {
@@ -97,7 +114,9 @@ abstract class DoctrineCommand extends BaseCommand
         }
 
         if ($configuration->getCustomTemplate() === null) {
-            $configuration->setCustomTemplate($container->getParameter('doctrine_migrations.custom_template'));
+            $customTemplate = $container->getParameter('doctrine_migrations.custom_template');
+            assert(is_string($customTemplate) || $customTemplate === null);
+            $configuration->setCustomTemplate($customTemplate);
         }
 
         $organizeMigrations = $container->getParameter('doctrine_migrations.organize_migrations');
@@ -136,5 +155,13 @@ abstract class DoctrineCommand extends BaseCommand
 
             $migration->setContainer($container);
         }
+    }
+
+    private static function getStringParameter(ContainerInterface $container, string $name): string
+    {
+        $value = $container->getParameter($name);
+        assert(is_string($value));
+
+        return $value;
     }
 }
