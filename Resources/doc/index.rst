@@ -48,6 +48,7 @@ application:
             'App\Migrations': 'src/App'
             'AnotherApp\Migrations': '/path/to/other/migrations'
             'SomeBundle\Migrations': '@SomeBundle/Migrations'
+            'OtherApp\Migrations': '%kernel.project_dir%/src/OtherApp/Migrations'
 
         # List of additional migration classes to be loaded, optional
         migrations:
