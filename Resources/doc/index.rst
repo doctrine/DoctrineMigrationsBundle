@@ -45,10 +45,9 @@ application:
     doctrine_migrations:
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
-            'App\Migrations': 'src/App'
+            'App\Migrations': '%kernel.project_dir%/src/App'
             'AnotherApp\Migrations': '/path/to/other/migrations'
             'SomeBundle\Migrations': '@SomeBundle/Migrations'
-            'OtherApp\Migrations': '%kernel.project_dir%/src/OtherApp/Migrations'
 
         # List of additional migration classes to be loaded, optional
         migrations:
