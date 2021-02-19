@@ -59,10 +59,10 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('service')
                     ->defaultValue([])
                     ->validate()
-                        ->ifTrue(static function ($v) {
+                        ->ifTrue(static function ($v): bool {
                             return count(array_filter(array_keys($v), static function (string $doctrineService): bool {
                                 return strpos($doctrineService, 'Doctrine\Migrations\\') !== 0;
-                            }));
+                            })) > 0;
                         })
                         ->thenInvalid('Valid services for the DoctrineMigrationsBundle must be in the "Doctrine\Migrations" namespace.')
                     ->end()
@@ -74,10 +74,10 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('factory')
                     ->defaultValue([])
                     ->validate()
-                        ->ifTrue(static function ($v) {
+                        ->ifTrue(static function ($v): bool {
                             return count(array_filter(array_keys($v), static function (string $doctrineService): bool {
                                 return strpos($doctrineService, 'Doctrine\Migrations\\') !== 0;
-                            }));
+                            })) > 0;
                         })
                         ->thenInvalid('Valid callables for the DoctrineMigrationsBundle must be in the "Doctrine\Migrations" namespace.')
                     ->end()
