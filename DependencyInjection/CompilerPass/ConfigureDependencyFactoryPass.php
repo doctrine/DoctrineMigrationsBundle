@@ -18,8 +18,7 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
-
-        $preferredEm = $container->getParameter('doctrine.migrations.preferred_em');
+        $preferredEm  = $container->getParameter('doctrine.migrations.preferred_em');
         if ($container->has('doctrine')) {
             $loaderDefinition = $container->getDefinition('doctrine.migrations.registry_loader');
             $loaderDefinition->setArgument(0, new Reference('doctrine'));

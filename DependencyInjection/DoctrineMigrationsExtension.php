@@ -142,7 +142,6 @@ class DoctrineMigrationsExtension extends Extension
     private function getBundlePath(string $bundleName, ContainerBuilder $container): string
     {
         $bundleMetadata = $container->getParameter('kernel.bundles_metadata');
-
         assert(is_array($bundleMetadata));
 
         if (! isset($bundleMetadata[$bundleName])) {
