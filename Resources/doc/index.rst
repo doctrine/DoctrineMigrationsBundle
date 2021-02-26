@@ -45,7 +45,7 @@ application:
     doctrine_migrations:
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
-            'App\Migrations': 'src/App'
+            'App\Migrations': '%kernel.project_dir%/src/App'
             'AnotherApp\Migrations': '/path/to/other/migrations'
             'SomeBundle\Migrations': '@SomeBundle/Migrations'
 
@@ -67,7 +67,6 @@ application:
                 version_column_name: 'version'
                 version_column_length: 1024
                 executed_at_column_name: 'executed_at'
-                execution_time_column_name: 'execution_time'
 
         # Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
         organize_migrations: false

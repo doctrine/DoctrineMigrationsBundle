@@ -9,6 +9,8 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+use function assert;
+use function is_string;
 use function sprintf;
 
 class ConfigureDependencyFactoryPass implements CompilerPassInterface
@@ -18,6 +20,8 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
         $preferredEm         = $container->getParameter('doctrine.migrations.preferred_em');
         $preferredConnection = $container->getParameter('doctrine.migrations.preferred_connection');
         $diDefinition        = $container->getDefinition('doctrine.migrations.dependency_factory');
+        assert(is_string($preferredEm) || $preferredEm === null);
+        assert(is_string($preferredConnection) || $preferredConnection === null);
 
         $emID = sprintf('doctrine.orm.%s_entity_manager', $preferredEm ?? 'default');
 
