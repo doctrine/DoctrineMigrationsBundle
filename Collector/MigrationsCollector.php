@@ -1,170 +1,100 @@
 <?php
 
-/*
- * This file is part of the Doctrine MigrationsBundle
- *
- * The code was originally distributed inside the Symfony framework.
- *
- * (c) Michael Simonson <mike@simonson.be>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
 
-
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Doctrine\DBAL\Migrations\Tools\Console\Helper\MigrationStatusInfosHelper;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Metadata\AvailableMigration;
+use Doctrine\Migrations\Metadata\AvailableMigrationsList;
+use Doctrine\Migrations\Metadata\ExecutedMigration;
+use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
+use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
-class MigrationsCollector implements DataCollectorInterface
+class MigrationsCollector extends DataCollector
 {
-    /** @var  string */
-    private $migrationTablename;
+    /** @var DependencyFactory */
+    private $dependencyFactory;
 
-    /** @var  string */
-    private $migrationName;
-
-    /** @var Connection  */
-    private $connection;
-
-    /** @var  string */
-    private $migrationNamespace;
-
-    /** @var  string */
-    private $migrationDirectory;
-
-    public function __construct(Connection $connection, $migrationNamespace, $migrationDirectory, $migrationTablename, $migrationName)
+    public function __construct(DependencyFactory $dependencyFactory)
     {
-        $this->connection = $connection;
-        $this->migrationNamespace = $migrationNamespace;
-        $this->migrationDirectory = $migrationDirectory;
-        $this->migrationTablename = $migrationTablename;
-        $this->migrationName = $migrationName;
+        $this->dependencyFactory = $dependencyFactory;
     }
 
-    /**
-     * Collects data for the given Request and Response.
-     *
-     * @param Request $request A Request instance
-     * @param Response $response A Response instance
-     * @param \Exception $exception An Exception instance
-     */
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
-        $configuration = new Configuration($this->connection);
-        $configuration->setMigrationsNamespace($this->migrationNamespace);
-        $configuration->setMigrationsDirectory($this->migrationDirectory);
-        $configuration->setMigrationsTableName($this->migrationTablename);
-        $configuration->setName($this->migrationName);
-        $configuration->registerMigrationsFromDirectory($configuration->getMigrationsDirectory());
-        $migrationsStatusInfos = new MigrationStatusInfosHelper($configuration);
-        $this->data = $migrationsStatusInfos->getMigrationsInfos();
-        $newMigrationsList = $configuration->getMigrationsToExecute('up', $configuration->getLatestVersion());
-        $this->data['newMigrationsList'] = array_map(function($migration) {
-            return $migration->getVersion();
-        }, $newMigrationsList);
-        $this->data['executedUnavailableMigrationsList'] = array_map(function($migration) {
-            return $migration->getVersion();
-        }, $migrationsStatusInfos->getExecutedUnavailableMigrations());
+        $metadataStorage = $this->dependencyFactory->getMetadataStorage();
+        $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
+        $statusCalculator = $this->dependencyFactory->getMigrationStatusCalculator();
 
-        $this->connection = null;
-        $this->migrationDirectory = null;
-        $this->migrationNamespace = null;
-        $this->migrationName = null;
-        $this->migrationTablename = null;
+        $availableMigrations = $planCalculator->getMigrations();
+        $this->data['available_migrations'] = $this->flattenAvailableMigrations($availableMigrations);
+        $this->data['executed_migrations'] = $this->flattenExecutedMigrations(
+            $metadataStorage->getExecutedMigrations(),
+            $availableMigrations
+        );
+        $this->data['new_migrations'] = $this->flattenAvailableMigrations($statusCalculator->getNewMigrations());
+        $this->data['executed_unavailable_migrations'] = $this->flattenExecutedMigrations(
+            $statusCalculator->getExecutedUnavailableMigrations(),
+            new AvailableMigrationsList([])
+        );
+
+        $this->data['storage'] = get_class($metadataStorage);
+        $configuration = $this->dependencyFactory->getConfiguration();
+        $storage = $configuration->getMetadataStorageConfiguration();
+        if ($storage instanceof TableMetadataStorageConfiguration) {
+            $this->data['table'] = $storage->getTableName();
+            $this->data['column'] = $storage->getVersionColumnName();
+        }
+
+        $connection = $this->dependencyFactory->getConnection();
+        $this->data['driver'] = get_class($connection->getDriver());
+        $this->data['name'] = $connection->getDatabase();
+
+        $this->data['namespaces'] = $configuration->getMigrationDirectories();
     }
 
-    /**
-     * Returns the name of the collector.
-     *
-     * @return string The collector name
-     */
     public function getName()
     {
-        return 'doctrine.migrations_collector';
+        return 'migrations';
     }
 
-    public function getPreviousMigration()
+    public function getData()
     {
-        return $this->data['Previous Version'];
+        return $this->data;
     }
 
-    public function getCurrentMigration()
+    public function reset()
     {
-        return $this->data['Current Version'];
+        $this->data = [];
     }
 
-    public function getNextMigration()
-    {
-        return $this->data['Next Version'];
+    private function flattenExecutedMigrations(
+        ExecutedMigrationsList $executedMigrations,
+        AvailableMigrationsList $availableMigrations
+    ): array {
+        return array_map(static function (ExecutedMigration $migration) use ($availableMigrations) {
+            $version = $migration->getVersion();
+            return [
+                'version' => (string)$version,
+                'executed_at' => $migration->getExecutedAt(),
+                'execution_time' => $migration->getExecutionTime(),
+                'description' => $availableMigrations->hasMigration($version)
+                    ? $availableMigrations->getMigration($version)->getMigration()->getDescription() : null,
+            ];
+        }, $executedMigrations->getItems());
     }
 
-    public function getLatestMigration()
+    private function flattenAvailableMigrations(AvailableMigrationsList $migrationsList): array
     {
-        return $this->data['Latest Version'];
-    }
-
-    public function getExecutedMigrations()
-    {
-        return $this->data['Executed Migrations'];
-    }
-
-    public function getExecutedUnavailableMigrations()
-    {
-        return $this->data['Executed Unavailable Migrations'];
-    }
-
-    public function getAvailableMigrations()
-    {
-        return $this->data['Available Migrations'];
-    }
-
-    public function getNewMigrations()
-    {
-        return $this->data['New Migrations'];
-    }
-
-    public function getNewMigrationsList()
-    {
-        return $this->data['newMigrationsList'];
-    }
-
-    public function getExecutedUnavailableMigrationsList()
-    {
-        return $this->data['executedUnavailableMigrationsList'];
-    }
-
-    public function getDatabaseDriver()
-    {
-        return $this->data['Database Driver'];
-    }
-    public function getDatabaseName()
-    {
-        return $this->data['Database Name'];
-    }
-    public function getConfigurationSource()
-    {
-        return $this->data['Configuration Source'];
-    }
-    public function getVersionTableName()
-    {
-        return $this->data['Version Table Name'];
-    }
-    public function getVersionColumnName()
-    {
-        return $this->data['Version Column Name'];
-    }
-    public function getMigrationNamespace()
-    {
-        return $this->data['Migrations Namespace'];
-    }
-    public function getMigrationDirectory()
-    {
-        return $this->data['Migrations Directory'];
+        return array_map(static function (AvailableMigration $migration) {
+            return [
+                'version' => (string)$migration->getVersion(),
+                'description' => $migration->getMigration()->getDescription(),
+            ];
+        }, $migrationsList->getItems());
     }
 }
