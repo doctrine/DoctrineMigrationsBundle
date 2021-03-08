@@ -59,7 +59,7 @@ class MigrationsCollector extends DataCollector
 
     public function getName()
     {
-        return 'migrations';
+        return 'doctrine_migrations';
     }
 
     public function getData()

@@ -143,7 +143,7 @@
 
         <service id="doctrine_migrations.migrations_collector" class="Doctrine\Bundle\MigrationsBundle\Collector\MigrationsCollector">
             <argument type="service" id="doctrine.migrations.dependency_factory"/>
-            <tag name="data_collector" template="@DoctrineMigrations/Collector/migrations.html.twig" id="migrations" priority="249"/>
+            <tag name="data_collector" template="@DoctrineMigrations/Collector/migrations.html.twig" id="doctrine_migrations" priority="249"/>
         </service>
     </services>
 
