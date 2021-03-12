@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
 
 use Doctrine\Migrations\DependencyFactory;
-use Doctrine\Migrations\Metadata\AvailableMigration;
 use Doctrine\Migrations\Metadata\AvailableMigrationsList;
-use Doctrine\Migrations\Metadata\ExecutedMigration;
 use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,17 +28,10 @@ class MigrationsCollector extends DataCollector
         $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
         $statusCalculator = $this->dependencyFactory->getMigrationStatusCalculator();
 
-        $availableMigrations = $planCalculator->getMigrations();
-        $this->data['available_migrations'] = $this->flattenAvailableMigrations($availableMigrations);
-        $this->data['executed_migrations'] = $this->flattenExecutedMigrations(
-            $metadataStorage->getExecutedMigrations(),
-            $availableMigrations
-        );
-        $this->data['new_migrations'] = $this->flattenAvailableMigrations($statusCalculator->getNewMigrations());
-        $this->data['executed_unavailable_migrations'] = $this->flattenExecutedMigrations(
-            $statusCalculator->getExecutedUnavailableMigrations(),
-            new AvailableMigrationsList([])
-        );
+        $this->data['available_migrations'] = $this->flattenMigrations($planCalculator->getMigrations());
+        $this->data['executed_migrations'] = $this->flattenMigrations($metadataStorage->getExecutedMigrations());
+        $this->data['new_migrations'] = $this->flattenMigrations($statusCalculator->getNewMigrations());
+        $this->data['unavailable_migrations'] = $this->flattenMigrations($statusCalculator->getExecutedUnavailableMigrations());
 
         $this->data['storage'] = get_class($metadataStorage);
         $configuration = $this->dependencyFactory->getConfiguration();
@@ -72,29 +63,13 @@ class MigrationsCollector extends DataCollector
         $this->data = [];
     }
 
-    private function flattenExecutedMigrations(
-        ExecutedMigrationsList $executedMigrations,
-        AvailableMigrationsList $availableMigrations
-    ): array {
-        return array_map(static function (ExecutedMigration $migration) use ($availableMigrations) {
-            $version = $migration->getVersion();
-            return [
-                'version' => (string)$version,
-                'executed_at' => $migration->getExecutedAt(),
-                'execution_time' => $migration->getExecutionTime(),
-                'description' => $availableMigrations->hasMigration($version)
-                    ? $availableMigrations->getMigration($version)->getMigration()->getDescription() : null,
-            ];
-        }, $executedMigrations->getItems());
-    }
-
-    private function flattenAvailableMigrations(AvailableMigrationsList $migrationsList): array
+    /**
+     * @param AvailableMigrationsList|ExecutedMigrationsList $migrationsList
+     */
+    private function flattenMigrations($migrationsList): array
     {
-        return array_map(static function (AvailableMigration $migration) {
-            return [
-                'version' => (string)$migration->getVersion(),
-                'description' => $migration->getMigration()->getDescription(),
-            ];
+        return array_map(static function ($migration) {
+            return (string)$migration->getVersion();
         }, $migrationsList->getItems());
     }
 }

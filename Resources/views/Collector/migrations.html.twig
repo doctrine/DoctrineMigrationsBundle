@@ -1,58 +1,62 @@
 {% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
+{% import _self as helper %}
+
 {% block toolbar %}
-    {% set executed_migrations = collector.data.executed_migrations|length %}
-    {% set executed_unavailable_migrations = collector.data.executed_unavailable_migrations|length %}
-    {% set available_migrations = collector.data.available_migrations|length %}
+    {% set unavailable_migrations = collector.data.unavailable_migrations|length %}
     {% set new_migrations = collector.data.new_migrations|length %}
-    {% set status_color = executed_unavailable_migrations > 0 ? 'yellow' : '' %}
-    {% set status_color = new_migrations > 0 ? 'red' : status_color %}
+    {% if unavailable_migrations > 0 or new_migrations > 0 %}
+        {% set executed_migrations = collector.data.executed_migrations|length %}
+        {% set available_migrations = collector.data.available_migrations|length %}
+        {% set status_color = unavailable_migrations > 0 ? 'yellow' : '' %}
+        {% set status_color = new_migrations > 0 ? 'red' : status_color %}
 
-    {% set icon %}
-        {{ include('@DoctrineMigrations/Collector/icon.svg') }}
-        <span class="sf-toolbar-value">{{ executed_migrations }}</span>
-        <span class="sf-toolbar-label">/</span>
-        <span class="sf-toolbar-value">{{ available_migrations }}</span>
-    {% endset %}
+        {% set icon %}
+            {{ include('@DoctrineMigrations/Collector/icon.svg') }}
+            <span class="sf-toolbar-value">{{ new_migrations + unavailable_migrations }}</span>
+        {% endset %}
 
-    {% set text %}
-        <div class="sf-toolbar-info-piece">
-            <b>Current</b>
-            <span>{{ collector.data.executed_migrations|last.version|split('\\')|last }}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>Executed</b>
-            <span class="sf-toolbar-status">{{ executed_migrations }}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>Executed Unavailable</b>
-            <span class="sf-toolbar-status {{ executed_unavailable_migrations > 0 ? 'sf-toolbar-status-yellow' }}">{{ executed_unavailable_migrations }}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>Available</b>
-            <span class="sf-toolbar-status">{{ available_migrations }}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>New</b>
-            <span class="sf-toolbar-status {{ new_migrations > 0 ? 'sf-toolbar-status-red' }}">{{ new_migrations }}</span>
-        </div>
-    {% endset %}
+        {% set text %}
+            <div class="sf-toolbar-info-piece">
+                <b>Current</b>
+                <span>{{ collector.data.executed_migrations|last|split('\\')|last }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Executed</b>
+                <span class="sf-toolbar-status">{{ executed_migrations }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Executed Unavailable</b>
+                <span class="sf-toolbar-status {{ unavailable_migrations > 0 ? 'sf-toolbar-status-yellow' }}">{{ unavailable_migrations }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Available</b>
+                <span class="sf-toolbar-status">{{ available_migrations }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>New</b>
+                <span class="sf-toolbar-status {{ new_migrations > 0 ? 'sf-toolbar-status-red' }}">{{ new_migrations }}</span>
+            </div>
+        {% endset %}
 
-    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url, status: status_color }) }}
+        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url, status: status_color }) }}
+    {% endif %}
 {% endblock %}
 
 
 {% block menu %}
-    {% set executed_unavailable_migrations = collector.data.executed_unavailable_migrations|length %}
+    {% set unavailable_migrations = collector.data.unavailable_migrations|length %}
     {% set new_migrations = collector.data.new_migrations|length %}
-    {% set label = executed_unavailable_migrations > 0 ? 'label-status-warning' : '' %}
+    {% set label = unavailable_migrations > 0 ? 'label-status-warning' : '' %}
     {% set label = new_migrations > 0 ? 'label-status-error' : label %}
     <span class="label {{ label }}">
         <span class="icon">{{ include('@DoctrineMigrations/Collector/icon.svg') }}</span>
         <strong>Migrations</strong>
-        <span class="count">
-            <span>{{ collector.data.executed_migrations|length }} / {{ collector.data.available_migrations|length }}</span>
-        </span>
+        {% if unavailable_migrations > 0 or new_migrations > 0 %}
+            <span class="count">
+                <span>{{ new_migrations + unavailable_migrations }}</span>
+            </span>
+        {% endif %}
     </span>
 {% endblock %}
 
@@ -64,7 +68,7 @@
             <span class="label">Executed</span>
         </div>
         <div class="metric">
-            <span class="value">{{ collector.data.executed_unavailable_migrations|length }}</span>
+            <span class="value">{{ collector.data.unavailable_migrations|length }}</span>
             <span class="label">Executed Unavailable</span>
         </div>
         <div class="metric">
@@ -122,7 +126,7 @@
                 <th colspan="2" class="colored font-normal">Migration Namespaces</th>
             </tr>
         </thead>
-        {% for namespace,directory in collector.data.namespaces %}
+        {% for namespace, directory in collector.data.namespaces %}
             <tr>
                 <td class="font-normal">{{ namespace }}</td>
                 <td class="font-normal">{{ directory }}</td>
@@ -141,52 +145,37 @@
                 <th class="colored font-normal">Execution time</th>
             </tr>
         </thead>
-        {% for migration in collector.data.new_migrations %}
-            <tr>
-                <td class="font-normal">
-                    {% set version = migration.version|split('\\') %}
-                    {% set file = collector.data.namespaces[version|first] ~ '/' ~ version|last ~ '.php' %}
-                    <a href="{{ file|file_link(1) }}" title="{{ file }}">
-                        {{ migration.version }}
-                    </a>
-                </td>
-                <td class="font-normal">{{ migration.description }}</td>
-                <td class="font-normal"><span class="label status-error">NOT EXECUTED</span></td>
-                <td class="font-normal">n/a</td>
-                <td class="font-normal">n/a</td>
-            </tr>
+        {% for name in collector.data.new_migrations %}
+            {{ helper.render_migration(name, collector.data) }}
         {% endfor %}
 
-        {% set unavailable = [] %}
-        {% for migration in collector.data.executed_unavailable_migrations %}
-            {% set unavailable = unavailable|merge([migration.version]) %}
-        {% endfor %}
-
-        {% for migration in collector.data.executed_migrations|reverse %}
-            {% set is_unavailable = migration.version in unavailable %}
-            <tr>
-                <td class="font-normal">
-                    {% if is_unavailable %}
-                        {{ migration.version }}
-                    {% else %}
-                        {% set version = migration.version|split('\\') %}
-                        {% set file = collector.data.namespaces[version|first] ~ '/' ~ version|last ~ '.php' %}
-                        <a href="{{ file|file_link(1) }}" title="{{ file }}">
-                            {{ migration.version }}
-                        </a>
-                    {% endif %}
-                </td>
-                <td class="font-normal">{{ migration.description }}</td>
-                <td class="font-normal">
-                    {% if is_unavailable %}
-                        <span class="label status-warning">UNAVAILABLE</span>
-                    {% else %}
-                        <span class="label status-success">EXECUTED</span>
-                    {% endif %}
-                </td>
-                <td class="font-normal">{{ migration.executed_at|date }}</td>
-                <td class="font-normal">{{ migration.execution_time }}</td>
-            </tr>
+        {% for name in collector.data.executed_migrations|reverse %}
+            {{ helper.render_migration(name, collector.data) }}
         {% endfor %}
     </table>
 {% endblock %}
+
+{% macro render_migration(name, data) %}
+    {% set migration = migration_info(name) %}
+    <tr>
+        <td class="font-normal">
+            {% if migration.file %}
+                <a href="{{ migration.file|file_link(1) }}" title="{{ migration.file }}">{{ name }}</a>
+            {% else %}
+                {{ name }}
+            {% endif %}
+        </td>
+        <td class="font-normal">{{ migration.description }}</td>
+        <td class="font-normal">
+            {% if name in data.new_migrations %}
+                <span class="label status-error">NOT EXECUTED</span>
+            {% elseif name in data.unavailable_migrations %}
+                <span class="label status-warning">UNAVAILABLE</span>
+            {% else %}
+                <span class="label status-success">EXECUTED</span>
+            {% endif %}
+        </td>
+        <td class="font-normal">{{ migration.executed_at ? migration.executed_at|date : 'n/a' }}</td>
+        <td class="font-normal">{{ migration.execution_time|default('n/a') }}</td>
+    </tr>
+{% endmacro %}
