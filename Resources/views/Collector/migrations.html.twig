@@ -145,31 +145,31 @@
                 <th class="colored font-normal">Execution time</th>
             </tr>
         </thead>
-        {% for name in collector.data.new_migrations %}
-            {{ helper.render_migration(name, collector.data) }}
+        {% for migration in collector.data.new_migrations %}
+            {{ helper.render_migration(migration) }}
         {% endfor %}
 
-        {% for name in collector.data.executed_migrations|reverse %}
-            {{ helper.render_migration(name, collector.data) }}
+        {% for migration in collector.data.executed_migrations|reverse %}
+            {{ helper.render_migration(migration) }}
         {% endfor %}
     </table>
 {% endblock %}
 
-{% macro render_migration(name, data) %}
-    {% set migration = migration_info(name) %}
+{% macro render_migration(migration) %}
+
     <tr>
         <td class="font-normal">
             {% if migration.file %}
-                <a href="{{ migration.file|file_link(1) }}" title="{{ migration.file }}">{{ name }}</a>
+                <a href="{{ migration.file|file_link(1) }}" title="{{ migration.file }}">{{ migration.version }}</a>
             {% else %}
-                {{ name }}
+                {{ migration.version }}
             {% endif %}
         </td>
         <td class="font-normal">{{ migration.description }}</td>
         <td class="font-normal">
-            {% if name in data.new_migrations %}
+            {% if migration.is_new %}
                 <span class="label status-error">NOT EXECUTED</span>
-            {% elseif name in data.unavailable_migrations %}
+            {% elseif migration.is_unavailable %}
                 <span class="label status-warning">UNAVAILABLE</span>
             {% else %}
                 <span class="label status-success">EXECUTED</span>
