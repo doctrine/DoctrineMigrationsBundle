@@ -19,7 +19,7 @@
         {% set text %}
             <div class="sf-toolbar-info-piece">
                 <b>Current</b>
-                <span>{{ collector.data.executed_migrations|last|split('\\')|last }}</span>
+                <span>{{ collector.data.executed_migrations|last.version|split('\\')|last }}</span>
             </div>
             <div class="sf-toolbar-info-piece">
                 <b>Executed</b>
