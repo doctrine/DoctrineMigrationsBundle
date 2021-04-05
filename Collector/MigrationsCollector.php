@@ -5,10 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
 
 use Doctrine\Migrations\DependencyFactory;
-use Doctrine\Migrations\Metadata\AvailableMigration;
-use Doctrine\Migrations\Metadata\AvailableMigrationsList;
-use Doctrine\Migrations\Metadata\ExecutedMigration;
-use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +14,13 @@ class MigrationsCollector extends DataCollector
 {
     /** @var DependencyFactory */
     private $dependencyFactory;
+    /** @var MigrationsFlattener */
+    private $flattener;
 
-    public function __construct(DependencyFactory $dependencyFactory)
+    public function __construct(DependencyFactory $dependencyFactory, MigrationsFlattener $migrationsFlattener)
     {
         $this->dependencyFactory = $dependencyFactory;
+        $this->flattener = $migrationsFlattener;
     }
 
     public function collect(Request $request, Response $response, \Throwable $exception = null)
@@ -33,11 +32,11 @@ class MigrationsCollector extends DataCollector
         $executedMigrations  = $metadataStorage->getExecutedMigrations();
         $availableMigrations = $planCalculator->getMigrations();
 
-        $this->data['available_migrations'] = $this->flattenAvailableMigrations($availableMigrations, $executedMigrations);
-        $this->data['executed_migrations'] = $this->flattenExecutedMigrations($executedMigrations, $availableMigrations);
+        $this->data['available_migrations'] = $this->flattener->flattenAvailableMigrations($availableMigrations, $executedMigrations);
+        $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
 
-        $this->data['new_migrations'] = $this->flattenAvailableMigrations($statusCalculator->getNewMigrations());
-        $this->data['unavailable_migrations'] = $this->flattenExecutedMigrations($statusCalculator->getExecutedUnavailableMigrations());
+        $this->data['new_migrations'] = $this->flattener->flattenAvailableMigrations($statusCalculator->getNewMigrations());
+        $this->data['unavailable_migrations'] = $this->flattener->flattenExecutedMigrations($statusCalculator->getExecutedUnavailableMigrations());
 
         $this->data['storage'] = get_class($metadataStorage);
         $configuration = $this->dependencyFactory->getConfiguration();
@@ -67,44 +66,5 @@ class MigrationsCollector extends DataCollector
     public function reset()
     {
         $this->data = [];
-    }
-
-    private function flattenAvailableMigrations(AvailableMigrationsList $migrationsList, ?ExecutedMigrationsList $executedMigrations = null): array
-    {
-        return array_map(static function (AvailableMigration $migration) use ($executedMigrations) {
-            $executedMigration = $executedMigrations && $executedMigrations->hasMigration($migration->getVersion())
-                ? $executedMigrations->getMigration($migration->getVersion())
-                : null;
-
-            return [
-                'version' => (string)$migration->getVersion(),
-                'is_new' => !$executedMigration,
-                'is_unavailable' => false,
-                'description' => $migration->getMigration()->getDescription(),
-                'executed_at' =>  $executedMigration ? $executedMigration->getExecutedAt() : null,
-                'execution_time' =>  $executedMigration ? $executedMigration->getExecutionTime() : null,
-                'file' => (new \ReflectionClass($migration->getMigration()))->getFileName(),
-            ];
-        }, $migrationsList->getItems());
-    }
-
-    private function flattenExecutedMigrations(ExecutedMigrationsList $migrationsList, ?AvailableMigrationsList $availableMigrations = null): array
-    {
-        return array_map(static function (ExecutedMigration $migration) use ($availableMigrations) {
-
-            $availableMigration = $availableMigrations && $availableMigrations->hasMigration($migration->getVersion())
-                ? $availableMigrations->getMigration($migration->getVersion())->getMigration()
-                : null;
-
-            return [
-                'version' => (string)$migration->getVersion(),
-                'is_new' => false,
-                'is_unavailable' => !$availableMigration,
-                'description' => $availableMigration ? $availableMigration->getDescription() : null,
-                'executed_at' => $migration->getExecutedAt(),
-                'execution_time' => $migration->getExecutionTime(),
-                'file' => $availableMigration ? (new \ReflectionClass($availableMigration))->getFileName() : null,
-            ];
-        }, $migrationsList->getItems());
     }
 }

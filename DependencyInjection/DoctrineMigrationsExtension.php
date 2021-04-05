@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsCollector;
+use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsFlattener;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Doctrine\Migrations\Version\MigrationFactory;
@@ -162,9 +163,14 @@ class DoctrineMigrationsExtension extends Extension
 
     private function registerCollector(ContainerBuilder $container): void
     {
-        $collectorDefinition = new Definition(MigrationsCollector::class);
+        $flattenerDefinition = new Definition(MigrationsFlattener::class);
+        $container->setDefinition('doctrine_migrations.migrations_flattener', $flattenerDefinition);
+
+        $collectorDefinition = new Definition(MigrationsCollector::class, [
+            new Reference('doctrine.migrations.dependency_factory'),
+            new Reference('doctrine_migrations.migrations_flattener'),
+        ]);
         $collectorDefinition
-            ->addArgument(new Reference('doctrine.migrations.dependency_factory'))
             ->addTag('data_collector', [
                 'template' => '@DoctrineMigrations/Collector/migrations.html.twig',
                 'id' => 'doctrine_migrations',
