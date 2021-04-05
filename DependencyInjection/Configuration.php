@@ -147,6 +147,10 @@ class Configuration implements ConfigurationInterface
                             })
                     ->end()
                 ->end()
+                ->booleanNode('enable_profiler')
+                    ->info('Use profiler to calculate and visualize migration status.')
+                    ->defaultFalse()
+                ->end()
             ->end();
 
         return $treeBuilder;

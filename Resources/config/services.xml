@@ -140,6 +140,7 @@
 
             <tag name="console.command" command="doctrine:migrations:version" />
         </service>
+
     </services>
 
 </container>

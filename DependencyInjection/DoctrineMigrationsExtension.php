@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
+use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsCollector;
+use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsFlattener;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Doctrine\Migrations\Version\MigrationFactory;
@@ -70,6 +72,10 @@ class DoctrineMigrationsExtension extends Extension
 
         $configurationDefinition->addMethodCall('setAllOrNothing', [$config['all_or_nothing']]);
         $configurationDefinition->addMethodCall('setCheckDatabasePlatform', [$config['check_database_platform']]);
+
+        if ($config['enable_profiler']) {
+            $this->registerCollector($container);
+        }
 
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
 
@@ -153,6 +159,24 @@ class DoctrineMigrationsExtension extends Extension
         }
 
         return $bundleMetadata[$bundleName]['path'];
+    }
+
+    private function registerCollector(ContainerBuilder $container): void
+    {
+        $flattenerDefinition = new Definition(MigrationsFlattener::class);
+        $container->setDefinition('doctrine_migrations.migrations_flattener', $flattenerDefinition);
+
+        $collectorDefinition = new Definition(MigrationsCollector::class, [
+            new Reference('doctrine.migrations.dependency_factory'),
+            new Reference('doctrine_migrations.migrations_flattener'),
+        ]);
+        $collectorDefinition
+            ->addTag('data_collector', [
+                'template' => '@DoctrineMigrations/Collector/migrations.html.twig',
+                'id' => 'doctrine_migrations',
+                'priority' => '249',
+            ]);
+        $container->setDefinition('doctrine_migrations.migrations_collector', $collectorDefinition);
     }
 
     /**
