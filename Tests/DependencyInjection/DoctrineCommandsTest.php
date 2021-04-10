@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\ConfigureDependencyFactoryPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Migrations\Tools\Console\Command\CurrentCommand;
@@ -20,7 +21,6 @@ use Doctrine\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand;
 use Doctrine\Migrations\Tools\Console\Command\UpToDateCommand;
 use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
-use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -95,16 +95,22 @@ class DoctrineCommandsTest extends TestCase
             'kernel.cache_dir' => sys_get_temp_dir(),
             'kernel.environment' => 'test',
             'kernel.project_dir' => __DIR__ . '/../',
+            'kernel.root_dir' => __DIR__ ,
         ]));
 
         $kernel      = $this->getKernel($container);
         $application = new Application($kernel);
         $container->set('application', $application);
 
-        $em = $this->createMock(EntityManager::class);
-        $container->set('doctrine.orm.default_entity_manager', $em);
-
         $container->addCompilerPass(new AddConsoleCommandPass());
+
+        $extension = new DoctrineExtension();
+        $extension->load([
+            'doctrine' => [
+                'dbal' => ['url' => 'sqlite:///:memory:'],
+                'orm' => null,
+            ],
+        ], $container);
 
         $extension = new DoctrineMigrationsExtension();
         $extension->load([
