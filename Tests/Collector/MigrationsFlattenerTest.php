@@ -28,18 +28,9 @@ class MigrationsFlattenerTest extends TestCase
         $this->flattener = new MigrationsFlattener();
     }
 
-    public function testFlattenAvailableMigrationsWithoutExecutedMigrations(): void
+    public function testFlattenNewMigrations(): void
     {
         $expected = [
-            [
-                'version' => '012345',
-                'is_new' => true,
-                'is_unavailable' => false,
-                'description' => '',
-                'executed_at' => null,
-                'execution_time' => null,
-                'file' => dirname(__DIR__) . '/Fixtures/Migrations/Migration001.php',
-            ],
             [
                 'version' => '123456',
                 'is_new' => true,
@@ -60,74 +51,11 @@ class MigrationsFlattenerTest extends TestCase
             ],
         ];
 
-        $actual = $this->flattener->flattenAvailableMigrations($this->createAvailableMigrations());
-        self::assertSame($expected, $actual);
-    }
-
-    public function testFlattenAvailableMigrationsWithExecutedMigrations(): void
-    {
-        $expected = [
-            [
-                'version' => '012345',
-                'is_new' => false,
-                'is_unavailable' => false,
-                'description' => '',
-                'executed_at' => new DateTimeImmutable('2020-12-12 20:15:00'),
-                'execution_time' => 3.2,
-                'file' => dirname(__DIR__) . '/Fixtures/Migrations/Migration001.php',
-            ],
-            [
-                'version' => '123456',
-                'is_new' => true,
-                'is_unavailable' => false,
-                'description' => '',
-                'executed_at' => null,
-                'execution_time' => null,
-                'file' => dirname(__DIR__) . '/Fixtures/Migrations/Migration001.php',
-            ],
-            [
-                'version' => '456789',
-                'is_new' => true,
-                'is_unavailable' => false,
-                'description' => '',
-                'executed_at' => null,
-                'execution_time' => null,
-                'file' => dirname(__DIR__) . '/Fixtures/Migrations/Migration001.php',
-            ],
-        ];
-
-        $actual = $this->flattener->flattenAvailableMigrations($this->createAvailableMigrations(), $this->createExecutedMigrations());
+        $actual = $this->flattener->flattenNewMigrations($this->createAvailableMigrations(), $this->createExecutedMigrations());
         self::assertEquals($expected, $actual);
     }
 
-    public function testFlattenExecutedMigrationsWithoutAvailableMigrations(): void
-    {
-        $expected = [
-            [
-                'version' => '012345',
-                'is_new' => false,
-                'is_unavailable' => true,
-                'description' => '',
-                'executed_at' => new DateTimeImmutable('2020-12-12 20:15:00'),
-                'execution_time' => 3.2,
-                'file' => null,
-            ],
-            [
-                'version' => '111111',
-                'is_new' => false,
-                'is_unavailable' => true,
-                'description' => '',
-                'executed_at' => new DateTimeImmutable('2020-12-14 20:30:00'),
-                'execution_time' => 8.9,
-                'file' => null,
-            ],
-        ];
-
-        $actual = $this->flattener->flattenExecutedMigrations($this->createExecutedMigrations());
-        self::assertEquals($expected, $actual);
-    }
-
-    public function testFlattenExecutedMigrationsWithAvailableMigrations(): void
+    public function testFlattenExecutedMigrations(): void
     {
         $expected = [
             [

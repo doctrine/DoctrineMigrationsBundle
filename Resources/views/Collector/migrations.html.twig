@@ -3,11 +3,11 @@
 {% import _self as helper %}
 
 {% block toolbar %}
-    {% set unavailable_migrations = collector.data.unavailable_migrations|length %}
+    {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
     {% set new_migrations = collector.data.new_migrations|length %}
     {% if unavailable_migrations > 0 or new_migrations > 0 %}
         {% set executed_migrations = collector.data.executed_migrations|length %}
-        {% set available_migrations = collector.data.available_migrations|length %}
+        {% set available_migrations = collector.data.available_migrations_count %}
         {% set status_color = unavailable_migrations > 0 ? 'yellow' : '' %}
         {% set status_color = new_migrations > 0 ? 'red' : status_color %}
 
@@ -19,7 +19,7 @@
         {% set text %}
             <div class="sf-toolbar-info-piece">
                 <b>Current</b>
-                <span>{{ collector.data.executed_migrations|last.version|split('\\')|last }}</span>
+                <span>{{ executed_migrations > 0 ? collector.data.executed_migrations|last.version|split('\\')|last : 'n/a' }}</span>
             </div>
             <div class="sf-toolbar-info-piece">
                 <b>Executed</b>
@@ -45,7 +45,7 @@
 
 
 {% block menu %}
-    {% set unavailable_migrations = collector.data.unavailable_migrations|length %}
+    {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
     {% set new_migrations = collector.data.new_migrations|length %}
     {% set label = unavailable_migrations > 0 ? 'label-status-warning' : '' %}
     {% set label = new_migrations > 0 ? 'label-status-error' : label %}
@@ -68,11 +68,11 @@
             <span class="label">Executed</span>
         </div>
         <div class="metric">
-            <span class="value">{{ collector.data.unavailable_migrations|length }}</span>
+            <span class="value">{{ collector.data.unavailable_migrations_count }}</span>
             <span class="label">Executed Unavailable</span>
         </div>
         <div class="metric">
-            <span class="value">{{ collector.data.available_migrations|length }}</span>
+            <span class="value">{{ collector.data.available_migrations_count }}</span>
             <span class="label">Available</span>
         </div>
         <div class="metric">
@@ -156,7 +156,6 @@
 {% endblock %}
 
 {% macro render_migration(migration) %}
-
     <tr>
         <td class="font-normal">
             {% if migration.file %}

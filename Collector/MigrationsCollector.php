@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
 
 use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Metadata\ExecutedMigration;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,16 +28,17 @@ class MigrationsCollector extends DataCollector
     {
         $metadataStorage = $this->dependencyFactory->getMetadataStorage();
         $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
-        $statusCalculator = $this->dependencyFactory->getMigrationStatusCalculator();
 
         $executedMigrations  = $metadataStorage->getExecutedMigrations();
         $availableMigrations = $planCalculator->getMigrations();
 
-        $this->data['available_migrations'] = $this->flattener->flattenAvailableMigrations($availableMigrations, $executedMigrations);
-        $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
+        $this->data['available_migrations_count'] = count($availableMigrations);
+        $this->data['unavailable_migrations_count'] = count(array_filter($executedMigrations->getItems(), static function (ExecutedMigration $migration) use ($availableMigrations) {
+            return ! $availableMigrations->hasMigration($migration->getVersion());
+        }));
 
-        $this->data['new_migrations'] = $this->flattener->flattenAvailableMigrations($statusCalculator->getNewMigrations());
-        $this->data['unavailable_migrations'] = $this->flattener->flattenExecutedMigrations($statusCalculator->getExecutedUnavailableMigrations());
+        $this->data['new_migrations'] = $this->flattener->flattenNewMigrations($availableMigrations, $executedMigrations);
+        $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
 
         $this->data['storage'] = get_class($metadataStorage);
         $configuration = $this->dependencyFactory->getConfiguration();
