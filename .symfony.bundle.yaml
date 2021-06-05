@@ -1,0 +1,4 @@
+branches: ["2.2.x", "3.0.x", "3.1.x"]
+maintained_branches: ["2.2.x", "3.0.x", "3.1.x"]
+doc_dir: "Resources/doc/"
+dev_branch: "3.1.x"
