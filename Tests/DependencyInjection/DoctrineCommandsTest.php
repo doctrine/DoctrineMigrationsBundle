@@ -108,7 +108,6 @@ class DoctrineCommandsTest extends TestCase
         $extension->load([
             'doctrine' => [
                 'dbal' => ['url' => 'sqlite:///:memory:'],
-                'orm' => null,
             ],
         ], $container);
 
