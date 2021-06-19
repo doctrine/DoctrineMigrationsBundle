@@ -3,61 +3,65 @@
 {% import _self as helper %}
 
 {% block toolbar %}
-    {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
-    {% set new_migrations = collector.data.new_migrations|length %}
-    {% if unavailable_migrations > 0 or new_migrations > 0 %}
-        {% set executed_migrations = collector.data.executed_migrations|length %}
-        {% set available_migrations = collector.data.available_migrations_count %}
-        {% set status_color = unavailable_migrations > 0 ? 'yellow' : '' %}
-        {% set status_color = new_migrations > 0 ? 'red' : status_color %}
+    {% if collector.data.unavailable_migrations is defined %}
+        {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
+        {% set new_migrations = collector.data.new_migrations|length %}
+        {% if unavailable_migrations > 0 or new_migrations > 0 %}
+            {% set executed_migrations = collector.data.executed_migrations|length %}
+            {% set available_migrations = collector.data.available_migrations_count %}
+            {% set status_color = unavailable_migrations > 0 ? 'yellow' : '' %}
+            {% set status_color = new_migrations > 0 ? 'red' : status_color %}
 
-        {% set icon %}
-            {{ include('@DoctrineMigrations/Collector/icon.svg') }}
-            <span class="sf-toolbar-value">{{ new_migrations + unavailable_migrations }}</span>
-        {% endset %}
+            {% set icon %}
+                {{ include('@DoctrineMigrations/Collector/icon.svg') }}
+                <span class="sf-toolbar-value">{{ new_migrations + unavailable_migrations }}</span>
+            {% endset %}
 
-        {% set text %}
-            <div class="sf-toolbar-info-piece">
-                <b>Current</b>
-                <span>{{ executed_migrations > 0 ? collector.data.executed_migrations|last.version|split('\\')|last : 'n/a' }}</span>
-            </div>
-            <div class="sf-toolbar-info-piece">
-                <b>Executed</b>
-                <span class="sf-toolbar-status">{{ executed_migrations }}</span>
-            </div>
-            <div class="sf-toolbar-info-piece">
-                <b>Executed Unavailable</b>
-                <span class="sf-toolbar-status {{ unavailable_migrations > 0 ? 'sf-toolbar-status-yellow' }}">{{ unavailable_migrations }}</span>
-            </div>
-            <div class="sf-toolbar-info-piece">
-                <b>Available</b>
-                <span class="sf-toolbar-status">{{ available_migrations }}</span>
-            </div>
-            <div class="sf-toolbar-info-piece">
-                <b>New</b>
-                <span class="sf-toolbar-status {{ new_migrations > 0 ? 'sf-toolbar-status-red' }}">{{ new_migrations }}</span>
-            </div>
-        {% endset %}
+            {% set text %}
+                <div class="sf-toolbar-info-piece">
+                    <b>Current</b>
+                    <span>{{ executed_migrations > 0 ? collector.data.executed_migrations|last.version|split('\\')|last : 'n/a' }}</span>
+                </div>
+                <div class="sf-toolbar-info-piece">
+                    <b>Executed</b>
+                    <span class="sf-toolbar-status">{{ executed_migrations }}</span>
+                </div>
+                <div class="sf-toolbar-info-piece">
+                    <b>Executed Unavailable</b>
+                    <span class="sf-toolbar-status {{ unavailable_migrations > 0 ? 'sf-toolbar-status-yellow' }}">{{ unavailable_migrations }}</span>
+                </div>
+                <div class="sf-toolbar-info-piece">
+                    <b>Available</b>
+                    <span class="sf-toolbar-status">{{ available_migrations }}</span>
+                </div>
+                <div class="sf-toolbar-info-piece">
+                    <b>New</b>
+                    <span class="sf-toolbar-status {{ new_migrations > 0 ? 'sf-toolbar-status-red' }}">{{ new_migrations }}</span>
+                </div>
+            {% endset %}
 
-        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url, status: status_color }) }}
+            {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: profiler_url, status: status_color }) }}
+        {% endif %}
     {% endif %}
 {% endblock %}
 
 
 {% block menu %}
-    {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
-    {% set new_migrations = collector.data.new_migrations|length %}
-    {% set label = unavailable_migrations > 0 ? 'label-status-warning' : '' %}
-    {% set label = new_migrations > 0 ? 'label-status-error' : label %}
-    <span class="label {{ label }}">
-        <span class="icon">{{ include('@DoctrineMigrations/Collector/icon.svg') }}</span>
-        <strong>Migrations</strong>
-        {% if unavailable_migrations > 0 or new_migrations > 0 %}
-            <span class="count">
-                <span>{{ new_migrations + unavailable_migrations }}</span>
-            </span>
-        {% endif %}
-    </span>
+    {% if collector.data.unavailable_migrations is defined %}
+        {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
+        {% set new_migrations = collector.data.new_migrations|length %}
+        {% set label = unavailable_migrations > 0 ? 'label-status-warning' : '' %}
+        {% set label = new_migrations > 0 ? 'label-status-error' : label %}
+        <span class="label {{ label }}">
+            <span class="icon">{{ include('@DoctrineMigrations/Collector/icon.svg') }}</span>
+            <strong>Migrations</strong>
+            {% if unavailable_migrations > 0 or new_migrations > 0 %}
+                <span class="count">
+                    <span>{{ new_migrations + unavailable_migrations }}</span>
+                </span>
+            {% endif %}
+        </span>
+    {% endif %}
 {% endblock %}
 
 {% block panel %}

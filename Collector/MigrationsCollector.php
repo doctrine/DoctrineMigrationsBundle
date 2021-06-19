@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,17 @@ class MigrationsCollector extends DataCollector
         $metadataStorage = $this->dependencyFactory->getMetadataStorage();
         $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
 
-        $executedMigrations  = $metadataStorage->getExecutedMigrations();
+        try {
+            $executedMigrations = $metadataStorage->getExecutedMigrations();
+        } catch (Exception $dbalException) {
+            $this->dependencyFactory->getLogger()->error(
+                'error while trying to collect executed migrations',
+                ['exception' => $dbalException]
+            );
+
+            return;
+        }
+
         $availableMigrations = $planCalculator->getMigrations();
 
         $this->data['available_migrations_count'] = count($availableMigrations);
