@@ -28,9 +28,18 @@ class MigrationsFlattenerTest extends TestCase
         $this->flattener = new MigrationsFlattener();
     }
 
-    public function testFlattenNewMigrations(): void
+    public function testFlattenAvailableMigrations(): void
     {
         $expected = [
+            [
+                'version' => '012345',
+                'is_new' => true,
+                'is_unavailable' => false,
+                'description' => '',
+                'executed_at' => null,
+                'execution_time' => null,
+                'file' => dirname(__DIR__) . '/Fixtures/Migrations/Migration001.php',
+            ],
             [
                 'version' => '123456',
                 'is_new' => true,
@@ -51,7 +60,7 @@ class MigrationsFlattenerTest extends TestCase
             ],
         ];
 
-        $actual = $this->flattener->flattenNewMigrations($this->createAvailableMigrations(), $this->createExecutedMigrations());
+        $actual = $this->flattener->flattenAvailableMigrations($this->createAvailableMigrations());
         self::assertEquals($expected, $actual);
     }
 

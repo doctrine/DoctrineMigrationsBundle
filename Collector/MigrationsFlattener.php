@@ -11,12 +11,8 @@ use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
 
 class MigrationsFlattener
 {
-    public function flattenNewMigrations(AvailableMigrationsList $migrationsList, ExecutedMigrationsList $executedMigrations): array
+    public function flattenAvailableMigrations(AvailableMigrationsList $migrationsList): array
     {
-        $newMigrations = array_filter($migrationsList->getItems(), static function (AvailableMigration $migration) use ($executedMigrations) {
-            return ! $executedMigrations->hasMigration($migration->getVersion());
-        });
-
         return array_map(static function (AvailableMigration $migration) {
             return [
                 'version' => (string)$migration->getVersion(),
@@ -27,7 +23,7 @@ class MigrationsFlattener
                 'execution_time' =>  null,
                 'file' => (new \ReflectionClass($migration->getMigration()))->getFileName(),
             ];
-        }, array_values($newMigrations));
+        }, $migrationsList->getItems());
     }
 
     public function flattenExecutedMigrations(ExecutedMigrationsList $migrationsList, AvailableMigrationsList $availableMigrations): array
