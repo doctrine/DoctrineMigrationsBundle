@@ -91,9 +91,6 @@ application:
             # Custom migration sorting service id via callables (MyCallableFactory must be a callable)
             'Doctrine\Migrations\Version\Comparator': 'MyCallableFactory'
 
-
-
-
 - The ``services`` node allows you to provide custom services to the underlying ``DependencyFactory`` part of ``doctrine/migrations``.
 - The node ``factories`` is similar to ``services``, with the difference that it accepts only callables.
 
