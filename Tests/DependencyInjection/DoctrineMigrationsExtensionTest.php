@@ -395,6 +395,36 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container->compile();
     }
 
+    public function testTransactionalIsTrueIfNotSet(): void
+    {
+        $container = $this->getContainerBuilder();
+
+        $container->registerExtension(new DoctrineMigrationsExtension());
+        $container->setAlias('doctrine.migrations.configuration.test', new Alias('doctrine.migrations.configuration', true));
+
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Fixtures'));
+        $loader->load('conf.xml');
+
+        $container->compile();
+
+        $config = $container->get('doctrine.migrations.configuration.test');
+        assert($config instanceof Configuration);
+
+        self::assertTrue($config->isTransactional());
+    }
+
+    public function testTransactionalSetToFalseReflectsInConfig(): void
+    {
+        $config    = ['transactional' => false];
+        $container = $this->getContainer($config);
+        $container->compile();
+
+        $config = $container->get('doctrine.migrations.configuration');
+        assert($config instanceof Configuration);
+
+        self::assertFalse($config->isTransactional());
+    }
+
     /**
      * @param mixed[]      $config
      * @param mixed[]|null $dbalConfig

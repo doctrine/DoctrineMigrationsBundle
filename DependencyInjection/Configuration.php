@@ -151,6 +151,10 @@ class Configuration implements ConfigurationInterface
                     ->info('Use profiler to calculate and visualize migration status.')
                     ->defaultFalse()
                 ->end()
+                ->booleanNode('transactional')
+                    ->info('Whether or not to wrap migrations in a single transaction.')
+                    ->defaultTrue()
+                ->end()
             ->end();
 
         return $treeBuilder;
