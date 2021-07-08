@@ -80,6 +80,9 @@ application:
         # Adds an extra check in the generated migrations to ensure that is executed on the same database type.
         check_database_platform: true
 
+        # Whether or not to wrap migrations in a single transaction.
+        transactional: true
+
         services:
             # Custom migration sorting service id
             'Doctrine\Migrations\Version\Comparator': ~

@@ -77,6 +77,8 @@ class DoctrineMigrationsExtension extends Extension
             $this->registerCollector($container);
         }
 
+        $configurationDefinition->addMethodCall('setTransactional', [$config['transactional']]);
+
         $diDefinition = $container->getDefinition('doctrine.migrations.dependency_factory');
 
         if (! isset($config['services'][MigrationFactory::class])) {
