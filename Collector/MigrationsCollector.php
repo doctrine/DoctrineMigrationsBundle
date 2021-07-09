@@ -5,10 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\Collector;
 
 use Doctrine\Migrations\DependencyFactory;
-use Doctrine\Migrations\Metadata\AvailableMigration;
-use Doctrine\Migrations\Metadata\AvailableMigrationsList;
-use Doctrine\Migrations\Metadata\ExecutedMigration;
-use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,10 +32,10 @@ class MigrationsCollector extends DataCollector
         $availableMigrations = $planCalculator->getMigrations();
 
         $this->data['available_migrations_count'] = count($availableMigrations);
-        $unavailableMigrations = $this->filterUnavailableMigrations($executedMigrations, $availableMigrations);
+        $unavailableMigrations = $executedMigrations->unavailableSubset($availableMigrations);
         $this->data['unavailable_migrations_count'] = count($unavailableMigrations);
 
-        $newMigrations = $this->filterNewMigrations($availableMigrations, $executedMigrations);
+        $newMigrations = $availableMigrations->newSubset($executedMigrations);
         $this->data['new_migrations'] = $this->flattener->flattenAvailableMigrations($newMigrations);
         $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
 
@@ -71,27 +67,5 @@ class MigrationsCollector extends DataCollector
     public function reset()
     {
         $this->data = [];
-    }
-
-    private function filterUnavailableMigrations(
-        ExecutedMigrationsList $executedMigrations,
-        AvailableMigrationsList $availableMigrations
-    ): ExecutedMigrationsList {
-        $unavailableMigrations = array_filter($executedMigrations->getItems(), static function (ExecutedMigration $migration) use ($availableMigrations) {
-            return !$availableMigrations->hasMigration($migration->getVersion());
-        });
-
-        return new ExecutedMigrationsList($unavailableMigrations);
-    }
-
-    private function filterNewMigrations(
-        AvailableMigrationsList $availableMigrations,
-        ExecutedMigrationsList $executedMigrations
-    ): AvailableMigrationsList {
-        $newMigrations = array_filter($availableMigrations->getItems(), static function (AvailableMigration $migration) use ($executedMigrations) {
-            return !$executedMigrations->hasMigration($migration->getVersion());
-        });
-
-        return new AvailableMigrationsList($newMigrations);
     }
 }
