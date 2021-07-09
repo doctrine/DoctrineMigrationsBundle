@@ -27,16 +27,17 @@ class MigrationsCollector extends DataCollector
     {
         $metadataStorage = $this->dependencyFactory->getMetadataStorage();
         $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
-        $statusCalculator = $this->dependencyFactory->getMigrationStatusCalculator();
 
         $executedMigrations  = $metadataStorage->getExecutedMigrations();
         $availableMigrations = $planCalculator->getMigrations();
 
-        $this->data['available_migrations'] = $this->flattener->flattenAvailableMigrations($availableMigrations, $executedMigrations);
-        $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
+        $this->data['available_migrations_count'] = count($availableMigrations);
+        $unavailableMigrations = $executedMigrations->unavailableSubset($availableMigrations);
+        $this->data['unavailable_migrations_count'] = count($unavailableMigrations);
 
-        $this->data['new_migrations'] = $this->flattener->flattenAvailableMigrations($statusCalculator->getNewMigrations());
-        $this->data['unavailable_migrations'] = $this->flattener->flattenExecutedMigrations($statusCalculator->getExecutedUnavailableMigrations());
+        $newMigrations = $availableMigrations->newSubset($executedMigrations);
+        $this->data['new_migrations'] = $this->flattener->flattenAvailableMigrations($newMigrations);
+        $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
 
         $this->data['storage'] = get_class($metadataStorage);
         $configuration = $this->dependencyFactory->getConfiguration();
