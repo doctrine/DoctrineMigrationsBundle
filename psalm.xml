@@ -15,4 +15,13 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <!-- This check is confused by Symfony's "mixed" property types. -->
+        <ReservedWord>
+            <errorLevel type="suppress">
+                <directory name="." />
+            </errorLevel>
+        </ReservedWord>
+    </issueHandlers>
 </psalm>
