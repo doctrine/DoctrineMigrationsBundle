@@ -25,6 +25,10 @@ class MigrationsCollector extends DataCollector
 
     public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
+        if (!empty($this->data)) {
+            return;
+        }
+
         $metadataStorage = $this->dependencyFactory->getMetadataStorage();
         $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
 
