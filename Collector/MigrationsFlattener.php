@@ -11,30 +11,26 @@ use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
 
 class MigrationsFlattener
 {
-    public function flattenAvailableMigrations(AvailableMigrationsList $migrationsList, ?ExecutedMigrationsList $executedMigrations = null): array
+    public function flattenAvailableMigrations(AvailableMigrationsList $migrationsList): array
     {
-        return array_map(static function (AvailableMigration $migration) use ($executedMigrations) {
-            $executedMigration = $executedMigrations && $executedMigrations->hasMigration($migration->getVersion())
-                ? $executedMigrations->getMigration($migration->getVersion())
-                : null;
-
+        return array_map(static function (AvailableMigration $migration) {
             return [
                 'version' => (string)$migration->getVersion(),
-                'is_new' => !$executedMigration,
+                'is_new' => true,
                 'is_unavailable' => false,
                 'description' => $migration->getMigration()->getDescription(),
-                'executed_at' =>  $executedMigration ? $executedMigration->getExecutedAt() : null,
-                'execution_time' =>  $executedMigration ? $executedMigration->getExecutionTime() : null,
+                'executed_at' =>  null,
+                'execution_time' =>  null,
                 'file' => (new \ReflectionClass($migration->getMigration()))->getFileName(),
             ];
         }, $migrationsList->getItems());
     }
 
-    public function flattenExecutedMigrations(ExecutedMigrationsList $migrationsList, ?AvailableMigrationsList $availableMigrations = null): array
+    public function flattenExecutedMigrations(ExecutedMigrationsList $migrationsList, AvailableMigrationsList $availableMigrations): array
     {
         return array_map(static function (ExecutedMigration $migration) use ($availableMigrations) {
 
-            $availableMigration = $availableMigrations && $availableMigrations->hasMigration($migration->getVersion())
+            $availableMigration = $availableMigrations->hasMigration($migration->getVersion())
                 ? $availableMigrations->getMigration($migration->getVersion())->getMigration()
                 : null;
 
