@@ -41,7 +41,6 @@ application:
 
     # config/packages/doctrine_migrations.yaml
 
-
     doctrine_migrations:
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
