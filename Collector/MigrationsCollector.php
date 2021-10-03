@@ -58,6 +58,9 @@ class MigrationsCollector extends DataCollector
         $this->data['namespaces'] = $configuration->getMigrationDirectories();
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'doctrine_migrations';
