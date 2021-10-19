@@ -76,6 +76,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
             'organize_migrations' => 'BY_YEAR_AND_MONTH',
 
+            'transactional'             => true,
             'all_or_nothing'            => true,
             'check_database_platform'   => true,
         ];
@@ -86,6 +87,18 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $config = $container->get('doctrine.migrations.configuration');
 
         $this->assertConfigs($config);
+    }
+
+    public function testAllowsDisablingTransactionalSupportForIndividualMigrations(): void
+    {
+        $container = $this->getContainer(['transactional' => false]);
+
+        $container->compile();
+
+        $config = $container->get('doctrine.migrations.configuration');
+
+        self::assertInstanceOf(Configuration::class, $config);
+        self::assertFalse($config->isTransactional());
     }
 
     public function testNoConfigsAreNeeded(): void

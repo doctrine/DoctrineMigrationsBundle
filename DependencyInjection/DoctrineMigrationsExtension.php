@@ -70,6 +70,7 @@ class DoctrineMigrationsExtension extends Extension
             $configurationDefinition->addMethodCall('setCustomTemplate', [$config['custom_template']]);
         }
 
+        $configurationDefinition->addMethodCall('setTransactional', [$config['transactional']]);
         $configurationDefinition->addMethodCall('setAllOrNothing', [$config['all_or_nothing']]);
         $configurationDefinition->addMethodCall('setCheckDatabasePlatform', [$config['check_database_platform']]);
 

@@ -54,6 +54,18 @@
             <xsd:attribute name="em" type="xsd:string"/>
             <xsd:attribute name="connection" type="xsd:string"/>
             <xsd:attribute name="sorter" type="xsd:string"/>
+
+            <!--
+            By default, individual migrations run in a DB transaction: this flag allows disabling transaction support.
+
+            When dealing with databases that switch to auto-commit mode after DDL, such as MySQL, it is sometimes
+            preferable to not run migrations within a transaction, since:
+
+             * the migration cannot be rolled back via a DB transaction rollback anyway
+             * the migration will be in a dirty state, and requires manual recovery anyway
+             * a transaction error will only obscure the underlying issue in your migration
+            -->
+            <xsd:attribute name="transactional" default="true" type="xsd:boolean"/>
             <xsd:attribute name="all_or_nothing" type="xsd:boolean"/>
             <xsd:attribute name="check_database_platform" type="xsd:boolean"/>
             <xsd:attribute name="custom_template" type="xsd:string"/>

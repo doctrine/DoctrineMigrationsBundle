@@ -119,6 +119,20 @@ class Configuration implements ConfigurationInterface
                     ->info('Run all migrations in a transaction.')
                     ->defaultValue(false)
                 ->end()
+                ->booleanNode('transactional')
+                    ->info(<<<'INFO'
+By default, individual migrations run in a DB transaction: this flag allows disabling transaction support.
+
+When dealing with databases that switch to auto-commit mode after DDL, such as MySQL, it is sometimes
+preferable to not run migrations within a transaction, since:
+
+ * the migration cannot be rolled back via a DB transaction rollback anyway
+ * the migration will be in a dirty state, and requires manual recovery anyway
+ * a transaction error will only obscure the underlying issue in your migration
+INFO
+                    )
+                    ->defaultValue(true)
+                ->end()
                 ->scalarNode('check_database_platform')
                     ->info('Adds an extra check in the generated migrations to allow execution only on the same platform as they were initially generated on.')
                     ->defaultValue(true)
