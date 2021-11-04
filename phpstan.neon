@@ -1,7 +1,7 @@
 parameters:
     level: 7
     paths:
-        - %currentWorkingDirectory%/Command
-        - %currentWorkingDirectory%/Tests
+        - Command
+        - Tests
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
