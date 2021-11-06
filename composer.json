@@ -30,7 +30,8 @@
         "mikey179/vfsstream": "^1.6",
         "doctrine/coding-standard": "^8.0",
         "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-strict-rules": "^0.12"
+        "phpstan/phpstan-strict-rules": "^0.12",
+        "vimeo/psalm": "^4.11"
     },
     "autoload": {
         "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\": "" },
