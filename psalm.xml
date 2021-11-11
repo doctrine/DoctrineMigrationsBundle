@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="4"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    errorBaseline="psalm-baseline.xml"
+>
+    <projectFiles>
+        <directory name="DependencyInjection" />
+        <directory name="Tests" />
+        <file name="DoctrineMigrationsBundle.php" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <!-- This check is confused by Symfony's "mixed" property types. -->
+        <ReservedWord>
+            <errorLevel type="suppress">
+                <directory name="." />
+            </errorLevel>
+        </ReservedWord>
+    </issueHandlers>
+</psalm>

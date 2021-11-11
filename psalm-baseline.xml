@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.11.2@6fba5eb554f9507b72932f9c75533d8af593688d">
+  <file src="DependencyInjection/Configuration.php">
+    <UndefinedMethod occurrences="1">
+      <code>root</code>
+    </UndefinedMethod>
+  </file>
+  <file src="DependencyInjection/DoctrineMigrationsExtension.php">
+    <MoreSpecificImplementedParamType occurrences="1">
+      <code>$configs</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+</files>
