@@ -3,7 +3,7 @@
 {% import _self as helper %}
 
 {% block toolbar %}
-    {% if collector.data.unavailable_migrations is defined %}
+    {% if collector.data.unavailable_migrations_count is defined %}
         {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
         {% set new_migrations = collector.data.new_migrations|length %}
         {% if unavailable_migrations > 0 or new_migrations > 0 %}
@@ -47,7 +47,7 @@
 
 
 {% block menu %}
-    {% if collector.data.unavailable_migrations is defined %}
+    {% if collector.data.unavailable_migrations_count is defined %}
         {% set unavailable_migrations = collector.data.unavailable_migrations_count %}
         {% set new_migrations = collector.data.new_migrations|length %}
         {% set label = unavailable_migrations > 0 ? 'label-status-warning' : '' %}
