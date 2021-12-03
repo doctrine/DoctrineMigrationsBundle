@@ -12,11 +12,11 @@
         },
         {
             "name": "Doctrine Project",
-            "homepage": "http://www.doctrine-project.org"
+            "homepage": "https://www.doctrine-project.org"
         },
         {
             "name": "Symfony Community",
-            "homepage": "http://symfony.com/contributors"
+            "homepage": "https://symfony.com/contributors"
         }
     ],
     "require": {
