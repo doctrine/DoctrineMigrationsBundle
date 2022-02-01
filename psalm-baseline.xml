@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.11.2@6fba5eb554f9507b72932f9c75533d8af593688d">
+<files psalm-version="4.19.0@a2ad69ae4f5ab1f7d225a8dc4e2ec2d9415ed599">
   <file src="DependencyInjection/Configuration.php">
     <UndefinedMethod occurrences="1">
       <code>root</code>
@@ -9,5 +9,22 @@
     <MoreSpecificImplementedParamType occurrences="1">
       <code>$configs</code>
     </MoreSpecificImplementedParamType>
+  </file>
+  <file src="Tests/Fixtures/CustomEntityManager.php">
+    <ConstructorSignatureMismatch occurrences="1">
+      <code>$em</code>
+    </ConstructorSignatureMismatch>
+    <ImplementedParamTypeMismatch occurrences="1">
+      <code>$em</code>
+    </ImplementedParamTypeMismatch>
+    <InvalidArgument occurrences="1">
+      <code>$this</code>
+    </InvalidArgument>
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$em</code>
+    </InvalidPropertyAssignmentValue>
+    <MethodSignatureMismatch occurrences="1">
+      <code>public function __construct(CustomEntityManager $em)</code>
+    </MethodSignatureMismatch>
   </file>
 </files>
