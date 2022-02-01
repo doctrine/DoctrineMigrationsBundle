@@ -44,5 +44,10 @@
     },
     "autoload-dev": {
         "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "Tests" }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
