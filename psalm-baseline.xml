@@ -10,21 +10,4 @@
       <code>$configs</code>
     </MoreSpecificImplementedParamType>
   </file>
-  <file src="Tests/Fixtures/CustomEntityManager.php">
-    <ConstructorSignatureMismatch occurrences="1">
-      <code>$em</code>
-    </ConstructorSignatureMismatch>
-    <ImplementedParamTypeMismatch occurrences="1">
-      <code>$em</code>
-    </ImplementedParamTypeMismatch>
-    <InvalidArgument occurrences="1">
-      <code>$this</code>
-    </InvalidArgument>
-    <InvalidPropertyAssignmentValue occurrences="1">
-      <code>$em</code>
-    </InvalidPropertyAssignmentValue>
-    <MethodSignatureMismatch occurrences="1">
-      <code>public function __construct(CustomEntityManager $em)</code>
-    </MethodSignatureMismatch>
-  </file>
 </files>

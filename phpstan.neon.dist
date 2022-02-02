@@ -9,9 +9,6 @@ parameters:
         - '~.*TreeBuilder::root.*~'
         - '~Parameter \#1 \$configs.*DoctrineMigrationsExtension::load.*~'
 
-    excludes_analyse:
-        - Tests/Fixtures/CustomEntityManager.php
-
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
