@@ -83,7 +83,7 @@ application:
         # Whether or not to wrap migrations in a single transaction.
         transactional: true
 
-        # Whether or not to enable the profiler collector. This add some queries overhead.
+        # Use profiler to calculate and visualize migration status.
         # enable_profiler: false
 
         services:
