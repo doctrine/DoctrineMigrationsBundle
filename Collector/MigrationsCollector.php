@@ -10,6 +10,10 @@ use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Throwable;
+
+use function count;
+use function get_class;
 
 class MigrationsCollector extends DataCollector
 {
@@ -21,17 +25,22 @@ class MigrationsCollector extends DataCollector
     public function __construct(DependencyFactory $dependencyFactory, MigrationsFlattener $migrationsFlattener)
     {
         $this->dependencyFactory = $dependencyFactory;
-        $this->flattener = $migrationsFlattener;
+        $this->flattener         = $migrationsFlattener;
     }
 
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
-        if (!empty($this->data)) {
+        if (! empty($this->data)) {
+            return;
+        }
+
+        $connection = $this->dependencyFactory->getConnection();
+        if (! $connection->isConnected()) {
             return;
         }
 
         $metadataStorage = $this->dependencyFactory->getMetadataStorage();
-        $planCalculator = $this->dependencyFactory->getMigrationPlanCalculator();
+        $planCalculator  = $this->dependencyFactory->getMigrationPlanCalculator();
 
         try {
             $executedMigrations = $metadataStorage->getExecutedMigrations();
@@ -46,33 +55,29 @@ class MigrationsCollector extends DataCollector
 
         $availableMigrations = $planCalculator->getMigrations();
 
-        $this->data['available_migrations_count'] = count($availableMigrations);
-        $unavailableMigrations = $executedMigrations->unavailableSubset($availableMigrations);
+        $this->data['available_migrations_count']   = count($availableMigrations);
+        $unavailableMigrations                      = $executedMigrations->unavailableSubset($availableMigrations);
         $this->data['unavailable_migrations_count'] = count($unavailableMigrations);
 
-        $newMigrations = $availableMigrations->newSubset($executedMigrations);
-        $this->data['new_migrations'] = $this->flattener->flattenAvailableMigrations($newMigrations);
+        $newMigrations                     = $availableMigrations->newSubset($executedMigrations);
+        $this->data['new_migrations']      = $this->flattener->flattenAvailableMigrations($newMigrations);
         $this->data['executed_migrations'] = $this->flattener->flattenExecutedMigrations($executedMigrations, $availableMigrations);
 
         $this->data['storage'] = get_class($metadataStorage);
-        $configuration = $this->dependencyFactory->getConfiguration();
-        $storage = $configuration->getMetadataStorageConfiguration();
+        $configuration         = $this->dependencyFactory->getConfiguration();
+        $storage               = $configuration->getMetadataStorageConfiguration();
         if ($storage instanceof TableMetadataStorageConfiguration) {
-            $this->data['table'] = $storage->getTableName();
+            $this->data['table']  = $storage->getTableName();
             $this->data['column'] = $storage->getVersionColumnName();
         }
 
-        $connection = $this->dependencyFactory->getConnection();
         $this->data['driver'] = get_class($connection->getDriver());
-        $this->data['name'] = $connection->getDatabase();
+        $this->data['name']   = $connection->getDatabase();
 
         $this->data['namespaces'] = $configuration->getMigrationDirectories();
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'doctrine_migrations';
     }
@@ -82,7 +87,7 @@ class MigrationsCollector extends DataCollector
         return $this->data;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->data = [];
     }
