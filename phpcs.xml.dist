@@ -9,6 +9,8 @@
     <!-- Ignore warnings, show progress of the run and show sniff names -->
     <arg value="nps"/>
 
+    <config name="php_version" value="70200"/>
+
     <file>DependencyInjection</file>
     <file>Tests</file>
 
@@ -23,4 +25,3 @@
         </properties>
     </rule>
 </ruleset>
-
