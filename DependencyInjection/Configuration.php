@@ -148,7 +148,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->booleanNode('enable_profiler')
-                    ->info('Use profiler to calculate and visualize migration status.')
+                    ->info('Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead.')
                     ->defaultFalse()
                 ->end()
                 ->booleanNode('transactional')
