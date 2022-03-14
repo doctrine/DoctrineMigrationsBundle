@@ -83,6 +83,9 @@ application:
         # Whether or not to wrap migrations in a single transaction.
         transactional: true
 
+        # Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead.
+        # enable_profiler: false
+
         services:
             # Custom migration sorting service id
             'Doctrine\Migrations\Version\Comparator': ~
