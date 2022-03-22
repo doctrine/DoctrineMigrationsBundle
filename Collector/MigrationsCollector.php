@@ -35,6 +35,9 @@ class MigrationsCollector extends DataCollector
         }
 
         $connection = $this->dependencyFactory->getConnection();
+        // before collecting migrations, we need to make sure that Application has
+        // at least opened a connection, otherwise it's not guaranteed that connection
+        // is even configured
         if (! $connection->isConnected()) {
             return;
         }
