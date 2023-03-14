@@ -82,6 +82,9 @@ class MigrationsCollector extends DataCollector
         return $this->data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function reset()
     {
         $this->data = [];
