@@ -83,7 +83,7 @@ class MigrationsCollector extends DataCollector
     }
 
     /**
-     * {@inheritDoc}
+     * @return void
      */
     public function reset()
     {
