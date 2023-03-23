@@ -82,6 +82,9 @@ class MigrationsCollector extends DataCollector
         return $this->data;
     }
 
+    /**
+     * @return void
+     */
     public function reset()
     {
         $this->data = [];
