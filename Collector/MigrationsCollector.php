@@ -24,6 +24,9 @@ class MigrationsCollector extends DataCollector
         $this->flattener = $migrationsFlattener;
     }
 
+    /**
+     * @return void
+     */
     public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
         if (!empty($this->data)) {
