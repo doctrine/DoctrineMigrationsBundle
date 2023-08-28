@@ -9,6 +9,7 @@
             <xsd:attribute name="dir_name" type="xsd:string" />
             <xsd:attribute name="namespace" type="xsd:string" />
             <xsd:attribute name="table_name" type="xsd:string" />
+            <xsd:attribute name="all_or_nothing" type="xsd:boolean" />
             <xsd:attribute name="name" type="xsd:string" />
             <xsd:attribute name="organize-migrations">
                 <xsd:simpleType>

@@ -59,6 +59,7 @@ You can configure the path, namespace, table_name, name and organize_migrations 
         table_name: migration_versions
         name: Application Migrations
         organize_migrations: false # Version >=1.2 Possible values are: "BY_YEAR", "BY_YEAR_AND_MONTH", false
+        all_or_nothing: false
 
 Usage
 -----

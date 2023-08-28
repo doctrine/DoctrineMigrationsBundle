@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('dir_name')->defaultValue('%kernel.root_dir%/DoctrineMigrations')->cannotBeEmpty()->end()
                 ->scalarNode('namespace')->defaultValue('Application\Migrations')->cannotBeEmpty()->end()
                 ->scalarNode('table_name')->defaultValue('migration_versions')->cannotBeEmpty()->end()
+                ->scalarNode('all_or_nothing')->defaultValue(false)->end()
                 ->scalarNode('name')->defaultValue('Application Migrations')->end()
                 ->scalarNode('custom_template')->defaultValue(null)->end()
                 ->scalarNode('organize_migrations')->defaultValue(false)
