@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": "^7.2|^8.0",
-        "symfony/framework-bundle": "~3.4|~4.0|~5.0|~6.0",
+        "symfony/framework-bundle": "~3.4|~4.0|~5.0|~6.0|~7.0",
         "doctrine/doctrine-bundle": "~1.0|~2.0",
         "doctrine/migrations": "^3.2"
     },
