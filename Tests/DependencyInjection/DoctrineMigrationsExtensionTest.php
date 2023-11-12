@@ -32,7 +32,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 
 use function assert;
-use function class_exists;
 use function sys_get_temp_dir;
 
 class DoctrineMigrationsExtensionTest extends TestCase
@@ -451,9 +450,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $container->getDefinition('doctrine.migrations.dependency_factory')->setPublic(true);
         $container->getDefinition('doctrine.migrations.configuration')->setPublic(true);
-        if (class_exists(CacheCompatibilityPass::class)) {
-            $container->addCompilerPass(new CacheCompatibilityPass());
-        }
+        $container->addCompilerPass(new CacheCompatibilityPass());
 
         return $container;
     }
