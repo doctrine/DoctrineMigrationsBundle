@@ -68,9 +68,7 @@ class DoctrineCommandsTest extends TestCase
         ];
     }
 
-    /**
-     * @return MockObject|KernelInterface
-     */
+    /** @return MockObject|KernelInterface */
     private function getKernel(ContainerBuilder $container)
     {
         $kernel = $this->createMock(KernelInterface::class);
