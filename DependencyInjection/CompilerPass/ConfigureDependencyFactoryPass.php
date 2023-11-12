@@ -78,9 +78,7 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
 
     private function validatePreferredConnection(ContainerBuilder $container, string $preferredConnection): void
     {
-        /**
-         * @var array<string, string> $allowedConnections
-         */
+        /** @var array<string, string> $allowedConnections */
         $allowedConnections = $container->getParameter('doctrine.connections');
         if (! isset($allowedConnections[$preferredConnection])) {
             throw new InvalidArgumentException(sprintf(
@@ -104,9 +102,7 @@ class ConfigureDependencyFactoryPass implements CompilerPassInterface
             ));
         }
 
-        /**
-         * @var array<string, string> $allowedEms
-         */
+        /** @var array<string, string> $allowedEms */
         $allowedEms = $container->getParameter('doctrine.entity_managers');
         if (! isset($allowedEms[$preferredEm])) {
             throw new InvalidArgumentException(sprintf(

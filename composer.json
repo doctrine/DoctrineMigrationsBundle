@@ -27,7 +27,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5|^9.5",
-        "doctrine/coding-standard": "^9",
+        "doctrine/coding-standard": "^12",
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^1",
         "phpstan/phpstan-phpunit": "^1",
