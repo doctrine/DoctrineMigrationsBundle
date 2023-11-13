@@ -164,15 +164,15 @@ class Configuration implements ConfigurationInterface
         $constPrefix = 'VERSIONS_ORGANIZATION_';
         $prefixLen   = strlen($constPrefix);
         $refClass    = new ReflectionClass('Doctrine\Migrations\Configuration\Configuration');
-        $constsArray = $refClass->getConstants();
+        $constsArray = array_keys($refClass->getConstants());
         $namesArray  = [];
 
-        foreach ($constsArray as $key => $value) {
-            if (strpos($key, $constPrefix) !== 0) {
+        foreach ($constsArray as $constant) {
+            if (strpos($constant, $constPrefix) !== 0) {
                 continue;
             }
 
-            $namesArray[] = substr($key, $prefixLen);
+            $namesArray[] = substr($constant, $prefixLen);
         }
 
         return $namesArray;
