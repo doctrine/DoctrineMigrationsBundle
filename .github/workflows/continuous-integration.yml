@@ -15,3 +15,9 @@ jobs:
     uses: "doctrine/.github/.github/workflows/continuous-integration.yml@3.1.0"
     with:
       php-versions: '["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3"]'
+
+  phpunit-with-dev-deps:
+    name: "PHPUnit with dev dependencies"
+    uses: "doctrine/.github/.github/workflows/continuous-integration-symfony-unstable.yml@3.1.0"
+    with:
+      symfony-version-constraint: "^7"
