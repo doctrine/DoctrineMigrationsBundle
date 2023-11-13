@@ -21,6 +21,7 @@
     ],
     "require": {
         "php": "^7.2|^8.0",
+        "symfony/deprecation-contracts": "^2.1 || ^3",
         "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/migrations": "^3.2"
@@ -37,6 +38,8 @@
         "doctrine/persistence": "^2.0 || ^3 ",
         "psalm/plugin-phpunit": "^0.18.4",
         "psalm/plugin-symfony": "^3 || ^5",
+        "symfony/phpunit-bridge": "^6.3 || ^7",
+        "symfony/var-exporter": "^5.4 || ^6 || ^7",
         "vimeo/psalm": "^4.30 || ^5.15"
     },
     "autoload": {
