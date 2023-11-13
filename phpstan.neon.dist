@@ -1,6 +1,6 @@
 parameters:
     level: 7
-    phpVersion: 80100
+    phpVersion: 80200
     paths:
         - %currentWorkingDirectory%/DependencyInjection
         - %currentWorkingDirectory%/Tests
