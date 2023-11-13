@@ -24,6 +24,7 @@ use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -40,9 +41,12 @@ class DoctrineCommandsTest extends TestCase
      */
     public function testCommandRegistered(string $name, string $instance): void
     {
-        $application = $this->getApplication();
+        $command = $this->getApplication()->find($name);
+        if ($command instanceof LazyCommand) {
+            $command = $command->getCommand();
+        }
 
-        self::assertInstanceOf($instance, $application->find($name));
+        self::assertInstanceOf($instance, $command);
     }
 
     /**
@@ -68,8 +72,8 @@ class DoctrineCommandsTest extends TestCase
         ];
     }
 
-    /** @return MockObject|KernelInterface */
-    private function getKernel(ContainerBuilder $container)
+    /** @return KernelInterface&MockObject */
+    private function getKernel(ContainerBuilder $container): KernelInterface
     {
         $kernel = $this->createMock(KernelInterface::class);
 

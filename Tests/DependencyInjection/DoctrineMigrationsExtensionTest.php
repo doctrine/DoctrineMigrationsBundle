@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
-use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\Migration001;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\DependencyFactory;
@@ -25,6 +25,7 @@ use RuntimeException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -32,6 +33,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 
 use function assert;
+use function interface_exists;
 use function sys_get_temp_dir;
 
 class DoctrineMigrationsExtensionTest extends TestCase
@@ -170,6 +172,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
     public function testContainerAwareMigrations(): void
     {
+        if (! interface_exists(ContainerAwareInterface::class)) {
+            self::markTestSkipped('This test requires Symfony < 7');
+        }
+
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
         ];
@@ -180,9 +186,9 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
 
-        $migration = $di->getMigrationFactory()->createVersion(Migration001::class);
+        $migration = $di->getMigrationFactory()->createVersion(ContainerAwareMigration::class);
 
-        self::assertInstanceOf(Migration001::class, $migration);
+        self::assertInstanceOf(ContainerAwareMigration::class, $migration);
         self::assertSame($container, $migration->getContainer());
     }
 
