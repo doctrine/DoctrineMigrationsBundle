@@ -22,6 +22,7 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -31,13 +32,17 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\VarExporter\LazyGhostTrait;
 
 use function assert;
 use function interface_exists;
 use function sys_get_temp_dir;
+use function trait_exists;
 
 class DoctrineMigrationsExtensionTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     public function testXmlConfigs(): void
     {
         $container = $this->getContainerBuilder();
@@ -170,6 +175,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($sorter, $di->getVersionComparator());
     }
 
+    /** @group legacy */
     public function testContainerAwareMigrations(): void
     {
         if (! interface_exists(ContainerAwareInterface::class)) {
@@ -185,6 +191,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
+
+        $this->expectDeprecation('Since doctrine/doctrine-migrations-bundle 3.3: Migration "Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration" implements "Symfony\Component\DependencyInjection\ContainerAwareInterface" to gain access to the application\'s service container. This method is deprecated and won\'t work with Symfony 7.');
 
         $migration = $di->getMigrationFactory()->createVersion(ContainerAwareMigration::class);
 
@@ -276,7 +284,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
         ];
-        $container = $this->getContainer($config, null, []);
+        $ormConfig = trait_exists(LazyGhostTrait::class) ? ['enable_lazy_ghost_objects' => true] : [];
+        $container = $this->getContainer($config, null, $ormConfig);
 
         $container->compile();
 
@@ -334,12 +343,17 @@ class DoctrineMigrationsExtensionTest extends TestCase
             'em' => 'custom',
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
         ];
-        $container = $this->getContainer($config, null, [
+        $ormConfig = [
             'entity_managers' => [
                 'custom' => null,
                 'acb' => null,
             ],
-        ]);
+        ];
+        if (trait_exists(LazyGhostTrait::class)) {
+            $ormConfig['enable_lazy_ghost_objects'] = true;
+        }
+
+        $container = $this->getContainer($config, null, $ormConfig);
 
         $container->compile();
 
