@@ -183,7 +183,7 @@ migration to execute:
 
 .. code-block:: terminal
 
-    $ php bin/console doctrine:migrations:status --show-versions
+    $ php bin/console doctrine:migrations:status
 
 Now you can add some migration code to the ``up()`` and ``down()`` methods and
 finally migrate when you're ready:
