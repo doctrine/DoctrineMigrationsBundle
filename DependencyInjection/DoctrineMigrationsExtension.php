@@ -6,6 +6,7 @@ namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsCollector;
 use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsFlattener;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
 use Doctrine\Migrations\Version\MigrationFactory;
@@ -51,6 +52,9 @@ class DoctrineMigrationsExtension extends Extension
         $loader  = new XmlFileLoader($container, $locator);
 
         $loader->load('services.xml');
+
+        $container->registerForAutoconfiguration(AbstractMigration::class)
+            ->addTag('doctrine_migrations.migration');
 
         $configurationDefinition = $container->getDefinition('doctrine.migrations.configuration');
 
