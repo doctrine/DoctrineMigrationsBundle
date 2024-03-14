@@ -2,8 +2,8 @@ parameters:
     level: 7
     phpVersion: 80200
     paths:
-        - %currentWorkingDirectory%/DependencyInjection
-        - %currentWorkingDirectory%/Tests
+        - DependencyInjection
+        - Tests
 
     ignoreErrors:
         - '~Parameter \#1 \$configs.*DoctrineMigrationsExtension::load.*~'
