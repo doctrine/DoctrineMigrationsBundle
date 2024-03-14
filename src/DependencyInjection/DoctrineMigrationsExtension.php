@@ -90,15 +90,21 @@ class DoctrineMigrationsExtension extends Extension
             $diDefinition->addMethodCall('setDefinition', [$doctrineId, new Reference($symfonyId)]);
         }
 
-        if (! isset($config['services'][MetadataStorage::class])) {
+        if (isset($config['services'][MetadataStorage::class])) {
+            $container->removeDefinition('doctrine_migrations.schema_filter_listener');
+        } else {
+            $filterDefinition     = $container->getDefinition('doctrine_migrations.schema_filter_listener');
             $storageConfiguration = $config['storage']['table_storage'];
 
             $storageDefinition = new Definition(TableMetadataStorageConfiguration::class);
             $container->setDefinition('doctrine.migrations.storage.table_storage', $storageDefinition);
             $container->setAlias('doctrine.migrations.metadata_storage', 'doctrine.migrations.storage.table_storage');
 
-            if ($storageConfiguration['table_name'] !== null) {
+            if ($storageConfiguration['table_name'] === null) {
+                $filterDefinition->addArgument('doctrine_migration_versions');
+            } else {
                 $storageDefinition->addMethodCall('setTableName', [$storageConfiguration['table_name']]);
+                $filterDefinition->addArgument($storageConfiguration['table_name']);
             }
 
             if ($storageConfiguration['version_column_name'] !== null) {
