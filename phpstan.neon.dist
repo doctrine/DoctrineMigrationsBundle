@@ -3,6 +3,7 @@ parameters:
     phpVersion: 80200
     paths:
         - DependencyInjection
+        - EventListener
         - Tests
 
     excludePaths:
