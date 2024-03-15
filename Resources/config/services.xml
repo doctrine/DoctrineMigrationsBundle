@@ -146,6 +146,11 @@
             <tag name="console.command" command="doctrine:migrations:version" />
         </service>
 
+        <service id="doctrine_migrations.schema_filter_listener" class="Doctrine\Migrations\EventListener\SchemaFilterListener">
+            <tag name="kernel.event_listener" event="console.command" method="onConsoleCommand" />
+            <tag name="doctrine.dbal.schema_filter" />
+        </service>
+
     </services>
 
 </container>

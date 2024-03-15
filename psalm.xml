@@ -11,6 +11,7 @@
 >
     <projectFiles>
         <directory name="DependencyInjection" />
+        <directory name="EventListener" />
         <directory name="Tests" />
         <file name="DoctrineMigrationsBundle.php" />
         <ignoreFiles>
