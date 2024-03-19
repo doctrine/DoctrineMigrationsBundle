@@ -41,12 +41,11 @@ application:
 
     # config/packages/doctrine_migrations.yaml
 
-    doctrine_migrations:
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
-            'App\Migrations': '%kernel.project_dir%/src/App'
-            'AnotherApp\Migrations': '/path/to/other/migrations'
-            'SomeBundle\Migrations': '@SomeBundle/Migrations'
+            # namespace is arbitrary but should be different from App\Migrations
+            # as migrations classes should NOT be autoloaded
+            'DoctrineMigrations': '%kernel.project_dir%/migrations'
 
         # List of additional migration classes to be loaded, optional
         migrations:
