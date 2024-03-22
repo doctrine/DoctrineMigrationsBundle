@@ -9,7 +9,9 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Doctrine\Bundle\MigrationsBundle\Migration\EnvironmentAwareMigrationInterface;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\EnvironmentAwareMigration;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\DependencyFactory;
@@ -198,6 +200,24 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         self::assertInstanceOf(ContainerAwareMigration::class, $migration);
         self::assertSame($container, $migration->getContainer());
+    }
+
+    public function testEnvironmentAwareMigrations(): void
+    {
+        $config    = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+        ];
+        $container = $this->getContainer($config);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
+
+        $migration = $di->getMigrationFactory()->createVersion(EnvironmentAwareMigration::class);
+
+        self::assertInstanceOf(EnvironmentAwareMigrationInterface::class, $migration);
+        self::assertSame('test', $migration->getEnvironment());
     }
 
     public function testServicesAreLazy(): void
