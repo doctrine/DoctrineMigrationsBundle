@@ -27,6 +27,7 @@
         "doctrine/migrations": "^3.2"
     },
     "require-dev": {
+        "composer/semver": "^3.0",
         "phpunit/phpunit": "^8.5|^9.5",
         "doctrine/coding-standard": "^12",
         "phpstan/phpstan": "^1.4",
