@@ -202,6 +202,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertSame($container, $migration->getContainer());
     }
 
+    /** @group legacy */
     public function testEnvironmentAwareMigrations(): void
     {
         $config    = [
@@ -214,9 +215,35 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
 
+        $this->expectDeprecation('The "" service relies on the deprecated "Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ContainerAwareMigrationFactory" class. It should either be deprecated or its implementation upgraded.');
+
         $migration = $di->getMigrationFactory()->createVersion(EnvironmentAwareMigration::class);
 
-        self::assertInstanceOf(EnvironmentAwareMigrationInterface::class, $migration);
+        self::assertInstanceOf(EnvironmentAwareMigration::class, $migration);
+        self::assertSame('test', $migration->getEnvironment());
+    }
+
+    public function testEnvironmentAwareMigrationsWithSymfony7(): void
+    {
+        if (interface_exists(ContainerAwareInterface::class)) {
+            self::markTestSkipped('This test requires Symfony > 7');
+        }
+
+        $config    = [
+            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+        ];
+        $container = $this->getContainer($config);
+
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
+
+        $this->expectDeprecation('The "" service relies on the deprecated "Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ContainerAwareMigrationFactory" class. It should either be deprecated or its implementation upgraded.');
+
+        $migration = $di->getMigrationFactory()->createVersion(EnvironmentAwareMigration::class);
+
+        self::assertInstanceOf(EnvironmentAwareMigration::class, $migration);
         self::assertSame('test', $migration->getEnvironment());
     }
 
