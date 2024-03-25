@@ -9,7 +9,6 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
-use Doctrine\Bundle\MigrationsBundle\Migration\EnvironmentAwareMigrationInterface;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\EnvironmentAwareMigration;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
@@ -205,6 +204,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
     /** @group legacy */
     public function testEnvironmentAwareMigrations(): void
     {
+        if (! interface_exists(ContainerAwareInterface::class)) {
+            self::markTestSkipped('This test requires Symfony < 7');
+        }
+
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
         ];
