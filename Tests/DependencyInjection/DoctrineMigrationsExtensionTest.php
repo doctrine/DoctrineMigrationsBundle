@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -285,6 +287,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
         ];
         $ormConfig = trait_exists(LazyGhostTrait::class) ? ['enable_lazy_ghost_objects' => true] : [];
+        if (InstalledVersions::satisfies(new VersionParser(), 'doctrine/doctrine-bundle', '^2.7.1 ')) {
+            $ormConfig['controller_resolver'] = ['auto_mapping' => false];
+        }
+
         $container = $this->getContainer($config, null, $ormConfig);
 
         $container->compile();
@@ -349,6 +355,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
                 'acb' => null,
             ],
         ];
+        if (InstalledVersions::satisfies(new VersionParser(), 'doctrine/doctrine-bundle', '^2.7.1 ')) {
+            $ormConfig['controller_resolver'] = ['auto_mapping' => false];
+        }
+
         if (trait_exists(LazyGhostTrait::class)) {
             $ormConfig['enable_lazy_ghost_objects'] = true;
         }
