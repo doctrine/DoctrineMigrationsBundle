@@ -239,8 +239,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
 
-        $this->expectDeprecation('The "" service relies on the deprecated "Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ContainerAwareMigrationFactory" class. It should either be deprecated or its implementation upgraded.');
-
         $migration = $di->getMigrationFactory()->createVersion(EnvironmentAwareMigration::class);
 
         self::assertInstanceOf(EnvironmentAwareMigration::class, $migration);
