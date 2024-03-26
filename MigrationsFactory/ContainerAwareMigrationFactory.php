@@ -9,24 +9,20 @@ use Doctrine\Migrations\Version\MigrationFactory;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @deprecated This class is not compatible with Symfony >= 7
- */
+use function trigger_deprecation;
+
+/** @deprecated This class is not compatible with Symfony >= 7 */
 class ContainerAwareMigrationFactory implements MigrationFactory
 {
-    /**
-     * @var ContainerInterface
-     */
+    /** @var ContainerInterface */
     private $container;
 
-    /**
-     * @var MigrationFactory
-     */
+    /** @var MigrationFactory */
     private $migrationFactory;
 
     public function __construct(MigrationFactory $migrationFactory, ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->container        = $container;
         $this->migrationFactory = $migrationFactory;
     }
 

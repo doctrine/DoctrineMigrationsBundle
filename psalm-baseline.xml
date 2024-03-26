@@ -10,6 +10,14 @@
       <code><![CDATA[$configs]]></code>
     </MoreSpecificImplementedParamType>
   </file>
+  <file src="MigrationsFactory/ContainerAwareMigrationFactory.php">
+    <ContainerDependency>
+      <code><![CDATA[ContainerInterface $container]]></code>
+    </ContainerDependency>
+    <UndefinedClass>
+      <code><![CDATA[ContainerAwareInterface]]></code>
+    </UndefinedClass>
+  </file>
   <file src="Tests/Fixtures/Migrations/ContainerAwareMigration.php">
     <UndefinedClass>
       <code><![CDATA[ContainerAwareInterface]]></code>
