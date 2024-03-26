@@ -2,7 +2,10 @@ parameters:
     level: 7
     phpVersion: 80200
     paths:
+        - Collector
         - DependencyInjection
+        - DoctrineMigrationsBundle.php
+        - MigrationsFactory
         - Tests
 
     excludePaths:
@@ -13,6 +16,7 @@ parameters:
         - '~Parameter \#1 \$configs.*DoctrineMigrationsExtension::load.*~'
 
 includes:
+    - phpstan-baseline.neon
     - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
