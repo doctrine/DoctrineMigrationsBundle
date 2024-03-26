@@ -10,7 +10,9 @@
     errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
+        <directory name="Collector" />
         <directory name="DependencyInjection" />
+        <directory name="MigrationsFactory" />
         <directory name="Tests" />
         <file name="DoctrineMigrationsBundle.php" />
         <ignoreFiles>

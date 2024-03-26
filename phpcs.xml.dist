@@ -11,12 +11,19 @@
 
     <config name="php_version" value="70200"/>
 
+    <file>Collector</file>
+    <file>MigrationsFactory</file>
+    <file>DoctrineMigrationsBundle.php</file>
     <file>DependencyInjection</file>
     <file>Tests</file>
 
     <exclude-pattern>Tests/Fixtures/CustomEntityManager.php</exclude-pattern>
 
-    <rule ref="Doctrine"/>
+    <rule ref="Doctrine">
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint" />
+        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint" />
+        <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint" />
+    </rule>
 
     <!-- Disable the rules that will require PHP 7.4 -->
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
