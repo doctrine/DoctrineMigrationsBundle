@@ -8,6 +8,8 @@ use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\ConfigureD
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+use function dirname;
+
 /**
  * Bundle.
  */
@@ -17,5 +19,10 @@ class DoctrineMigrationsBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ConfigureDependencyFactoryPass());
+    }
+
+    public function getPath(): string
+    {
+        return dirname(__DIR__);
     }
 }

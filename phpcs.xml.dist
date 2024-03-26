@@ -11,13 +11,10 @@
 
     <config name="php_version" value="70200"/>
 
-    <file>Collector</file>
-    <file>MigrationsFactory</file>
-    <file>DoctrineMigrationsBundle.php</file>
-    <file>DependencyInjection</file>
-    <file>Tests</file>
+    <file>src</file>
+    <file>tests</file>
 
-    <exclude-pattern>Tests/Fixtures/CustomEntityManager.php</exclude-pattern>
+    <exclude-pattern>tests/Fixtures/CustomEntityManager.php</exclude-pattern>
 
     <rule ref="Doctrine">
         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint" />
