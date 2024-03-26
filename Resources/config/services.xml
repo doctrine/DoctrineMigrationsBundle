@@ -11,6 +11,14 @@
             <argument type="service" id="doctrine.migrations.configuration_loader"/>
             <argument></argument>
             <argument type="service" id="logger" on-invalid="null"></argument>
+            <call method="setDefinition">
+                <argument>Doctrine\Migrations\Finder\MigrationFinder</argument>
+                <argument type="service_closure" id="doctrine.migrations.migration_finder" />
+            </call>
+            <call method="setDefinition">
+                <argument>Doctrine\Migrations\MigrationsRepository</argument>
+                <argument type="service_closure" id="doctrine.migrations.migrations_repository" />
+            </call>
         </service>
 
         <service id="doctrine.migrations.configuration_loader" class="Doctrine\Migrations\Configuration\Migration\ExistingConfiguration" public="false">
@@ -144,6 +152,38 @@
             <argument>doctrine:migrations:version</argument>
 
             <tag name="console.command" command="doctrine:migrations:version" />
+        </service>
+
+        <service id="doctrine.migrations.connection" class="Doctrine\DBAL\Connection">
+            <factory service="doctrine.migrations.dependency_factory" method="getConnection" />
+        </service>
+
+        <service id="doctrine.migrations.logger" class="Psr\Log\LoggerInterface">
+            <factory service="doctrine.migrations.dependency_factory" method="getLogger" />
+        </service>
+
+        <service id="doctrine.migrations.migration_finder" class="Doctrine\Migrations\Finder\MigrationFinder">
+            <factory service="doctrine.migrations.dependency_factory" method="getMigrationsFinder" />
+        </service>
+
+        <service id="doctrine.migrations.filter_service_migration_finder"
+                 class="Doctrine\Bundle\MigrationsBundle\MigrationFinder\FilterServiceMigrationFinder"
+                 decorates="doctrine.migrations.migration_finder"
+        >
+            <argument id="doctrine.migrations.filter_service_migration_finder.inner" type="service" />
+            <argument type="abstract">migrations locator</argument>
+        </service>
+
+        <service id="doctrine.migrations.migrations_repository" class="Doctrine\Migrations\MigrationsRepository">
+            <factory service="doctrine.migrations.dependency_factory" method="getMigrationRepository" />
+        </service>
+
+        <service id="doctrine.migrations.service_migrations_repository"
+                 class="Doctrine\Bundle\MigrationsBundle\MigrationsRepository\ServiceMigrationsRepository"
+                 decorates="doctrine.migrations.migrations_repository"
+        >
+            <argument id="doctrine.migrations.service_migrations_repository.inner" type="service" />
+            <argument type="abstract">migrations locator</argument>
         </service>
 
     </services>
