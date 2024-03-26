@@ -50,6 +50,14 @@
             <argument id="service_container" type="service"/>
         </service>
 
+        <service id="doctrine.migrations.environment_aware_migrations_factory"
+                 class="Doctrine\Bundle\MigrationsBundle\MigrationsFactory\EnvironmentAwareMigrationFactory"
+                 decorates="doctrine.migrations.migrations_factory"
+        >
+            <argument id="doctrine.migrations.environment_aware_migrations_factory.inner" type="service"/>
+            <argument>%kernel.environment%</argument>
+        </service>
+
         <service id="doctrine_migrations.diff_command" class="Doctrine\Migrations\Tools\Console\Command\DiffCommand">
 
             <argument type="service" id="doctrine.migrations.dependency_factory"/>
