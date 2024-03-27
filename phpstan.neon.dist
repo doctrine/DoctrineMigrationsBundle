@@ -9,9 +9,6 @@ parameters:
         # That file contains an error that cannot be ignored
         - tests/Fixtures/Migrations/ContainerAwareMigration.php
 
-    ignoreErrors:
-        - '~Parameter \#1 \$configs.*DoctrineMigrationsExtension::load.*~'
-
 includes:
     - phpstan-baseline.neon
     - vendor/phpstan/phpstan-strict-rules/rules.neon

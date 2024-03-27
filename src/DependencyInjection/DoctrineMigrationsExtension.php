@@ -38,8 +38,7 @@ class DoctrineMigrationsExtension extends Extension
     /**
      * Responds to the migrations configuration parameter.
      *
-     * @param mixed[][] $configs
-     * @psalm-param array<string, array<string, array<string, array<string, string>|string>|string>> $configs
+     * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
