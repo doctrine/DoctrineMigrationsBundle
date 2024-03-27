@@ -30,9 +30,6 @@ use function sprintf;
 use function strlen;
 use function substr;
 
-/**
- * DoctrineMigrationsExtension.
- */
 class DoctrineMigrationsExtension extends Extension
 {
     /**
@@ -188,11 +185,6 @@ class DoctrineMigrationsExtension extends Extension
         $container->setDefinition('doctrine_migrations.migrations_collector', $collectorDefinition);
     }
 
-    /**
-     * Returns the base path for the XSD files.
-     *
-     * @return string The XSD base path
-     */
     public function getXsdValidationBasePath(): string
     {
         return __DIR__ . '/../../config/schema';
