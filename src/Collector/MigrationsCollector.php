@@ -32,7 +32,7 @@ class MigrationsCollector extends DataCollector
     /** @return void */
     public function collect(Request $request, Response $response, ?Throwable $exception = null)
     {
-        if (! empty($this->data)) {
+        if ($this->data !== []) {
             return;
         }
 

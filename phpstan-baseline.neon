@@ -1,21 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
-			count: 1
-			path: src/Collector/MigrationsCollector.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, Doctrine\\\\Migrations\\\\AbstractMigration\\|null given\\.$#"
-			count: 1
-			path: src/Collector/MigrationsFlattener.php
-
-		-
-			message: "#^Only booleans are allowed in a ternary operator condition, Doctrine\\\\Migrations\\\\AbstractMigration\\|null given\\.$#"
-			count: 2
-			path: src/Collector/MigrationsFlattener.php
-
-		-
 			message: "#^Call to method setContainer\\(\\) on an unknown class Symfony\\\\Component\\\\DependencyInjection\\\\ContainerAwareInterface\\.$#"
 			count: 1
 			path: src/MigrationsFactory/ContainerAwareMigrationFactory.php

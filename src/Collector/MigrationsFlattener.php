@@ -62,11 +62,11 @@ class MigrationsFlattener
             return [
                 'version' => (string) $migration->getVersion(),
                 'is_new' => false,
-                'is_unavailable' => ! $availableMigration,
-                'description' => $availableMigration ? $availableMigration->getDescription() : null,
+                'is_unavailable' => $availableMigration === null,
+                'description' => $availableMigration !== null ? $availableMigration->getDescription() : null,
                 'executed_at' => $migration->getExecutedAt(),
                 'execution_time' => $migration->getExecutionTime(),
-                'file' => $availableMigration ? (new ReflectionClass($availableMigration))->getFileName() : null,
+                'file' => $availableMigration !== null ? (new ReflectionClass($availableMigration))->getFileName() : null,
             ];
         }, $migrationsList->getItems());
     }

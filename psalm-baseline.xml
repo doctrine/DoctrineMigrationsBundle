@@ -5,11 +5,6 @@
       <code><![CDATA[end]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="src/DependencyInjection/DoctrineMigrationsExtension.php">
-    <MoreSpecificImplementedParamType>
-      <code><![CDATA[$configs]]></code>
-    </MoreSpecificImplementedParamType>
-  </file>
   <file src="src/MigrationsFactory/ContainerAwareMigrationFactory.php">
     <ContainerDependency>
       <code><![CDATA[ContainerInterface $container]]></code>
