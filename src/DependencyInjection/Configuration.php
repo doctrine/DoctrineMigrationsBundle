@@ -19,16 +19,8 @@ use function strpos;
 use function strtoupper;
 use function substr;
 
-/**
- * DoctrineMigrationsExtension configuration structure.
- */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * Generates the configuration tree.
-     *
-     * @return TreeBuilder The config tree builder
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('doctrine_migrations');
