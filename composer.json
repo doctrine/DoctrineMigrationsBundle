@@ -44,13 +44,10 @@
         "vimeo/psalm": "^4.30 || ^5.15"
     },
     "autoload": {
-        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\": "" },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
+        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "Tests" }
+        "psr-4": { "Doctrine\\Bundle\\MigrationsBundle\\Tests\\": "tests" }
     },
     "config": {
         "allow-plugins": {

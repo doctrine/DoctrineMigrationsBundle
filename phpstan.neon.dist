@@ -2,15 +2,12 @@ parameters:
     level: 7
     phpVersion: 80200
     paths:
-        - Collector
-        - DependencyInjection
-        - DoctrineMigrationsBundle.php
-        - MigrationsFactory
-        - Tests
+        - src
+        - tests
 
     excludePaths:
         # That file contains an error that cannot be ignored
-        - Tests/Fixtures/Migrations/ContainerAwareMigration.php
+        - tests/Fixtures/Migrations/ContainerAwareMigration.php
 
     ignoreErrors:
         - '~Parameter \#1 \$configs.*DoctrineMigrationsExtension::load.*~'
