@@ -145,6 +145,11 @@
 
             <tag name="console.command" command="doctrine:migrations:version" />
         </service>
+        <service id="doctrine_migrations.event.listener.remove_migration_table" class="Doctrine\Migrations\Event\Listeners\RemoveMigrationTableFromSchemaListener">
+            <tag name="doctrine.event_listener" event="postGenerateSchema"/>
+            <tag name="doctrine.event_listener" event="postGenerateComparisonSchema"/>
+            <argument type="service" id="doctrine.migrations.dependency_factory"/>
+        </service>
 
     </services>
 
