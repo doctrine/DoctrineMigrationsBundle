@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.23.1@8471a896ccea3526b26d082f4461eeea467f10a4">
+<files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
   <file src="DependencyInjection/Configuration.php">
     <UndefinedInterfaceMethod>
       <code><![CDATA[end]]></code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="DependencyInjection/DoctrineMigrationsExtension.php">
-    <MoreSpecificImplementedParamType>
-      <code><![CDATA[$configs]]></code>
-    </MoreSpecificImplementedParamType>
   </file>
   <file src="MigrationsFactory/ContainerAwareMigrationFactory.php">
     <ContainerDependency>
