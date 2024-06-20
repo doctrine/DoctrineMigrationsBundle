@@ -24,7 +24,7 @@ If you don't use `Symfony Flex`_, you must enable the bundle manually in the app
 .. code-block:: php
 
     // config/bundles.php
-    // in older Symfony apps, enable the bundle in app/AppKernel.php
+
     return [
         // ...
         Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
@@ -245,11 +245,13 @@ Here is an example on how to inject the service container into your migrations:
     .. code-block:: yaml
 
         # config/packages/doctrine_migrations.yaml
+
         doctrine_migrations:
             services:
                  'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\Factory\MigrationFactoryDecorator'
 
         # config/services.yaml
+
         services:
             App\Migrations\Factory\MigrationFactoryDecorator:
                 decorates: 'doctrine.migrations.migrations_factory'
@@ -314,6 +316,7 @@ for Doctrine's ORM:
     .. code-block:: php-annotations
 
         // src/Entity/User.php
+
         namespace App\Entity;
 
         use Doctrine\ORM\Mapping as ORM;
@@ -339,6 +342,7 @@ for Doctrine's ORM:
     .. code-block:: yaml
 
         # config/doctrine/User.orm.yaml
+
         App\Entity\User:
             type: entity
             table: user
@@ -355,6 +359,7 @@ for Doctrine's ORM:
     .. code-block:: xml
 
         <!-- config/doctrine/User.orm.xml -->
+
         <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
@@ -406,41 +411,45 @@ If you don't want to use this workflow and instead create your schema via
 
 Otherwise Doctrine will try to run all migrations, which probably will not work.
 
-Manual Tables
--------------
+Manual Tables Not Managed by Doctrine
+-------------------------------------
 
-It is a common use case, that in addition to your generated database structure
-based on your doctrine entities you might need custom tables. By default such
-tables will be removed by the ``doctrine:migrations:diff`` command.
+In addition to your generated database structure based on your doctrine entities you might need some custom tables.
+By default such tables will be marked for removal by the ``doctrine:migrations:diff`` command.
 
-If you follow a specific scheme you can configure doctrine/dbal to ignore those
-tables. Let's say all custom tables will be prefixed by ``t_``. In this case you
-just have to add the following configuration option to your doctrine configuration:
+Here's how you can configure ``doctrine/dbal`` to ignore some tables:
 
 .. configuration-block::
 
     .. code-block:: yaml
 
+        # config/packages/doctrine.yaml
+
         doctrine:
             dbal:
-                schema_filter: ~^(?!t_)~
+                schema_filter: ~^(?!t_)~ # Ignore all tables prefixed by `t_`
 
     .. code-block:: xml
 
+        <!-- config/packages/doctrine.xml -->
+
+        <!-- Ignore all tables prefixed by `t_` -->
         <doctrine:dbal schema-filter="~^(?!t_)~" />
 
 
     .. code-block:: php
 
+        // config/packages/doctrine.php
+
         $container->loadFromExtension('doctrine', array(
-            'dbal' => array(
-                'schema_filter'  => '~^(?!t_)~',
+            'dbal' => [
+                'schema_filter'  => '~^(?!t_)~', // Ignore all tables prefixed by `t_`
                 // ...
-            ),
+            ],
             // ...
         ));
 
-This ignores the tables, and any named objects such as sequences, on the DBAL level and they will be ignored by the diff command.
+This ignores the tables, and any named objects such as sequences, on the DBAL level and they will be ignored by the ``diff`` command.
 
 Note that if you have multiple connections configured then the ``schema_filter`` configuration
 will need to be placed per-connection.
