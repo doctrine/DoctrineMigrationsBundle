@@ -300,7 +300,7 @@ Here is an example on how to inject the service container into your migrations:
 .. caution::
 
     The interface ``Symfony\Component\DependencyInjection\ContainerAwareInterface`` has been deprecated in Symfony 6.4 and
-    removed in 7.0. If you use this version or newer, there is currently no way to inject dependencies in migrations.
+    removed in 7.0. If you use this version or newer, there is currently no way to inject service container in migrations.
 
 
 Generating Migrations Automatically
