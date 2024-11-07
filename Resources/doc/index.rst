@@ -297,6 +297,11 @@ Here is an example on how to inject the service container into your migrations:
     this bundle will automatically inject the default symfony container into your migration class
     (this because the ``MigrationFactoryDecorator`` shown in this example is the default migration factory used by this bundle).
 
+.. caution::
+
+    The interface ``Symfony\Component\DependencyInjection\ContainerAwareInterface`` has been deprecated in Symfony 6.4 and
+    removed in 7.0. If you use this version or newer, there is currently no way to inject dependencies in migrations.
+
 
 Generating Migrations Automatically
 -----------------------------------
