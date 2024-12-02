@@ -9,5 +9,3 @@ phpcs.xml.dist export-ignore
 phpstan.neon export-ignore
 phpstan.neon.dist export-ignore
 phpunit.xml.dist export-ignore
-psalm.xml export-ignore
-psalm-baseline.xml export-ignore

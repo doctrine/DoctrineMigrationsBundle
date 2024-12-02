@@ -51,7 +51,7 @@ class DoctrineCommandsTest extends TestCase
 
     /**
      * @return string[][]
-     * @psalm-return list<array{string, class-string<DoctrineCommand>}>
+     * @phpstan-return list<array{string, class-string<DoctrineCommand>}>
      */
     public function getCommands(): array
     {
