@@ -23,7 +23,6 @@ use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -40,8 +39,6 @@ use function trait_exists;
 
 class DoctrineMigrationsExtensionTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
     public function testXmlConfigs(): void
     {
         $container = $this->getContainerBuilder();
