@@ -122,7 +122,7 @@ class DoctrineMigrationsExtension extends Extension
 
         if ($config['em'] !== null && $config['connection'] !== null) {
             throw new InvalidArgumentException(
-                'You cannot specify both "connection" and "em" in the DoctrineMigrationsBundle configurations.'
+                'You cannot specify both "connection" and "em" in the DoctrineMigrationsBundle configurations.',
             );
         }
 
@@ -159,7 +159,7 @@ class DoctrineMigrationsExtension extends Extension
             throw new RuntimeException(sprintf(
                 'The bundle "%s" has not been registered, available bundles: %s',
                 $bundleName,
-                implode(', ', array_keys($bundleMetadata))
+                implode(', ', array_keys($bundleMetadata)),
             ));
         }
 

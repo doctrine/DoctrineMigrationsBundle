@@ -130,7 +130,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         ], $config->getMigrationDirectories());
     }
 
-    private function assertConfigs(?object $config): void
+    private function assertConfigs(object|null $config): void
     {
         self::assertInstanceOf(Configuration::class, $config);
         self::assertSame([
@@ -459,7 +459,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
      * @param mixed[]|null $dbalConfig
      * @param mixed[]|null $ormConfig
      */
-    private function getContainer(array $config, ?array $dbalConfig = null, ?array $ormConfig = null): ContainerBuilder
+    private function getContainer(array $config, array|null $dbalConfig = null, array|null $ormConfig = null): ContainerBuilder
     {
         $container = $this->getContainerBuilder();
 

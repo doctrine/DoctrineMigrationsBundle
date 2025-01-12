@@ -18,12 +18,12 @@ class ContainerAwareMigration extends AbstractMigration implements ContainerAwar
     {
     }
 
-    public function setContainer(?ContainerInterface $container = null): void
+    public function setContainer(ContainerInterface|null $container = null): void
     {
         $this->container = $container;
     }
 
-    public function getContainer(): ?ContainerInterface
+    public function getContainer(): ContainerInterface|null
     {
         return $this->container;
     }

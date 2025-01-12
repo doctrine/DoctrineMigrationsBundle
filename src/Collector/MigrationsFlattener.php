@@ -63,7 +63,7 @@ class MigrationsFlattener
                 'version' => (string) $migration->getVersion(),
                 'is_new' => false,
                 'is_unavailable' => $availableMigration === null,
-                'description' => $availableMigration !== null ? $availableMigration->getDescription() : null,
+                'description' => $availableMigration?->getDescription(),
                 'executed_at' => $migration->getExecutedAt(),
                 'execution_time' => $migration->getExecutionTime(),
                 'file' => $availableMigration !== null ? (new ReflectionClass($availableMigration))->getFileName() : null,

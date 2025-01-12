@@ -14,16 +14,10 @@ use function trigger_deprecation;
 /** @deprecated This class is not compatible with Symfony >= 7 */
 class ContainerAwareMigrationFactory implements MigrationFactory
 {
-    /** @var ContainerInterface */
-    private $container;
-
-    /** @var MigrationFactory */
-    private $migrationFactory;
-
-    public function __construct(MigrationFactory $migrationFactory, ContainerInterface $container)
-    {
-        $this->container        = $container;
-        $this->migrationFactory = $migrationFactory;
+    public function __construct(
+        private MigrationFactory $migrationFactory,
+        private ContainerInterface $container,
+    ) {
     }
 
     public function createVersion(string $migrationClassName): AbstractMigration
