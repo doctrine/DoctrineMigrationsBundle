@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit colors="true" bootstrap="vendor/autoload.php">
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    colors="true"
+    bootstrap="vendor/autoload.php"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+>
     <testsuites>
         <testsuite name="DoctrineMigrationsBundle for the Symfony Framework">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
+    <source ignoreSuppressionOfDeprecations="true">
+        <include>
             <directory>src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </source>
 
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-    </listeners>
+    <php>
+        <server name="DOCTRINE_DEPRECATIONS" value="trigger"/>
+    </php>
 </phpunit>

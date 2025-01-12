@@ -21,6 +21,7 @@ use Doctrine\Migrations\Tools\Console\Command\StatusCommand;
 use Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand;
 use Doctrine\Migrations\Tools\Console\Command\UpToDateCommand;
 use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -34,11 +35,8 @@ use function sys_get_temp_dir;
 
 class DoctrineCommandsTest extends TestCase
 {
-    /**
-     * @param class-string<DoctrineCommand> $instance
-     *
-     * @dataProvider getCommands
-     */
+    /** @param class-string<DoctrineCommand> $instance */
+    #[DataProvider('getCommands')]
     public function testCommandRegistered(string $name, string $instance): void
     {
         $command = $this->getApplication()->find($name);
@@ -53,7 +51,7 @@ class DoctrineCommandsTest extends TestCase
      * @return string[][]
      * @phpstan-return list<array{string, class-string<DoctrineCommand>}>
      */
-    public function getCommands(): array
+    public static function getCommands(): array
     {
         return [
             ['doctrine:migrations:diff', DiffCommand::class],
