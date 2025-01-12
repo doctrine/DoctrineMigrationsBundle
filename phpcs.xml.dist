@@ -19,11 +19,7 @@
 
     <exclude-pattern>tests/Fixtures/CustomEntityManager.php</exclude-pattern>
 
-    <rule ref="Doctrine">
-        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint" />
-        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint" />
-        <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint" />
-    </rule>
+    <rule ref="Doctrine" />
 
     <!-- Disable the rules that will require PHP 7.4 -->
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">

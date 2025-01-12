@@ -1,5 +1,12 @@
 # Upgrade
 
+## 4.0.0
+
+### BC break: type declarations
+
+Type declarations have been added to all method signatures and properties. You
+might have to adjust your own code to abide by the new type declarations.
+
 ## From 2.x to 3.0.0
 
 - The configuration for the migration namespace and directory changed as follows:

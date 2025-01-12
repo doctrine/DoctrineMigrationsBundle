@@ -12,8 +12,7 @@ use function dirname;
 
 class DoctrineMigrationsBundle extends Bundle
 {
-    /** @return void */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new ConfigureDependencyFactoryPass());
     }
