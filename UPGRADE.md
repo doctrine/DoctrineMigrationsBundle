@@ -7,6 +7,11 @@
 Type declarations have been added to all method signatures and properties. You
 might have to adjust your own code to abide by the new type declarations.
 
+## BC break: Removed support for container-aware migrations
+
+* Migrations that implement `ContainerAwareInterface` will no longer have the container injected automatically.
+* The `ContainerAwareMigrationFactory` class has been removed.
+
 ## From 2.x to 3.0.0
 
 - The configuration for the migration namespace and directory changed as follows:

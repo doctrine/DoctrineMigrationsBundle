@@ -11,7 +11,6 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
-use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\DependencyFactory;
@@ -28,7 +27,6 @@ use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -37,7 +35,6 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\VarExporter\LazyGhostTrait;
 
 use function assert;
-use function interface_exists;
 use function sys_get_temp_dir;
 use function trait_exists;
 
@@ -175,31 +172,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
         self::assertSame($sorter, $di->getVersionComparator());
-    }
-
-    /** @group legacy */
-    public function testContainerAwareMigrations(): void
-    {
-        if (! interface_exists(ContainerAwareInterface::class)) {
-            self::markTestSkipped('This test requires Symfony < 7');
-        }
-
-        $config    = [
-            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
-        ];
-        $container = $this->getContainer($config);
-
-        $container->compile();
-
-        $di = $container->get('doctrine.migrations.dependency_factory');
-        self::assertInstanceOf(DependencyFactory::class, $di);
-
-        $this->expectDeprecation('Since doctrine/doctrine-migrations-bundle 3.3: Migration "Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration" implements "Symfony\Component\DependencyInjection\ContainerAwareInterface" to gain access to the application\'s service container. This method is deprecated and won\'t work with Symfony 7.');
-
-        $migration = $di->getMigrationFactory()->createVersion(ContainerAwareMigration::class);
-
-        self::assertInstanceOf(ContainerAwareMigration::class, $migration);
-        self::assertSame($container, $migration->getContainer());
     }
 
     public function testServicesAreLazy(): void
