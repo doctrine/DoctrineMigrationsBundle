@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -31,11 +29,9 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\VarExporter\LazyGhostTrait;
 
 use function assert;
 use function sys_get_temp_dir;
-use function trait_exists;
 
 class DoctrineMigrationsExtensionTest extends TestCase
 {
@@ -252,15 +248,16 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
     public function testPrefersEntityManagerOverConnection(): void
     {
-        $config    = [
-            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
-        ];
-        $ormConfig = trait_exists(LazyGhostTrait::class) ? ['enable_lazy_ghost_objects' => true] : [];
-        if (InstalledVersions::satisfies(new VersionParser(), 'doctrine/doctrine-bundle', '^2.7.1 ')) {
-            $ormConfig['controller_resolver'] = ['auto_mapping' => false];
-        }
-
-        $container = $this->getContainer($config, null, $ormConfig);
+        $container = $this->getContainer(
+            [
+                'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
+            ],
+            null,
+            [
+                'enable_lazy_ghost_objects' => true,
+                'controller_resolver' => ['auto_mapping' => false],
+            ],
+        );
 
         $container->compile();
 
@@ -314,25 +311,21 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
     public function testCustomEntityManager(): void
     {
-        $config    = [
-            'em' => 'custom',
-            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
-        ];
-        $ormConfig = [
-            'entity_managers' => [
-                'custom' => null,
-                'acb' => null,
+        $container = $this->getContainer(
+            [
+                'em' => 'custom',
+                'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
             ],
-        ];
-        if (InstalledVersions::satisfies(new VersionParser(), 'doctrine/doctrine-bundle', '^2.7.1 ')) {
-            $ormConfig['controller_resolver'] = ['auto_mapping' => false];
-        }
-
-        if (trait_exists(LazyGhostTrait::class)) {
-            $ormConfig['enable_lazy_ghost_objects'] = true;
-        }
-
-        $container = $this->getContainer($config, null, $ormConfig);
+            null,
+            [
+                'entity_managers' => [
+                    'custom' => null,
+                    'acb' => null,
+                ],
+                'controller_resolver' => ['auto_mapping' => false],
+                'enable_lazy_ghost_objects' => true,
+            ],
+        );
 
         $container->compile();
 
