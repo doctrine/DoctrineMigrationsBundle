@@ -28,17 +28,15 @@ class MigrationsFlattener
      */
     public function flattenAvailableMigrations(AvailableMigrationsList $migrationsList): array
     {
-        return array_map(static function (AvailableMigration $migration) {
-            return [
-                'version' => (string) $migration->getVersion(),
-                'is_new' => true,
-                'is_unavailable' => false,
-                'description' => $migration->getMigration()->getDescription(),
-                'executed_at' =>  null,
-                'execution_time' =>  null,
-                'file' => (new ReflectionClass($migration->getMigration()))->getFileName(),
-            ];
-        }, $migrationsList->getItems());
+        return array_map(static fn (AvailableMigration $migration) => [
+            'version' => (string) $migration->getVersion(),
+            'is_new' => true,
+            'is_unavailable' => false,
+            'description' => $migration->getMigration()->getDescription(),
+            'executed_at' =>  null,
+            'execution_time' =>  null,
+            'file' => (new ReflectionClass($migration->getMigration()))->getFileName(),
+        ], $migrationsList->getItems());
     }
 
     /**

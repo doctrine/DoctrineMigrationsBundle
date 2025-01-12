@@ -20,8 +20,7 @@ use function dirname;
 
 class MigrationsFlattenerTest extends TestCase
 {
-    /** @var MigrationsFlattener */
-    private $flattener;
+    private MigrationsFlattener $flattener;
 
     protected function setUp(): void
     {

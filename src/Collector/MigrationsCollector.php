@@ -19,8 +19,8 @@ use function get_class;
 class MigrationsCollector extends DataCollector
 {
     public function __construct(
-        private DependencyFactory $dependencyFactory,
-        private MigrationsFlattener $flattener,
+        private readonly DependencyFactory $dependencyFactory,
+        private readonly MigrationsFlattener $flattener,
     ) {
     }
 
