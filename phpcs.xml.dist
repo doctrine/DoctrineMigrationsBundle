@@ -17,7 +17,5 @@
     <file>src</file>
     <file>tests</file>
 
-    <exclude-pattern>tests/Fixtures/CustomEntityManager.php</exclude-pattern>
-
     <rule ref="Doctrine" />
 </ruleset>
