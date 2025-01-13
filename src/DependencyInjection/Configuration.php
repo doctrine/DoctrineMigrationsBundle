@@ -14,8 +14,8 @@ use function constant;
 use function count;
 use function in_array;
 use function is_string;
+use function str_starts_with;
 use function strlen;
-use function strpos;
 use function strtoupper;
 use function substr;
 
@@ -45,11 +45,10 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('service')
                     ->defaultValue([])
                     ->validate()
-                        ->ifTrue(static function (array $v): bool {
-                            return count(array_filter(array_keys($v), static function (string $doctrineService): bool {
-                                return strpos($doctrineService, 'Doctrine\Migrations\\') !== 0;
-                            })) !== 0;
-                        })
+                        ->ifTrue(static fn (array $v): bool => count(array_filter(
+                            array_keys($v),
+                            static fn (string $doctrineService): bool => ! str_starts_with($doctrineService, 'Doctrine\Migrations\\'),
+                        )) !== 0)
                         ->thenInvalid('Valid services for the DoctrineMigrationsBundle must be in the "Doctrine\Migrations" namespace.')
                     ->end()
                     ->prototype('scalar')->end()
@@ -60,11 +59,10 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('factory')
                     ->defaultValue([])
                     ->validate()
-                        ->ifTrue(static function (array $v): bool {
-                            return count(array_filter(array_keys($v), static function (string $doctrineService): bool {
-                                return strpos($doctrineService, 'Doctrine\Migrations\\') !== 0;
-                            })) !== 0;
-                        })
+                        ->ifTrue(static fn (array $v): bool => count(array_filter(
+                            array_keys($v),
+                            static fn (string $doctrineService): bool => ! str_starts_with($doctrineService, 'Doctrine\Migrations\\'),
+                        )) !== 0)
                         ->thenInvalid('Valid callables for the DoctrineMigrationsBundle must be in the "Doctrine\Migrations" namespace.')
                     ->end()
                     ->prototype('scalar')->end()
@@ -128,9 +126,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->validate()
                         ->ifString()
-                            ->then(static function ($v) {
-                                return constant('Doctrine\Migrations\Configuration\Configuration::VERSIONS_ORGANIZATION_' . strtoupper($v));
-                            })
+                        ->then(static fn (string $v): string => constant('Doctrine\Migrations\Configuration\Configuration::VERSIONS_ORGANIZATION_' . strtoupper($v)))
                     ->end()
                 ->end()
                 ->booleanNode('enable_profiler')
@@ -160,7 +156,7 @@ class Configuration implements ConfigurationInterface
         $namesArray  = [];
 
         foreach ($constsArray as $constant) {
-            if (strpos($constant, $constPrefix) !== 0) {
+            if (! str_starts_with($constant, $constPrefix)) {
                 continue;
             }
 

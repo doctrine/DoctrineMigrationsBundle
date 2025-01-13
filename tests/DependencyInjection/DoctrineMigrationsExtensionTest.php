@@ -202,12 +202,9 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container = $this->getContainer($config);
 
         $sorterFactory = new class ($mockComparator) {
-            /** @var Comparator */
-            private $comparator;
-
-            public function __construct(Comparator $comparator)
-            {
-                $this->comparator = $comparator;
+            public function __construct(
+                private readonly Comparator $comparator,
+            ) {
             }
 
             public function __invoke(DependencyFactory $di): Comparator
