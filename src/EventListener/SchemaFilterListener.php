@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\EventListener;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
-use Doctrine\Migrations\Tools\Console\Command\DoctrineCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
+use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
@@ -24,7 +25,7 @@ final class SchemaFilterListener
     }
 
     /** @var bool */
-    private $enabled = true;
+    private $enabled = false;
 
     /** @param AbstractAsset|string $asset */
     public function __invoke($asset): bool
@@ -44,10 +45,10 @@ final class SchemaFilterListener
     {
         $command = $event->getCommand();
 
-        if (! $command instanceof DoctrineCommand) {
+        if (! $command instanceof ValidateSchemaCommand && ! $command instanceof UpdateCommand) {
             return;
         }
 
-        $this->enabled = false;
+        $this->enabled = true;
     }
 }
