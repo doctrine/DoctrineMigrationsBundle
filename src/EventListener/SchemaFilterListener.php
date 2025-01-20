@@ -40,11 +40,6 @@ final class SchemaFilterListener
         return $asset !== $this->configurationTableName;
     }
 
-    private function disable(): void
-    {
-        $this->enabled = false;
-    }
-
     public function onConsoleCommand(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
@@ -53,6 +48,6 @@ final class SchemaFilterListener
             return;
         }
 
-        $this->disable();
+        $this->enabled = false;
     }
 }
