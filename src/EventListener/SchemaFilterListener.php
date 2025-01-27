@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\EventListener;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
-use Doctrine\Migrations\Tools\Console\Command\DoctrineCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
+use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
@@ -19,7 +20,7 @@ final class SchemaFilterListener
     {
     }
 
-    private bool $enabled = true;
+    private bool $enabled = false;
 
     public function __invoke(AbstractAsset|string $asset): bool
     {
@@ -34,19 +35,14 @@ final class SchemaFilterListener
         return $asset !== $this->configurationTableName;
     }
 
-    private function disable(): void
-    {
-        $this->enabled = false;
-    }
-
     public function onConsoleCommand(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
 
-        if (! $command instanceof DoctrineCommand) {
+        if (! $command instanceof ValidateSchemaCommand && ! $command instanceof UpdateCommand) {
             return;
         }
 
-        $this->disable();
+        $this->enabled = true;
     }
 }
