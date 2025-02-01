@@ -11,6 +11,7 @@ use Doctrine\ORM\Tools\Console\Command\AbstractEntityManagerCommand;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -41,11 +42,8 @@ class SchemaFilterListenerTest extends TestCase
         self::assertTrue($listener(new Table('some_other_table')));
     }
 
-    /**
-     * @param class-string<AbstractEntityManagerCommand> $command
-     *
-     * @dataProvider getCommands
-     */
+    /** @param class-string<AbstractEntityManagerCommand> $command */
+    #[DataProvider('getCommands')]
     public function testItFiltersOutMigrationMetadataTableWhenRunningSpecificCommands(string $command): void
     {
         $listener   = new SchemaFilterListener('doctrine_migration_versions');
