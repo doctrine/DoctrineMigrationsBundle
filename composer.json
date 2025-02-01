@@ -33,7 +33,7 @@
     "require-dev": {
         "composer/semver": "^3.0",
         "doctrine/coding-standard": "^12",
-        "doctrine/orm": "^2.15 || ^3",
+        "doctrine/orm": "^3",
         "doctrine/persistence": "^3.1",
         "phpstan/phpstan": "^2",
         "phpstan/phpstan-deprecation-rules": "^2",
