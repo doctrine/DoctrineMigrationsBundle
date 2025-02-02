@@ -2,6 +2,11 @@
 
 ## 4.0.0
 
+## BC break: final classes
+
+Some classes have been marked as `final` because they are not supposed to be
+extended. Consider using composition instead of inheritance.
+
 ### BC break: type declarations
 
 Type declarations have been added to all method signatures and properties. You
