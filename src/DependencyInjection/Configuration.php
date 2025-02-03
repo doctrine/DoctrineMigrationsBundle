@@ -19,6 +19,7 @@ use function strpos;
 use function strtoupper;
 use function substr;
 
+/** @final */
 class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder

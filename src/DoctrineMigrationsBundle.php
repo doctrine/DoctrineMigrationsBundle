@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 use function dirname;
 
+/** @final */
 class DoctrineMigrationsBundle extends Bundle
 {
     /** @return void */

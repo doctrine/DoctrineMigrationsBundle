@@ -1,5 +1,13 @@
 # Upgrade
 
+## Upgrade to 3.5
+
+## Final classes
+
+Some classes have been marked as `@final` because they are not supposed to be
+extended. They will be `final`, and most of them will be marked with
+`@internal` in 4.0.0.
+
 ## From 2.x to 3.0.0
 
 - The configuration for the migration namespace and directory changed as follows:
@@ -79,8 +87,8 @@ doctrine_migrations:
 ### Underlying doctrine/migrations library
 
 Upgrading this bundle to `3.0` will also update the `doctrine/migrations` library to the version `3.0`.
-Backward incompatible changes in `doctrine/migrations` 3.0 
-are documented in the dedicated [UPGRADE](https://github.com/doctrine/migrations/blob/3.0.x/UPGRADE.md) document. 
+Backward incompatible changes in `doctrine/migrations` 3.0
+are documented in the dedicated [UPGRADE](https://github.com/doctrine/migrations/blob/3.0.x/UPGRADE.md) document.
 
 - The container is not automatically injected anymore when a migration implements `ContainerAwareInterface`. Custom
 migration factories should be used to inject additional dependencies into migrations.
