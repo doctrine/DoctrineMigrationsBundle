@@ -13,6 +13,8 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
  * Acts as a schema filter that hides the migration metadata table except
  * when the execution context is that of command inside the migrations
  * namespace.
+ *
+ * @internal
  */
 final class SchemaFilterListener
 {
