@@ -16,7 +16,7 @@ use Throwable;
 use function count;
 use function get_class;
 
-class MigrationsCollector extends DataCollector
+final class MigrationsCollector extends DataCollector
 {
     public function __construct(
         private readonly DependencyFactory $dependencyFactory,

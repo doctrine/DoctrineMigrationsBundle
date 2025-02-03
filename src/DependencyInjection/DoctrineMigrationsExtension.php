@@ -28,7 +28,7 @@ use function sprintf;
 use function strlen;
 use function substr;
 
-class DoctrineMigrationsExtension extends Extension
+final class DoctrineMigrationsExtension extends Extension
 {
     /**
      * Responds to the migrations configuration parameter.
