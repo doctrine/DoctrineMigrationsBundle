@@ -19,6 +19,7 @@ use function strlen;
 use function strtoupper;
 use function substr;
 
+/** @internal */
 final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder

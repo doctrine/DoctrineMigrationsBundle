@@ -16,6 +16,7 @@ use Throwable;
 use function count;
 use function get_class;
 
+/** @internal */
 final class MigrationsCollector extends DataCollector
 {
     public function __construct(

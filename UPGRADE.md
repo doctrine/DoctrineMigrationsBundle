@@ -2,10 +2,10 @@
 
 ## 4.0.0
 
-## BC break: final classes
+## BC break: final, internal classes
 
-Some classes have been marked as `final` because they are not supposed to be
-extended. Consider using composition instead of inheritance.
+Some classes have been marked as `final` and `@internal` because they are not
+supposed to be extended or even referenced outside of the bundle.
 
 ### BC break: type declarations
 

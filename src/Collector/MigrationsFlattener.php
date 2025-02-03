@@ -13,6 +13,7 @@ use ReflectionClass;
 
 use function array_map;
 
+/** @internal */
 final class MigrationsFlattener
 {
     /**
