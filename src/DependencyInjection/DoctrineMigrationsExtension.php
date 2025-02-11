@@ -124,6 +124,15 @@ class DoctrineMigrationsExtension extends Extension
             }
 
             $configurationDefinition->addMethodCall('setMetadataStorageConfiguration', [new Reference('doctrine.migrations.storage.table_storage')]);
+
+            // Add tag to the filter for each Doctrine connection, so the table is ignored for multiple connections
+            if ($container->hasParameter('doctrine.connections')) {
+                /** @var array<string, string> $connections */
+                $connections = $container->getParameter('doctrine.connections');
+                foreach (array_keys($connections) as $connection) {
+                    $filterDefinition->addTag('doctrine.dbal.schema_filter', ['connection' => $connection]);
+                }
+            }
         }
 
         if ($config['em'] !== null && $config['connection'] !== null) {
