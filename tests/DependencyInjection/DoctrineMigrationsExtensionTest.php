@@ -279,6 +279,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
         self::assertSame($doctrine->getConnection('custom'), $di->getConnection());
+        // Check if the multiple connections also added the required tags to the filter
+        $filterDefinition = $container->findDefinition('doctrine_migrations.schema_filter_listener');
+        $tags             = $filterDefinition->getTag('doctrine.dbal.schema_filter');
+        self::assertCount(2, $tags);
     }
 
     public function testPrefersEntityManagerOverConnection(): void
@@ -466,9 +470,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $bundle = new DoctrineMigrationsBundle();
         $bundle->build($container);
 
-        $extension = new DoctrineMigrationsExtension();
-        $extension->load(['doctrine_migrations' => $config], $container);
-
         $extension = new DoctrineExtension();
 
         $doctrineBundleConfigs = $dbalConfig === null ? ['dbal' => ['url' => 'sqlite:///:memory:']] : ['dbal' => $dbalConfig];
@@ -478,8 +479,15 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $extension->load(['doctrine' => $doctrineBundleConfigs], $container);
 
+        $extension = new DoctrineMigrationsExtension();
+        $extension->load(['doctrine_migrations' => $config], $container);
+
         $container->getDefinition('doctrine.migrations.dependency_factory')->setPublic(true);
         $container->getDefinition('doctrine.migrations.configuration')->setPublic(true);
+        if ($container->hasDefinition('doctrine_migrations.schema_filter_listener')) {
+            $container->getDefinition('doctrine_migrations.schema_filter_listener')->setPublic(true);
+        }
+
         $container->addCompilerPass(new CacheCompatibilityPass());
 
         return $container;
