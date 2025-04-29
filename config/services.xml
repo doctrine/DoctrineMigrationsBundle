@@ -115,7 +115,7 @@
             <argument type="service" id="doctrine.migrations.dependency_factory"/>
             <argument>doctrine:migrations:migrate</argument>
 
-            <tag name="console.command"  command="doctrine:migrations:migrate" />
+            <tag name="console.command"  command="doctrine:migrations:migrate|migrate" />
         </service>
         <service id="doctrine_migrations.rollup_command" class="Doctrine\Migrations\Tools\Console\Command\RollupCommand">
 
