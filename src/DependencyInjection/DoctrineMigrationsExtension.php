@@ -30,6 +30,7 @@ use function sprintf;
 use function strlen;
 use function substr;
 
+/** @final */
 class DoctrineMigrationsExtension extends Extension
 {
     /**

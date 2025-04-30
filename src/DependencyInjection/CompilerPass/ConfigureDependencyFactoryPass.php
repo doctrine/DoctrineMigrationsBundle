@@ -19,6 +19,7 @@ use function is_array;
 use function is_string;
 use function sprintf;
 
+/** @final */
 class ConfigureDependencyFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void

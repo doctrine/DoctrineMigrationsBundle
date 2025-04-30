@@ -16,6 +16,7 @@ use Throwable;
 use function count;
 use function get_class;
 
+/** @final */
 class MigrationsCollector extends DataCollector
 {
     /** @var DependencyFactory */
