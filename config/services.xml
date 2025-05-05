@@ -148,7 +148,7 @@
 
         <service id="doctrine_migrations.schema_filter_listener" class="Doctrine\Bundle\MigrationsBundle\EventListener\SchemaFilterListener">
             <tag name="kernel.event_listener" event="console.command" method="onConsoleCommand" />
-            <tag name="doctrine.dbal.schema_filter" />
+<!--        <tag name="doctrine.dbal.schema_filter" /> This tag is dynamically added for each connection -->
         </service>
 
     </services>

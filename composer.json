@@ -34,7 +34,6 @@
         "composer/semver": "^3.0",
         "doctrine/coding-standard": "^12",
         "doctrine/orm": "^2.6 || ^3",
-        "doctrine/persistence": "^2.0 || ^3",
         "phpstan/phpstan": "^1.4 || ^2",
         "phpstan/phpstan-deprecation-rules": "^1 || ^2",
         "phpstan/phpstan-phpunit": "^1 || ^2",
