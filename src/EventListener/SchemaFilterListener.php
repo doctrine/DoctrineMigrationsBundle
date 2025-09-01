@@ -27,7 +27,7 @@ final class SchemaFilterListener
     /** @var bool */
     private $enabled = false;
 
-    /** @param AbstractAsset|string $asset */
+    /** @param AbstractAsset<*>|string $asset */
     public function __invoke($asset): bool
     {
         if (! $this->enabled) {
