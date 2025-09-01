@@ -506,6 +506,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
                     'namespace' => $bundle->getNamespace(),
                 ],
             ],
+            'kernel.build_dir' => sys_get_temp_dir(),
             'kernel.cache_dir' => sys_get_temp_dir(),
             'kernel.environment' => 'test',
             'kernel.project_dir' => __DIR__ . '/../',
