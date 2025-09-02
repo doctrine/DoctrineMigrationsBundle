@@ -332,10 +332,10 @@ for Doctrine's ORM:
         {
             #[ORM\Id]
             #[ORM\GeneratedValue(strategy: 'AUTO')]
-            #[ORM\Column(type: Types:INT)]
+            #[ORM\Column(type: Types::INTEGER)]
             private $id;
 
-            #[ORM\Column(type: Types:STRING, length: 255)]
+            #[ORM\Column(type: Types::STRING, length: 255)]
             private $name;
 
     .. code-block:: php-annotations
