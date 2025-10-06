@@ -299,6 +299,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
 
+        if (PHP_VERSION_ID >= 80400) {
+            $ormConfig['enable_native_lazy_objects'] = true;
+        }
+
         $container = $this->getContainer($config, null, $ormConfig);
 
         $container->compile();
@@ -368,9 +372,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         }
 
         if (PHP_VERSION_ID >= 80400) {
-            foreach ($ormConfig['entity_managers'] as $name => $emConfig) {
-                $ormConfig['entity_managers'][$name]['enable_native_lazy_objects'] = true;
-            }
+            $ormConfig['enable_native_lazy_objects'] = true;
         } elseif (interface_exists(LazyGhostTrait::class)) {
             // For PHP 8.0 and 8.1 we need to check for the interface as the trait is only used when the interface exists
             $ormConfig['enable_lazy_ghost_objects'] = true;
