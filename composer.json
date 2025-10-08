@@ -32,7 +32,7 @@
     },
     "require-dev": {
         "composer/semver": "^3.0",
-        "doctrine/coding-standard": "^12",
+        "doctrine/coding-standard": "^12 || ^14",
         "doctrine/orm": "^2.6 || ^3",
         "phpstan/phpstan": "^1.4 || ^2",
         "phpstan/phpstan-deprecation-rules": "^1 || ^2",
