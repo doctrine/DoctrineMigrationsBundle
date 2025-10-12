@@ -240,6 +240,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $di = $container->get('doctrine.migrations.dependency_factory');
         self::assertInstanceOf(DependencyFactory::class, $di);
         self::assertSame($doctrine->getConnection('custom'), $di->getConnection());
+        // Check if the multiple connections also added the required tags to the filter
+        $filterDefinition = $container->findDefinition('doctrine_migrations.schema_filter_listener');
+        $tags             = $filterDefinition->getTag('doctrine.dbal.schema_filter');
+        self::assertCount(2, $tags);
     }
 
     public function testPrefersEntityManagerOverConnection(): void
@@ -250,7 +254,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
             ],
             null,
             [
-                'enable_native_lazy_objects' => true,
                 'controller_resolver' => ['auto_mapping' => false],
             ],
         );
@@ -419,12 +422,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
     private function getContainer(array $config, array|null $dbalConfig = null, array|null $ormConfig = null): ContainerBuilder
     {
         $container = $this->getContainerBuilder();
+        $container->setParameter('kernel.build_dir', '');
 
         $bundle = new DoctrineMigrationsBundle();
         $bundle->build($container);
-
-        $extension = new DoctrineMigrationsExtension();
-        $extension->load(['doctrine_migrations' => $config], $container);
 
         $extension = new DoctrineExtension();
 
@@ -435,8 +436,15 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $extension->load(['doctrine' => $doctrineBundleConfigs], $container);
 
+        $extension = new DoctrineMigrationsExtension();
+        $extension->load(['doctrine_migrations' => $config], $container);
+
         $container->getDefinition('doctrine.migrations.dependency_factory')->setPublic(true);
         $container->getDefinition('doctrine.migrations.configuration')->setPublic(true);
+
+        if ($container->hasDefinition('doctrine_migrations.schema_filter_listener')) {
+            $container->getDefinition('doctrine_migrations.schema_filter_listener')->setPublic(true);
+        }
 
         return $container;
     }
@@ -454,11 +462,11 @@ class DoctrineMigrationsExtensionTest extends TestCase
                     'namespace' => $bundle->getNamespace(),
                 ],
             ],
+            'kernel.build_dir' => sys_get_temp_dir(),
             'kernel.cache_dir' => sys_get_temp_dir(),
             'kernel.environment' => 'test',
             'kernel.project_dir' => __DIR__ . '/../',
             'kernel.root_dir' => __DIR__ ,
-            'kernel.build_dir' => __DIR__ ,
         ]));
     }
 }
