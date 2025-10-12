@@ -23,6 +23,14 @@ might have to adjust your own code to abide by the new type declarations.
 * Migrations that implement `ContainerAwareInterface` will no longer have the container injected automatically.
 * The `ContainerAwareMigrationFactory` class has been removed.
 
+## Upgrade to 3.5
+
+## Final classes
+
+Some classes have been marked as `@final` because they are not supposed to be
+extended. They will be `final`, and most of them will be marked with
+`@internal` in 4.0.0.
+
 ## From 2.x to 3.0.0
 
 - The configuration for the migration namespace and directory changed as follows:
