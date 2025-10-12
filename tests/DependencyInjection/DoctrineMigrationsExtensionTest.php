@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
@@ -251,7 +250,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
             ],
             null,
             [
-                'enable_lazy_ghost_objects' => true,
+                'enable_native_lazy_objects' => true,
                 'controller_resolver' => ['auto_mapping' => false],
             ],
         );
@@ -320,7 +319,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
                     'acb' => null,
                 ],
                 'controller_resolver' => ['auto_mapping' => false],
-                'enable_lazy_ghost_objects' => true,
             ],
         );
 
@@ -439,7 +437,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $container->getDefinition('doctrine.migrations.dependency_factory')->setPublic(true);
         $container->getDefinition('doctrine.migrations.configuration')->setPublic(true);
-        $container->addCompilerPass(new CacheCompatibilityPass());
 
         return $container;
     }
@@ -461,6 +458,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.project_dir' => __DIR__ . '/../',
             'kernel.root_dir' => __DIR__ ,
+            'kernel.build_dir' => __DIR__ ,
         ]));
     }
 }

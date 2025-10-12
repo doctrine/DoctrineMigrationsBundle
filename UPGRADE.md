@@ -2,6 +2,12 @@
 
 ## 4.0.0
 
+## Dependencies
+
+- Support for PHP < 8.4 has been dropped.
+- Support for `doctrine/orm` < 3 has been dropped.
+- Support for `doctrine/doctrine-bundle` < 3 has been dropped.
+
 ## BC break: final, internal classes
 
 Some classes have been marked as `final` and `@internal` because they are not
