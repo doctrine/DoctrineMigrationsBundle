@@ -1,11 +1,19 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to method setContainer\\(\\) on an unknown class Symfony\\\\Component\\\\DependencyInjection\\\\ContainerAwareInterface\\.$#"
+			message: '#^Call to method setContainer\(\) on an unknown class Symfony\\Component\\DependencyInjection\\ContainerAwareInterface\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/MigrationsFactory/ContainerAwareMigrationFactory.php
 
 		-
-			message: "#^Class Symfony\\\\Component\\\\DependencyInjection\\\\ContainerAwareInterface not found\\.$#"
+			message: '#^Class Symfony\\Component\\DependencyInjection\\ContainerAwareInterface not found\.$#'
+			identifier: class.notFound
 			count: 2
 			path: src/MigrationsFactory/ContainerAwareMigrationFactory.php
+
+		-
+			message: '#^Comparison operation "\<" between int\<50207, 80399\> and 80400 is always true\.$#'
+			identifier: smaller.alwaysTrue
+			count: 1
+			path: tests/DependencyInjection/DoctrineMigrationsExtensionTest.php

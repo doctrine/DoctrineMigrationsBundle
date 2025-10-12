@@ -49,7 +49,7 @@ class SchemaFilterListenerTest extends TestCase
     public function testItFiltersOutMigrationMetadataTableWhenRunningSpecificCommands(string $command): void
     {
         $listener   = new SchemaFilterListener('doctrine_migration_versions');
-        $ormCommand = new $command($this->createStub(EntityManagerProvider::class));
+        $ormCommand = new $command(self::createStub(EntityManagerProvider::class));
 
         $listener->onConsoleCommand(new ConsoleCommandEvent(
             $ormCommand,
