@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Bundle\MigrationsBundle\EventListener;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
+use Doctrine\DBAL\Schema\Name\OptionallyQualifiedName;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
 use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -24,6 +25,7 @@ final class SchemaFilterListener
 
     private bool $enabled = false;
 
+    /** @param AbstractAsset<OptionallyQualifiedName>|string $asset */
     public function __invoke(AbstractAsset|string $asset): bool
     {
         if (! $this->enabled) {
