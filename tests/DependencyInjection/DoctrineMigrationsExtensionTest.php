@@ -37,9 +37,12 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\VarExporter\LazyGhostTrait;
 
 use function assert;
+use function class_exists;
 use function interface_exists;
 use function sys_get_temp_dir;
 use function trait_exists;
+
+use const PHP_VERSION_ID;
 
 class DoctrineMigrationsExtensionTest extends TestCase
 {
@@ -290,7 +293,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $config    = [
             'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
         ];
-        $ormConfig = trait_exists(LazyGhostTrait::class) ? ['enable_lazy_ghost_objects' => true] : [];
+        $ormConfig = PHP_VERSION_ID < 80400 && trait_exists(LazyGhostTrait::class) && class_exists(CacheCompatibilityPass::class)
+            ? ['enable_lazy_ghost_objects' => true] : [];
         if (InstalledVersions::satisfies(new VersionParser(), 'doctrine/doctrine-bundle', '^2.7.1 ')) {
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
@@ -363,7 +367,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
 
-        if (trait_exists(LazyGhostTrait::class)) {
+        if (PHP_VERSION_ID < 80400 && trait_exists(LazyGhostTrait::class) && class_exists(CacheCompatibilityPass::class)) {
             $ormConfig['enable_lazy_ghost_objects'] = true;
         }
 
@@ -466,6 +470,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
     private function getContainer(array $config, ?array $dbalConfig = null, ?array $ormConfig = null): ContainerBuilder
     {
         $container = $this->getContainerBuilder();
+        $container->setParameter('kernel.build_dir', '');
 
         $bundle = new DoctrineMigrationsBundle();
         $bundle->build($container);
@@ -488,7 +493,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $container->getDefinition('doctrine_migrations.schema_filter_listener')->setPublic(true);
         }
 
-        $container->addCompilerPass(new CacheCompatibilityPass());
+        if (class_exists(CacheCompatibilityPass::class)) {
+            /** @phpstan-ignore argument.type */
+            $container->addCompilerPass(new CacheCompatibilityPass());
+        }
 
         return $container;
     }
