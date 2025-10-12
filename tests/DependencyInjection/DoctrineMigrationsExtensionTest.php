@@ -299,6 +299,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
 
+        if (PHP_VERSION_ID >= 80400) {
+            $ormConfig['enable_native_lazy_objects'] = true;
+        }
+
         $container = $this->getContainer($config, null, $ormConfig);
 
         $container->compile();
@@ -367,7 +371,10 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
 
-        if (PHP_VERSION_ID < 80400 && trait_exists(LazyGhostTrait::class) && class_exists(CacheCompatibilityPass::class)) {
+        if (PHP_VERSION_ID >= 80400) {
+            $ormConfig['enable_native_lazy_objects'] = true;
+        } elseif (PHP_VERSION_ID < 80400 && trait_exists(LazyGhostTrait::class) && class_exists(CacheCompatibilityPass::class)) {
+            // For PHP 8.0 and 8.1 we need to check for the interface as the trait is only used when the interface exists
             $ormConfig['enable_lazy_ghost_objects'] = true;
         }
 
@@ -514,6 +521,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
                     'namespace' => $bundle->getNamespace(),
                 ],
             ],
+            'kernel.build_dir' => sys_get_temp_dir(),
             'kernel.cache_dir' => sys_get_temp_dir(),
             'kernel.environment' => 'test',
             'kernel.project_dir' => __DIR__ . '/../',
