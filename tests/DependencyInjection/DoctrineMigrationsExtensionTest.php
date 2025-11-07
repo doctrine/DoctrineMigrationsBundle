@@ -25,7 +25,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -42,8 +42,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $container->setAlias('doctrine.migrations.configuration.test', new Alias('doctrine.migrations.configuration', true));
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Fixtures'));
-        $loader->load('conf.xml');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Fixtures'));
+        $loader->load('conf.php');
 
         $container->compile();
 
@@ -391,8 +391,8 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container->registerExtension(new DoctrineMigrationsExtension());
         $container->setAlias('doctrine.migrations.configuration.test', new Alias('doctrine.migrations.configuration', true));
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Fixtures'));
-        $loader->load('conf.xml');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Fixtures'));
+        $loader->load('conf.php');
 
         $container->compile();
 
