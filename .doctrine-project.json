@@ -6,13 +6,13 @@
     {
       "name": "4.0",
       "branchName": "4.0.x",
-      "slug": "latest",
+      "slug": "4.0",
       "upcoming": true
     },
     {
       "name": "3.8",
       "branchName": "3.8.x",
-      "slug": "3.8",
+      "slug": "latest",
       "upcoming": true
     },
     {
