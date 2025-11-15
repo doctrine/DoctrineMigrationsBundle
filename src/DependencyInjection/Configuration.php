@@ -34,6 +34,11 @@ class Configuration implements ConfigurationInterface
             ->fixXmlConfig('migration', 'migrations')
             ->fixXmlConfig('migrations_path', 'migrations_paths')
             ->children()
+                ->booleanNode('enable_service_migrations')
+                    ->info('Whether to enable fetching migrations from the service container.')
+                    ->defaultFalse()
+                ->end()
+
                 ->arrayNode('migrations_paths')
                     ->info('A list of namespace/path pairs where to look for migrations.')
                     ->defaultValue([])

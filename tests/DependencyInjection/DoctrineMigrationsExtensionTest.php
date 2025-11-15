@@ -9,15 +9,19 @@ use Composer\Semver\VersionParser;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\RegisterMigrationsPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ServiceMigration001;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Services\FooService;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Exception\MissingDependency;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
+use Doctrine\Migrations\MigrationsRepository;
 use Doctrine\Migrations\Version\Comparator;
 use Doctrine\Migrations\Version\Version;
 use Exception;
@@ -28,6 +32,7 @@ use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -467,6 +472,65 @@ class DoctrineMigrationsExtensionTest extends TestCase
         assert($config instanceof Configuration);
 
         self::assertFalse($config->isTransactional());
+    }
+
+    public function testEnableServiceMigrationsWhenSetToTrue(): void
+    {
+        $config    = ['enable_service_migrations' => true];
+        $container = $this->getContainer($config);
+        $container->getCompilerPassConfig()->setRemovingPasses([]);
+        $container->addCompilerPass(new RegisterMigrationsPass());
+
+        $container->register('foo', FooService::class);
+        $container->register(ServiceMigration001::class)
+            ->setPublic(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$fooService', new Reference('foo'));
+        $container->compile();
+
+        $migration = $container->getDefinition(ServiceMigration001::class);
+        self::assertTrue($migration->hasTag('doctrine_migrations.migration'));
+        self::assertEquals([
+            new Reference('doctrine.migrations.connection'),
+            new Reference('foo'),
+            new Reference('doctrine.migrations.logger'),
+        ], $migration->getArguments());
+        self::assertInstanceOf(ServiceMigration001::class, $container->get(ServiceMigration001::class));
+
+        self::assertContainsEquals(
+            ['setDefinition', [MigrationsRepository::class, new ServiceClosureArgument(new Reference('doctrine.migrations.service_migrations_repository'))]],
+            $container->getDefinition('doctrine.migrations.dependency_factory')->getMethodCalls()
+        );
+
+        self::assertTrue($container->has('doctrine.migrations.service_migrations_repository'));
+        self::assertTrue($container->has('doctrine.migrations.connection'));
+        self::assertTrue($container->has('doctrine.migrations.logger'));
+    }
+
+    public function testEnableServiceMigrationsWhenSetToFalse(): void
+    {
+        $config    = ['enable_service_migrations' => false];
+        $container = $this->getContainer($config);
+        $container->getCompilerPassConfig()->setRemovingPasses([]);
+        $container->addCompilerPass(new RegisterMigrationsPass());
+
+        $container->register('foo', FooService::class);
+        $container->register(ServiceMigration001::class)
+            ->setPublic(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$fooService', new Reference('foo'));
+        $container->compile();
+
+        self::assertFalse($container->getDefinition(ServiceMigration001::class)->hasTag('doctrine_migrations.migration'));
+
+        self::assertNotContainsEquals(
+            ['setDefinition', [MigrationsRepository::class, new ServiceClosureArgument(new Reference('doctrine.migrations.service_migrations_repository'))]],
+            $container->getDefinition('doctrine.migrations.dependency_factory')->getMethodCalls()
+        );
+
+        self::assertFalse($container->has('doctrine.migrations.service_migrations_repository'));
+        self::assertFalse($container->has('doctrine.migrations.connection'));
+        self::assertFalse($container->has('doctrine.migrations.logger'));
     }
 
     /**

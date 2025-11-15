@@ -6,8 +6,10 @@ namespace Doctrine\Bundle\MigrationsBundle\DependencyInjection;
 
 use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsCollector;
 use Doctrine\Bundle\MigrationsBundle\Collector\MigrationsFlattener;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
+use Doctrine\Migrations\MigrationsRepository;
 use Doctrine\Migrations\Version\MigrationFactory;
 use InvalidArgumentException;
 use RuntimeException;
@@ -48,6 +50,19 @@ class DoctrineMigrationsExtension extends Extension
         $loader  = new PhpFileLoader($container, $locator);
 
         $loader->load('services.php');
+
+        if ($config['enable_service_migrations']) {
+            $container->registerForAutoconfiguration(AbstractMigration::class)
+                ->addTag('doctrine_migrations.migration');
+
+            if (! isset($config['services'][MigrationsRepository::class])) {
+                $config['services'][MigrationsRepository::class] = 'doctrine.migrations.service_migrations_repository';
+            }
+        } else {
+            $container->removeDefinition('doctrine.migrations.service_migrations_repository');
+            $container->removeDefinition('doctrine.migrations.connection');
+            $container->removeDefinition('doctrine.migrations.logger');
+        }
 
         $configurationDefinition = $container->getDefinition('doctrine.migrations.configuration');
 
