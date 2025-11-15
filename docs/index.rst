@@ -42,9 +42,12 @@ application:
     # config/packages/doctrine_migrations.yaml
 
     doctrine_migrations:
+        # Whether to enable fetching migrations from the service container.
+        enable_service_migrations: false
+
         # List of namespace/path pairs to search for migrations, at least one required
         migrations_paths:
-            'App\Migrations': '%kernel.project_dir%/src/App'
+            'App\Migrations': '%kernel.project_dir%/src/Migrations'
             'AnotherApp\Migrations': '/path/to/other/migrations'
             'SomeBundle\Migrations': '@SomeBundle/Migrations'
 
@@ -234,11 +237,12 @@ Doctrine will then assume that this migration has already been run and will igno
 Migration Dependencies
 ----------------------
 
-Migrations can have dependencies on external services (such as geolocation, mailer, data processing services...) that
-can be used to have more powerful migrations. Those dependencies are not automatically injected into your migrations
-but need to be injected using custom migrations factories.
+Migrations can have dependencies on external services (such as geolocation, mailer or data processing services) to
+enable more advanced behavior. To inject dependencies into your migrations, you must enable loading migrations from
+the service container and register the migrations as services.
 
-Here is an example on how to inject the service container into your migrations:
+If you are using Symfony's default service configuration, migration services are registered automatically
+once placed in the ``src`` directory:
 
 .. configuration-block::
 
@@ -247,62 +251,71 @@ Here is an example on how to inject the service container into your migrations:
         # config/packages/doctrine_migrations.yaml
 
         doctrine_migrations:
-            services:
-                 'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\Factory\MigrationFactoryDecorator'
+            enable_service_migrations: true
+            migrations_paths:
+                'App\Migrations': '%kernel.project_dir%/src/Migrations'
+
+
+If you are not using the default configuration, register your migration classes manually and make sure they are
+discoverable by the autoloader. If autoconfiguration is disabled, tag them manually with
+the ``doctrine_migrations.migration`` tag:
+
+.. configuration-block::
+
+    .. code-block:: yaml
 
         # config/services.yaml
 
         services:
-            App\Migrations\Factory\MigrationFactoryDecorator:
-                decorates: 'doctrine.migrations.migrations_factory'
-                arguments: ['@.inner', '@service_container']
+            DoctrineMigrations\Version20180605025653:
+                tags: [ 'doctrine_migrations.migration' ]
+                arguments:
+                    $myService: '@App\Services\MyService'
 
+
+The connection and logger services are injected automatically through bindings. You may specify them explicitly
+if needed:
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        # config/services.yaml
+
+        services:
+            DoctrineMigrations\Version20180605025653:
+                tags: [ 'doctrine_migrations.migration' ]
+                arguments:
+                    - '@doctrine.migrations.connection'
+                    - '@doctrine.migrations.logger'
+                    - '@App\Services\MyService'
+
+
+Then override the constructor in your migration class and add your dependencies:
 
 .. code-block:: php
 
     declare(strict_types=1);
 
-    namespace App\Migrations\Factory;
+    namespace App\Migrations;
 
+    use App\Services\MyService;
+    use Doctrine\DBAL\Schema\Schema;
     use Doctrine\Migrations\AbstractMigration;
-    use Doctrine\Migrations\Version\MigrationFactory;
-    use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-    use Symfony\Component\DependencyInjection\ContainerInterface;
 
-    class MigrationFactoryDecorator implements MigrationFactory
+    final class Version20180605025653 extends AbstractMigration
     {
-        private $migrationFactory;
-        private $container;
+        private MyService $myService;
 
-        public function __construct(MigrationFactory $migrationFactory, ContainerInterface $container)
+        public function __construct(Connection $connection, LoggerInterface $logger, MyService $myService)
         {
-            $this->migrationFactory = $migrationFactory;
-            $this->container        = $container;
+            parent::__construct($connection, $logger);
+
+            $this->myService = $myService;
         }
 
-        public function createVersion(string $migrationClassName): AbstractMigration
-        {
-            $instance = $this->migrationFactory->createVersion($migrationClassName);
-
-            if ($instance instanceof ContainerAwareInterface) {
-                $instance->setContainer($this->container);
-            }
-
-            return $instance;
-        }
+        // ...
     }
-
-
-.. tip::
-
-    If your migration class implements the interface ``Symfony\Component\DependencyInjection\ContainerAwareInterface``
-    this bundle will automatically inject the default symfony container into your migration class
-    (this because the ``MigrationFactoryDecorator`` shown in this example is the default migration factory used by this bundle).
-
-.. caution::
-
-    The interface ``Symfony\Component\DependencyInjection\ContainerAwareInterface`` has been deprecated in Symfony 6.4 and
-    removed in 7.0. If you use this version or newer, there is currently no way to inject the service container into migrations.
 
 
 Generating Migrations Automatically
