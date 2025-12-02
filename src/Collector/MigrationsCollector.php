@@ -31,7 +31,7 @@ class MigrationsCollector extends DataCollector
     }
 
     /** @return void */
-    public function collect(Request $request, Response $response, ?Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
         if ($this->data !== []) {
             return;
