@@ -77,7 +77,7 @@ class MigrationsCollector extends DataCollector
     }
 
     /** @return string */
-    public function getName()
+    public function getName(): string
     {
         return 'doctrine_migrations';
     }
