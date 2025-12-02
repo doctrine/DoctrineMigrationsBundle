@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Doctrine\Bundle\MigrationsBundle\EventListener\SchemaFilterListener;
-use Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ContainerAwareMigrationFactory;
 use Doctrine\Bundle\MigrationsBundle\MigrationsRepository\ServiceMigrationsRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -59,13 +58,6 @@ return static function (ContainerConfigurator $container) {
 
         ->set('doctrine.migrations.migrations_factory', MigrationFactory::class)
             ->factory([service('doctrine.migrations.dependency_factory'), 'getMigrationFactory'])
-
-        ->set('doctrine.migrations.container_aware_migrations_factory', ContainerAwareMigrationFactory::class)
-            ->decorate('doctrine.migrations.migrations_factory')
-            ->args([
-                service('doctrine.migrations.container_aware_migrations_factory.inner'),
-                service('service_container'),
-            ])
 
         ->set('doctrine.migrations.service_migrations_repository', ServiceMigrationsRepository::class)
             ->args([
