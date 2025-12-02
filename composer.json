@@ -28,7 +28,8 @@
         "doctrine/doctrine-bundle": "^2.4 || ^3.0",
         "doctrine/migrations": "^3.2",
         "symfony/deprecation-contracts": "^2.1 || ^3",
-        "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+        "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0 || ^8.0",
+        "symfony/http-kernel": "^5.4 || ^6.0 || ^7.0"
     },
     "require-dev": {
         "composer/semver": "^3.0",
