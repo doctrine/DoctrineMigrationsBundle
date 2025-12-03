@@ -19,7 +19,7 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
  */
 final class SchemaFilterListener
 {
-    public function __construct(private string $configurationTableName)
+    public function __construct(private readonly string $configurationTableName)
     {
     }
 
