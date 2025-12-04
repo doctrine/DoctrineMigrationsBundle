@@ -22,6 +22,7 @@ use function substr;
 /** @final */
 class Configuration implements ConfigurationInterface
 {
+    /** @return TreeBuilder<'array'> */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('doctrine_migrations');
