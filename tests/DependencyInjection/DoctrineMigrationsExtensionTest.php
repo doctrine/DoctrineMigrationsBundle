@@ -326,7 +326,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
                     'custom' => null,
                     'acb' => null,
                 ],
-                'controller_resolver' => ['auto_mapping' => false],
             ],
         );
 
