@@ -8,6 +8,7 @@ use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
+use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\RegisterMigrationsPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
@@ -304,7 +305,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
 
-        if (PHP_VERSION_ID >= 80400) {
+        if (PHP_VERSION_ID >= 80400 && class_exists(DisconnectedMetadataFactory::class)) {
             $ormConfig['enable_native_lazy_objects'] = true;
         }
 
@@ -376,7 +377,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
             $ormConfig['controller_resolver'] = ['auto_mapping' => false];
         }
 
-        if (PHP_VERSION_ID >= 80400) {
+        if (PHP_VERSION_ID >= 80400 && class_exists(DisconnectedMetadataFactory::class)) {
             $ormConfig['enable_native_lazy_objects'] = true;
         } elseif (PHP_VERSION_ID < 80400 && trait_exists(LazyGhostTrait::class) && class_exists(CacheCompatibilityPass::class)) {
             // For PHP 8.0 and 8.1 we need to check for the interface as the trait is only used when the interface exists
