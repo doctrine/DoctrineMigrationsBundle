@@ -20,7 +20,7 @@ jobs:
 
   phpunit-with-dev-deps:
     name: "PHPUnit with dev dependencies"
-    uses: "doctrine/.github/.github/workflows/continuous-integration-symfony-unstable.yml@v12.2.0"
+    uses: "doctrine/.github/.github/workflows/continuous-integration-symfony-unstable.yml@13.0.0"
     with:
       symfony-version-constraint: "^7"
     secrets:
