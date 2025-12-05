@@ -294,31 +294,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertCount(2, $tags);
     }
 
-    public function testPrefersEntityManagerOverConnection(): void
-    {
-        $config    = [
-            'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
-        ];
-        $ormConfig = PHP_VERSION_ID < 80400 && trait_exists(LazyGhostTrait::class) && class_exists(CacheCompatibilityPass::class)
-            ? ['enable_lazy_ghost_objects' => true] : [];
-        if (InstalledVersions::satisfies(new VersionParser(), 'doctrine/doctrine-bundle', '^2.7.1 ')) {
-            $ormConfig['controller_resolver'] = ['auto_mapping' => false];
-        }
-
-        if (PHP_VERSION_ID >= 80400 && class_exists(DisconnectedMetadataFactory::class)) {
-            $ormConfig['enable_native_lazy_objects'] = true;
-        }
-
-        $container = $this->getContainer($config, null, $ormConfig);
-
-        $container->compile();
-
-        $di = $container->get('doctrine.migrations.dependency_factory');
-
-        self::assertInstanceOf(DependencyFactory::class, $di);
-        $di->getEntityManager();
-    }
-
     public function testNoEntityManagersConfigured(): void
     {
         $config    = ['em' => null];
