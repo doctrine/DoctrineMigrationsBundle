@@ -4,10 +4,22 @@
   "slug": "doctrine-migrations-bundle",
   "versions": [
     {
+      "name": "5.0",
+      "branchName": "5.0.x",
+      "slug": "5.0",
+      "upcoming": true
+    },
+    {
+      "name": "4.1",
+      "branchName": "4.1.x",
+      "slug": "4.1",
+      "upcoming": true
+    },
+    {
       "name": "4.0",
       "branchName": "4.0.x",
       "slug": "4.0",
-      "upcoming": true
+      "current": true
     },
     {
       "name": "3.8",
@@ -19,32 +31,7 @@
       "name": "3.7",
       "branchName": "3.7.x",
       "slug": "3.7",
-      "current": true
-    },
-    {
-      "name": "3.6",
-      "slug": "3.6",
-      "maintained": false
-    },
-    {
-      "name": "3.5",
-      "slug": "3.5",
-      "maintained": false
-    },
-    {
-      "name": "3.4",
-      "slug": "3.4",
-      "maintained": false
-    },
-    {
-      "name": "3.3",
-      "slug": "3.3",
-      "maintained": false
-    },
-    {
-      "name": "3.2",
-      "slug": "3.2",
-      "maintained": false
+      "maintained": true
     }
   ]
 }

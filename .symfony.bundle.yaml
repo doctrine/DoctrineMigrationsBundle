@@ -1,12 +1,9 @@
 branches:
-  - "3.2.x"
-  - "3.3.x"
-  - "3.4.x"
-  - "3.5.x"
-  - "3.6.x"
   - "3.7.x"
   - "3.8.x"
   - "4.0.x"
-maintained_branches: ["3.7.x", "3.8.x", "4.0.x"]
+  - "4.1.x"
+  - "5.0.x"
+maintained_branches: ["3.7.x", "3.8.x", "4.0.x", "4.1.x", "5.0.x"]
 doc_dir: "docs/"
-dev_branch: "4.0.x"
+dev_branch: "5.0.x"
