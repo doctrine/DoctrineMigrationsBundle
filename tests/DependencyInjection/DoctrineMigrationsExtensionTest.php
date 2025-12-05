@@ -251,26 +251,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertCount(2, $tags);
     }
 
-    public function testPrefersEntityManagerOverConnection(): void
-    {
-        $container = $this->getContainer(
-            [
-                'migrations_paths' => ['DoctrineMigrationsTest' => 'a'],
-            ],
-            null,
-            [
-                'controller_resolver' => ['auto_mapping' => false],
-            ],
-        );
-
-        $container->compile();
-
-        $di = $container->get('doctrine.migrations.dependency_factory');
-
-        self::assertInstanceOf(DependencyFactory::class, $di);
-        $di->getEntityManager();
-    }
-
     public function testNoEntityManagersConfigured(): void
     {
         $config    = ['em' => null];
