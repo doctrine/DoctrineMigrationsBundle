@@ -92,7 +92,7 @@ class MigrationsFlattenerTest extends TestCase
 
     private function createAvailableMigrations(): AvailableMigrationsList
     {
-        $migration = new Migration001($this->createMock(Connection::class), new NullLogger());
+        $migration = new Migration001(self::createStub(Connection::class), new NullLogger());
 
         return new AvailableMigrationsList([
             new AvailableMigration(new Version('012345'), $migration),
