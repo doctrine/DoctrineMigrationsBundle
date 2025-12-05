@@ -22,7 +22,7 @@ use Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand;
 use Doctrine\Migrations\Tools\Console\Command\UpToDateCommand;
 use Doctrine\Migrations\Tools\Console\Command\VersionCommand;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\LazyCommand;
@@ -70,9 +70,9 @@ class DoctrineCommandsTest extends TestCase
         ];
     }
 
-    private function getKernel(ContainerBuilder $container): KernelInterface&MockObject
+    private function getKernel(ContainerBuilder $container): KernelInterface&Stub
     {
-        $kernel = $this->createMock(KernelInterface::class);
+        $kernel = self::createStub(KernelInterface::class);
 
         $kernel
             ->method('getContainer')

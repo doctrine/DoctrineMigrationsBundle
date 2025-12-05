@@ -47,7 +47,7 @@
         "phpstan/phpstan-phpunit": "^2",
         "phpstan/phpstan-strict-rules": "^2",
         "phpstan/phpstan-symfony": "^2",
-        "phpunit/phpunit": "^11.5.45",
+        "phpunit/phpunit": "^12.5",
         "symfony/var-exporter": "^6.4 || ^7 || ^8"
     },
     "autoload": {

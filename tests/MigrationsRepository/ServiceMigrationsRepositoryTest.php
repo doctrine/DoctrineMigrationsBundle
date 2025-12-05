@@ -8,18 +8,17 @@ use Doctrine\Bundle\MigrationsBundle\MigrationsRepository\ServiceMigrationsRepos
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Exception\MigrationClassNotFound;
 use Doctrine\Migrations\Version\Version;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 
 class ServiceMigrationsRepositoryTest extends TestCase
 {
-    /**
-     * @testWith [true]
-     *           [false]
-     */
+    #[TestWith([true])]
+    #[TestWith([false])]
     public function testHasMigration(bool $expectedResult): void
     {
-        $container = $this->createMock(ServiceProviderInterface::class);
+        $container = self::createStub(ServiceProviderInterface::class);
         $container->method('has')
             ->with('Version001')
             ->willReturn($expectedResult);
@@ -31,9 +30,9 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
     public function testGetMigrationReturnsAvailableMigration(): void
     {
-        $migration = $this->createMock(AbstractMigration::class);
+        $migration = self::createStub(AbstractMigration::class);
 
-        $container = $this->createMock(ServiceProviderInterface::class);
+        $container = self::createStub(ServiceProviderInterface::class);
         $container->method('has')
             ->with('Version001')
             ->willReturn(true);
@@ -52,7 +51,7 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
     public function testGetMigrationThrowsExceptionWhenMigrationNotFound(): void
     {
-        $container = $this->createMock(ServiceProviderInterface::class);
+        $container = self::createStub(ServiceProviderInterface::class);
         $container->method('has')
             ->with('NonExistentVersion')
             ->willReturn(false);
@@ -67,10 +66,10 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
     public function testGetMigrationsReturnsAvailableMigrationsSet(): void
     {
-        $migration1 = $this->createMock(AbstractMigration::class);
-        $migration2 = $this->createMock(AbstractMigration::class);
+        $migration1 = self::createStub(AbstractMigration::class);
+        $migration2 = self::createStub(AbstractMigration::class);
 
-        $container = $this->createMock(ServiceProviderInterface::class);
+        $container = self::createStub(ServiceProviderInterface::class);
         $container->method('getProvidedServices')
             ->willReturn(['Version001', 'Version002']);
         $container->method('has')

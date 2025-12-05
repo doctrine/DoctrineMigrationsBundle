@@ -198,7 +198,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
     public function testServiceFactory(): void
     {
-        $mockComparator = $this->createMock(Comparator::class);
+        $mockComparator = self::createStub(Comparator::class);
         $config         = [
             'factories' => [Comparator::class => 'my_sorter'],
         ];
@@ -329,7 +329,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
 
         $container = $this->getContainer($config);
 
-        $mockStorage = $this->createMock(MetadataStorage::class);
+        $mockStorage = self::createStub(MetadataStorage::class);
         $container->set('mock_storage_service', $mockStorage);
 
         $container->compile();
