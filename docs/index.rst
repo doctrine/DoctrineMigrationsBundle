@@ -209,10 +209,10 @@ the migrations work as you expect.
 
 When you do finally deploy your application, you just need to remember to run
 the ``doctrine:migrations:migrate`` command. Internally, Doctrine creates
-a ``migration_versions`` table inside your database and tracks which migrations
+a ``doctrine_migration_versions`` table inside your database and tracks which migrations
 have been executed there. So, no matter how many migrations you've created
 and executed locally, when you run the command during deployment, Doctrine
-will know exactly which migrations it hasn't run yet by looking at the ``migration_versions``
+will know exactly which migrations it hasn't run yet by looking at the ``doctrine_migration_versions``
 table of your production database. Regardless of what server you're on, you
 can always safely run this command to execute only the migrations that haven't
 been run yet on *that* particular database.
@@ -220,7 +220,7 @@ been run yet on *that* particular database.
 Skipping Migrations
 ~~~~~~~~~~~~~~~~~~~
 
-You can skip single migrations by explicitly adding them to the ``migration_versions`` table:
+You can skip single migrations by explicitly adding them to the ``doctrine_migration_versions`` table:
 
 .. code-block:: terminal
 
