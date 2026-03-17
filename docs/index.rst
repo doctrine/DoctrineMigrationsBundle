@@ -17,7 +17,7 @@ Run this command in your terminal:
 
 .. code-block:: terminal
 
-    $ composer require doctrine/doctrine-migrations-bundle "^3.0"
+    $ composer require doctrine/doctrine-migrations-bundle
 
 If you don't use `Symfony Flex`_, you must enable the bundle manually in the application:
 
