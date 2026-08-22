@@ -256,6 +256,9 @@ once placed in the ``src`` directory:
                 'App\Migrations': '%kernel.project_dir%/src/Migrations'
 
 
+Migrations which are not registered as services, such as the ones shipped by third party bundles in their own
+``migrations_paths``, are still loaded from the configured paths.
+
 If you are not using the default configuration, register your migration classes manually and make sure they are
 discoverable by the autoloader. If autoconfiguration is disabled, tag them manually with
 the ``doctrine_migrations.migration`` tag:

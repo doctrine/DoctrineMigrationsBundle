@@ -60,6 +60,7 @@ class DoctrineMigrationsExtension extends Extension
             }
         } else {
             $container->removeDefinition('doctrine.migrations.service_migrations_repository');
+            $container->removeDefinition('doctrine.migrations.migrations_finder');
             $container->removeDefinition('doctrine.migrations.connection');
             $container->removeDefinition('doctrine.migrations.logger');
         }

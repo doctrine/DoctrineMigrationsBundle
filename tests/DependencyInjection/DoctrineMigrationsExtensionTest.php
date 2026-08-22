@@ -13,10 +13,12 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\RegisterMigrationsPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Doctrine\Bundle\MigrationsBundle\MigrationsRepository\ServiceMigrationsRepository;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ContainerAwareMigration;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ServiceMigration001;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Services\FooService;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\ThirdPartyMigrations\Version20240101000000;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Exception\MissingDependency;
@@ -479,8 +481,48 @@ class DoctrineMigrationsExtensionTest extends TestCase
         );
 
         self::assertTrue($container->has('doctrine.migrations.service_migrations_repository'));
+        self::assertTrue($container->has('doctrine.migrations.migrations_finder'));
         self::assertTrue($container->has('doctrine.migrations.connection'));
         self::assertTrue($container->has('doctrine.migrations.logger'));
+    }
+
+    public function testServiceMigrationsFallBackToTheConfiguredMigrationPaths(): void
+    {
+        $config    = [
+            'enable_service_migrations' => true,
+            'migrations_paths' => [
+                'Doctrine\\Bundle\\MigrationsBundle\\Tests\\Fixtures\\ThirdPartyMigrations' => __DIR__ . '/../Fixtures/ThirdPartyMigrations',
+            ],
+        ];
+        $container = $this->getContainer($config);
+        $container->addCompilerPass(new RegisterMigrationsPass());
+
+        $container->register('foo', FooService::class)
+            ->setPublic(true);
+        $container->register(ServiceMigration001::class)
+            ->setAutoconfigured(true)
+            ->setArgument('$fooService', new Reference('foo'));
+        $container->compile();
+
+        $dependencyFactory = $container->get('doctrine.migrations.dependency_factory');
+        assert($dependencyFactory instanceof DependencyFactory);
+
+        $repository = $dependencyFactory->getMigrationRepository();
+        self::assertInstanceOf(ServiceMigrationsRepository::class, $repository);
+
+        $migrations = $repository->getMigrations();
+        self::assertTrue($migrations->hasMigration(new Version(ServiceMigration001::class)));
+        self::assertTrue($migrations->hasMigration(new Version(Version20240101000000::class)));
+        self::assertCount(2, $migrations->getItems());
+
+        self::assertTrue($repository->hasMigration(Version20240101000000::class));
+        self::assertInstanceOf(
+            Version20240101000000::class,
+            $repository->getMigration(new Version(Version20240101000000::class))->getMigration()
+        );
+        $serviceMigration = $repository->getMigration(new Version(ServiceMigration001::class))->getMigration();
+        self::assertInstanceOf(ServiceMigration001::class, $serviceMigration);
+        self::assertSame($container->get('foo'), $serviceMigration->fooService);
     }
 
     public function testEnableServiceMigrationsWhenSetToFalse(): void
@@ -505,6 +547,7 @@ class DoctrineMigrationsExtensionTest extends TestCase
         );
 
         self::assertFalse($container->has('doctrine.migrations.service_migrations_repository'));
+        self::assertFalse($container->has('doctrine.migrations.migrations_finder'));
         self::assertFalse($container->has('doctrine.migrations.connection'));
         self::assertFalse($container->has('doctrine.migrations.logger'));
     }

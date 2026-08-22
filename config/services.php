@@ -15,6 +15,7 @@ use Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager;
 use Doctrine\Migrations\Configuration\EntityManager\ManagerRegistryEntityManager;
 use Doctrine\Migrations\Configuration\Migration\ExistingConfiguration;
 use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Finder\MigrationFinder;
 use Doctrine\Migrations\Tools\Console\Command\CurrentCommand;
 use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand;
@@ -70,7 +71,13 @@ return static function (ContainerConfigurator $container) {
         ->set('doctrine.migrations.service_migrations_repository', ServiceMigrationsRepository::class)
             ->args([
                 abstract_arg('migrations locator'),
+                service('doctrine.migrations.configuration'),
+                service('doctrine.migrations.migrations_finder'),
+                service('doctrine.migrations.migrations_factory'),
             ])
+
+        ->set('doctrine.migrations.migrations_finder', MigrationFinder::class)
+            ->factory([service('doctrine.migrations.dependency_factory'), 'getMigrationsFinder'])
 
         ->set('doctrine.migrations.connection', Connection::class)
             ->factory([service('doctrine.migrations.dependency_factory'), 'getConnection'])
