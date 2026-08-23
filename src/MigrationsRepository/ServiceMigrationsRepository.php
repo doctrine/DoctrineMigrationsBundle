@@ -7,6 +7,7 @@ namespace Doctrine\Bundle\MigrationsBundle\MigrationsRepository;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Configuration\Configuration;
 use Doctrine\Migrations\Exception\MigrationClassNotFound;
+use Doctrine\Migrations\FilesystemMigrationsRepository;
 use Doctrine\Migrations\Finder\MigrationFinder;
 use Doctrine\Migrations\Metadata\AvailableMigration;
 use Doctrine\Migrations\Metadata\AvailableMigrationsSet;
@@ -16,12 +17,12 @@ use Doctrine\Migrations\Version\Version;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 
 use function array_keys;
-use function array_merge;
-use function class_exists;
 
 /**
- * Loads the migrations registered as services and falls back to the configured migration classes and
- * directories for the other ones (e.g. the migrations shipped by third party bundles).
+ * Loads the migrations registered as services and delegates to the default repository of
+ * doctrine/migrations for the configured migration classes and directories, so that the
+ * migrations which are not registered as services (e.g. the ones shipped by third party bundles)
+ * are available as well.
  *
  * @internal
  */
@@ -39,11 +40,11 @@ final class ServiceMigrationsRepository implements MigrationsRepository
     /** @var MigrationFactory|null */
     private $migrationFactory;
 
+    /** @var MigrationsRepository|null */
+    private $configuredMigrationsRepository;
+
     /** @var array<string, AvailableMigration> */
     private $migrations = [];
-
-    /** @var bool */
-    private $filesystemMigrationsLoaded = false;
 
     /** @param ServiceProviderInterface<AbstractMigration> $container */
     public function __construct(
@@ -64,16 +65,26 @@ final class ServiceMigrationsRepository implements MigrationsRepository
             return true;
         }
 
-        $this->loadMigrationsFromFilesystem();
+        $repository = $this->getConfiguredMigrationsRepository();
 
-        return isset($this->migrations[$version]);
+        return $repository !== null && $repository->hasMigration($version);
     }
 
     public function getMigration(Version $version): AvailableMigration
     {
-        $this->loadMigrationFromContainer($version);
+        $migration = $this->loadMigrationFromContainer($version);
 
-        return $this->migrations[(string) $version];
+        if ($migration !== null) {
+            return $migration;
+        }
+
+        $repository = $this->getConfiguredMigrationsRepository();
+
+        if ($repository === null) {
+            throw MigrationClassNotFound::new((string) $version);
+        }
+
+        return $repository->getMigration($version);
     }
 
     /**
@@ -85,67 +96,53 @@ final class ServiceMigrationsRepository implements MigrationsRepository
             $this->loadMigrationFromContainer(new Version($id));
         }
 
-        $this->loadMigrationsFromFilesystem();
+        $migrations = $this->migrations;
+        $repository = $this->getConfiguredMigrationsRepository();
 
-        return new AvailableMigrationsSet($this->migrations);
+        if ($repository !== null) {
+            foreach ($repository->getMigrations()->getItems() as $migration) {
+                $migrations[(string) $migration->getVersion()] = $migrations[(string) $migration->getVersion()] ?? $migration;
+            }
+        }
+
+        return new AvailableMigrationsSet($migrations);
     }
 
-    private function loadMigrationFromContainer(Version $version): void
+    private function loadMigrationFromContainer(Version $version): ?AvailableMigration
     {
         $id = (string) $version;
 
         if (isset($this->migrations[$id])) {
-            return;
+            return $this->migrations[$id];
         }
 
         if (! $this->container->has($id)) {
-            $this->loadMigrationsFromFilesystem();
-
-            if (isset($this->migrations[$id])) {
-                return;
-            }
-
-            throw MigrationClassNotFound::new($id);
+            return null;
         }
 
-        $this->migrations[$id] = new AvailableMigration($version, $this->container->get($id));
+        return $this->migrations[$id] = new AvailableMigration($version, $this->container->get($id));
     }
 
     /**
-     * Registers the migrations found in the configured classes and directories which are not
-     * registered as services, the way the default repository of doctrine/migrations does.
+     * The repository of doctrine/migrations for the configured migration classes and directories,
+     * resolving the migrations registered as services from the container instead of instantiating
+     * them a second time.
      */
-    private function loadMigrationsFromFilesystem(): void
+    private function getConfiguredMigrationsRepository(): ?MigrationsRepository
     {
-        if ($this->filesystemMigrationsLoaded) {
-            return;
+        if ($this->configuredMigrationsRepository !== null) {
+            return $this->configuredMigrationsRepository;
         }
-
-        $this->filesystemMigrationsLoaded = true;
 
         if ($this->configuration === null || $this->migrationFinder === null || $this->migrationFactory === null) {
-            return;
+            return null;
         }
 
-        $classes = $this->configuration->getMigrationClasses();
-
-        foreach ($this->configuration->getMigrationDirectories() as $namespace => $path) {
-            $classes = array_merge($classes, $this->migrationFinder->findMigrations($path, $namespace));
-        }
-
-        foreach ($classes as $class) {
-            if (isset($this->migrations[$class]) || $this->container->has($class)) {
-                continue;
-            }
-
-            if (! class_exists($class)) {
-                throw MigrationClassNotFound::new($class);
-            }
-
-            $this->migrations[$class] = new AvailableMigration(
-                new Version($class),
-                $this->migrationFactory->createVersion($class)
-            );
-        }
+        return $this->configuredMigrationsRepository = new FilesystemMigrationsRepository(
+            $this->configuration->getMigrationClasses(),
+            $this->configuration->getMigrationDirectories(),
+            $this->migrationFinder,
+            new ServiceMigrationFactory($this->container, $this->migrationFactory)
+        );
     }
 }

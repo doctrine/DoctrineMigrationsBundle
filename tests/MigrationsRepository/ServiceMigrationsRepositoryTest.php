@@ -6,6 +6,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\MigrationsRepository;
 
 use Doctrine\Bundle\MigrationsBundle\MigrationsRepository\ServiceMigrationsRepository;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\Migration001;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ServiceMigration001;
 use Doctrine\DBAL\Connection;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -94,31 +95,33 @@ class ServiceMigrationsRepositoryTest extends TestCase
         self::assertCount(2, $migrationsSet->getItems());
     }
 
-    public function testFallsBackToTheConfiguredMigrationsForMigrationsNotRegisteredAsServices(): void
+    public function testDelegatesToTheConfiguredMigrationsForMigrationsNotRegisteredAsServices(): void
     {
         $serviceMigration    = $this->createMock(AbstractMigration::class);
         $filesystemMigration = new Migration001($this->createMock(Connection::class), new NullLogger());
 
         $container = $this->createMock(ServiceProviderInterface::class);
         $container->method('getProvidedServices')
-            ->willReturn(['Version001' => '?']);
+            ->willReturn([ServiceMigration001::class => '?']);
         $container->method('has')
             ->willReturnCallback(static function (string $id): bool {
-                return $id === 'Version001';
+                return $id === ServiceMigration001::class;
             });
         $container->method('get')
-            ->with('Version001')
+            ->with(ServiceMigration001::class)
             ->willReturn($serviceMigration);
 
         $configuration = new Configuration();
         $configuration->addMigrationsDirectory('Doctrine\\Bundle\\MigrationsBundle\\Tests\\Fixtures\\Migrations', __DIR__ . '/../Fixtures/Migrations');
 
+        // the project directory is both registered as services and listed in "migrations_paths", as documented
         $finder = $this->createMock(MigrationFinder::class);
         $finder->expects(self::once())
             ->method('findMigrations')
             ->with(__DIR__ . '/../Fixtures/Migrations', 'Doctrine\\Bundle\\MigrationsBundle\\Tests\\Fixtures\\Migrations')
-            ->willReturn([Migration001::class, 'Version001']);
+            ->willReturn([Migration001::class, ServiceMigration001::class]);
 
+        // the migrations registered as services must not be instantiated a second time
         $factory = $this->createMock(MigrationFactory::class);
         $factory->expects(self::once())
             ->method('createVersion')
@@ -127,21 +130,21 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
         $repository = new ServiceMigrationsRepository($container, $configuration, $finder, $factory);
 
-        self::assertTrue($repository->hasMigration('Version001'));
+        self::assertTrue($repository->hasMigration(ServiceMigration001::class));
         self::assertTrue($repository->hasMigration(Migration001::class));
         self::assertFalse($repository->hasMigration('Version002'));
 
-        self::assertSame($serviceMigration, $repository->getMigration(new Version('Version001'))->getMigration());
+        self::assertSame($serviceMigration, $repository->getMigration(new Version(ServiceMigration001::class))->getMigration());
         self::assertSame($filesystemMigration, $repository->getMigration(new Version(Migration001::class))->getMigration());
 
         $migrationsSet = $repository->getMigrations();
 
         self::assertCount(2, $migrationsSet->getItems());
-        self::assertSame($serviceMigration, $migrationsSet->getMigration(new Version('Version001'))->getMigration());
+        self::assertSame($serviceMigration, $migrationsSet->getMigration(new Version(ServiceMigration001::class))->getMigration());
         self::assertSame($filesystemMigration, $migrationsSet->getMigration(new Version(Migration001::class))->getMigration());
     }
 
-    public function testFallbackThrowsExceptionWhenMigrationClassDoesNotExist(): void
+    public function testConfiguredMigrationClassMustExist(): void
     {
         $container = $this->createMock(ServiceProviderInterface::class);
         $container->method('getProvidedServices')
