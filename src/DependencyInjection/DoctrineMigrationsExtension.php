@@ -54,9 +54,11 @@ final class DoctrineMigrationsExtension extends Extension
                 ->addTag('doctrine_migrations.migration');
 
             if (! isset($config['services'][MigrationsRepository::class])) {
-                $config['services'][MigrationsRepository::class] = 'doctrine.migrations.service_migrations_repository';
+                $config['services'][MigrationsRepository::class] = 'doctrine.migrations.composite_migrations_repository';
             }
         } else {
+            $container->removeDefinition('doctrine.migrations.service_migrations_factory');
+            $container->removeDefinition('doctrine.migrations.composite_migrations_repository');
             $container->removeDefinition('doctrine.migrations.service_migrations_repository');
             $container->removeDefinition('doctrine.migrations.connection');
             $container->removeDefinition('doctrine.migrations.logger');

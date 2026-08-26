@@ -17,7 +17,7 @@ Run this command in your terminal:
 
 .. code-block:: terminal
 
-    $ composer require doctrine/doctrine-migrations-bundle "^3.0"
+    $ composer require doctrine/doctrine-migrations-bundle
 
 If you don't use `Symfony Flex`_, you must enable the bundle manually in the application:
 
@@ -209,10 +209,10 @@ the migrations work as you expect.
 
 When you do finally deploy your application, you just need to remember to run
 the ``doctrine:migrations:migrate`` command. Internally, Doctrine creates
-a ``migration_versions`` table inside your database and tracks which migrations
+a ``doctrine_migration_versions`` table inside your database and tracks which migrations
 have been executed there. So, no matter how many migrations you've created
 and executed locally, when you run the command during deployment, Doctrine
-will know exactly which migrations it hasn't run yet by looking at the ``migration_versions``
+will know exactly which migrations it hasn't run yet by looking at the ``doctrine_migration_versions``
 table of your production database. Regardless of what server you're on, you
 can always safely run this command to execute only the migrations that haven't
 been run yet on *that* particular database.
@@ -220,7 +220,7 @@ been run yet on *that* particular database.
 Skipping Migrations
 ~~~~~~~~~~~~~~~~~~~
 
-You can skip single migrations by explicitly adding them to the ``migration_versions`` table:
+You can skip single migrations by explicitly adding them to the ``doctrine_migration_versions`` table:
 
 .. code-block:: terminal
 
@@ -349,32 +349,6 @@ for Doctrine's ORM:
             private $id;
 
             #[ORM\Column(type: Types::STRING, length: 255)]
-            private $name;
-
-    .. code-block:: php-annotations
-
-        // src/Entity/User.php
-
-        namespace App\Entity;
-
-        use Doctrine\ORM\Mapping as ORM;
-
-        /**
-         * @ORM\Entity
-         * @ORM\Table(name="hello_user")
-         */
-        class User
-        {
-            /**
-             * @ORM\Id
-             * @ORM\Column(type="integer")
-             * @ORM\GeneratedValue(strategy="AUTO")
-             */
-            private $id;
-
-            /**
-             * @ORM\Column(type="string", length=255)
-             */
             private $name;
 
     .. code-block:: yaml

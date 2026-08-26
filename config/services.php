@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Doctrine\Bundle\MigrationsBundle\EventListener\SchemaFilterListener;
+use Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ContainerAwareMigrationFactory;
+use Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ServiceMigrationFactory;
+use Doctrine\Bundle\MigrationsBundle\MigrationsRepository\CompositeMigrationsRepository;
 use Doctrine\Bundle\MigrationsBundle\MigrationsRepository\ServiceMigrationsRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -14,6 +17,8 @@ use Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager;
 use Doctrine\Migrations\Configuration\EntityManager\ManagerRegistryEntityManager;
 use Doctrine\Migrations\Configuration\Migration\ExistingConfiguration;
 use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\FilesystemMigrationsRepository;
+use Doctrine\Migrations\MigrationsRepository;
 use Doctrine\Migrations\Tools\Console\Command\CurrentCommand;
 use Doctrine\Migrations\Tools\Console\Command\DiffCommand;
 use Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand;
@@ -59,9 +64,23 @@ return static function (ContainerConfigurator $container) {
         ->set('doctrine.migrations.migrations_factory', MigrationFactory::class)
             ->factory([service('doctrine.migrations.dependency_factory'), 'getMigrationFactory'])
 
+
+        ->set('doctrine.migrations.service_migrations_factory', ServiceMigrationFactory::class)
+            ->decorate('doctrine.migrations.migrations_factory')
+            ->args([
+                service('doctrine.migrations.service_migrations_factory.inner'),
+                abstract_arg('migrations locator'),
+            ])
+
         ->set('doctrine.migrations.service_migrations_repository', ServiceMigrationsRepository::class)
             ->args([
                 abstract_arg('migrations locator'),
+            ])
+
+        ->set('doctrine.migrations.composite_migrations_repository', CompositeMigrationsRepository::class)
+            ->args([
+                service('doctrine.migrations.service_migrations_repository'),
+                inline_service()->factory([service('doctrine.migrations.dependency_factory'), 'getMigrationRepository']),
             ])
 
         ->set('doctrine.migrations.connection', Connection::class)

@@ -9,6 +9,8 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\RegisterMigrationsPass;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\DoctrineMigrationsExtension;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\FilesystemMigrations\VersionFilesystem001;
+use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\FilesystemMigrations\VersionFilesystemService001;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Migrations\ServiceMigration001;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\Services\FooService;
 use Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\TestBundle\TestBundle;
@@ -422,10 +424,12 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertInstanceOf(ServiceMigration001::class, $container->get(ServiceMigration001::class));
 
         self::assertContainsEquals(
-            ['setDefinition', [MigrationsRepository::class, new ServiceClosureArgument(new Reference('doctrine.migrations.service_migrations_repository'))]],
+            ['setDefinition', [MigrationsRepository::class, new ServiceClosureArgument(new Reference('doctrine.migrations.composite_migrations_repository'))]],
             $container->getDefinition('doctrine.migrations.dependency_factory')->getMethodCalls(),
         );
 
+        self::assertTrue($container->has('doctrine.migrations.service_migrations_factory'));
+        self::assertTrue($container->has('doctrine.migrations.composite_migrations_repository'));
         self::assertTrue($container->has('doctrine.migrations.service_migrations_repository'));
         self::assertTrue($container->has('doctrine.migrations.connection'));
         self::assertTrue($container->has('doctrine.migrations.logger'));
@@ -448,13 +452,48 @@ class DoctrineMigrationsExtensionTest extends TestCase
         self::assertFalse($container->getDefinition(ServiceMigration001::class)->hasTag('doctrine_migrations.migration'));
 
         self::assertNotContainsEquals(
-            ['setDefinition', [MigrationsRepository::class, new ServiceClosureArgument(new Reference('doctrine.migrations.service_migrations_repository'))]],
+            ['setDefinition', [MigrationsRepository::class, new ServiceClosureArgument(new Reference('doctrine.migrations.composite_migrations_repository'))]],
             $container->getDefinition('doctrine.migrations.dependency_factory')->getMethodCalls(),
         );
 
+        self::assertFalse($container->has('doctrine.migrations.service_migrations_factory'));
+        self::assertFalse($container->has('doctrine.migrations.composite_migrations_repository'));
         self::assertFalse($container->has('doctrine.migrations.service_migrations_repository'));
         self::assertFalse($container->has('doctrine.migrations.connection'));
         self::assertFalse($container->has('doctrine.migrations.logger'));
+    }
+
+    public function testServiceMigrationsDoNotDisableFilesystemMigrations(): void
+    {
+        $config    = [
+            'enable_service_migrations' => true,
+            'migrations_paths' => [
+                'Doctrine\Bundle\MigrationsBundle\Tests\Fixtures\FilesystemMigrations' => __DIR__ . '/../Fixtures/FilesystemMigrations',
+            ],
+        ];
+        $container = $this->getContainer($config);
+
+        $container->register('foo', FooService::class);
+        $container->register(VersionFilesystemService001::class)
+            ->setPublic(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$fooService', new Reference('foo'));
+        $container->compile();
+
+        $di = $container->get('doctrine.migrations.dependency_factory');
+        self::assertInstanceOf(DependencyFactory::class, $di);
+
+        $migrations = $di->getMigrationRepository()->getMigrations();
+
+        self::assertCount(2, $migrations->getItems());
+        self::assertInstanceOf(
+            VersionFilesystem001::class,
+            $migrations->getMigration(new Version(VersionFilesystem001::class))->getMigration(),
+        );
+        self::assertSame(
+            $container->get(VersionFilesystemService001::class),
+            $migrations->getMigration(new Version(VersionFilesystemService001::class))->getMigration(),
+        );
     }
 
     /**
