@@ -12,6 +12,8 @@ use Doctrine\Migrations\MigrationsRepository;
 use Doctrine\Migrations\Version\Version;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 
+use function array_keys;
+
 /** @internal */
 final class ServiceMigrationsRepository implements MigrationsRepository
 {
@@ -44,7 +46,7 @@ final class ServiceMigrationsRepository implements MigrationsRepository
      */
     public function getMigrations(): AvailableMigrationsSet
     {
-        foreach ($this->container->getProvidedServices() as $id) {
+        foreach (array_keys($this->container->getProvidedServices()) as $id) {
             $this->loadMigrationFromContainer(new Version($id));
         }
 
