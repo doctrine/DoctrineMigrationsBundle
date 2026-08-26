@@ -18,7 +18,7 @@ class ServiceMigrationsRepositoryTest extends TestCase
     #[TestWith([false])]
     public function testHasMigration(bool $expectedResult): void
     {
-        $container = self::createStub(ServiceProviderInterface::class);
+        $container = self::createMock(ServiceProviderInterface::class);
         $container->method('has')
             ->with('Version001')
             ->willReturn($expectedResult);
@@ -32,7 +32,7 @@ class ServiceMigrationsRepositoryTest extends TestCase
     {
         $migration = self::createStub(AbstractMigration::class);
 
-        $container = self::createStub(ServiceProviderInterface::class);
+        $container = self::createMock(ServiceProviderInterface::class);
         $container->method('has')
             ->with('Version001')
             ->willReturn(true);
@@ -51,7 +51,7 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
     public function testGetMigrationThrowsExceptionWhenMigrationNotFound(): void
     {
-        $container = self::createStub(ServiceProviderInterface::class);
+        $container = self::createMock(ServiceProviderInterface::class);
         $container->method('has')
             ->with('NonExistentVersion')
             ->willReturn(false);
@@ -71,7 +71,7 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
         $container = self::createStub(ServiceProviderInterface::class);
         $container->method('getProvidedServices')
-            ->willReturn(['Version001', 'Version002']);
+            ->willReturn(['Version001' => '?', 'Version002' => '?']);
         $container->method('has')
             ->willReturn(true);
         $container->method('get')
