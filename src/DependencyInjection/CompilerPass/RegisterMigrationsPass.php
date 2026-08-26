@@ -36,5 +36,8 @@ final class RegisterMigrationsPass implements CompilerPassInterface
 
         $container->getDefinition('doctrine.migrations.service_migrations_repository')
             ->replaceArgument(0, new ServiceLocatorArgument($migrationRefs));
+
+        $container->getDefinition('doctrine.migrations.service_migrations_factory')
+            ->replaceArgument(1, new ServiceLocatorArgument($migrationRefs));
     }
 }

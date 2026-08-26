@@ -72,7 +72,7 @@ class ServiceMigrationsRepositoryTest extends TestCase
 
         $container = $this->createMock(ServiceProviderInterface::class);
         $container->method('getProvidedServices')
-            ->willReturn(['Version001', 'Version002']);
+            ->willReturn(['Version001' => '?', 'Version002' => '?']);
         $container->method('has')
             ->willReturn(true);
         $container->method('get')
