@@ -14,7 +14,7 @@ use Doctrine\Migrations\Version\Version;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-class CompositeMigrationsRepositoryTest extends TestCase
+final class CompositeMigrationsRepositoryTest extends TestCase
 {
     #[TestWith([true, true])]
     #[TestWith([true, false])]
@@ -22,8 +22,8 @@ class CompositeMigrationsRepositoryTest extends TestCase
     public function testHasMigrationReturnsTrueWhenAnyRepositoryHasIt(bool $first, bool $second): void
     {
         $repository = new CompositeMigrationsRepository(
-            $this->createRepositoryHavingMigration($first),
-            $this->createRepositoryHavingMigration($second),
+            $first ? $this->createRepositoryHavingMigration() : $this->createEmptyRepository(),
+            $second ? $this->createRepositoryHavingMigration() : $this->createEmptyRepository(),
         );
 
         self::assertTrue($repository->hasMigration('Version001'));
@@ -32,8 +32,8 @@ class CompositeMigrationsRepositoryTest extends TestCase
     public function testHasMigrationReturnsFalseWhenNoRepositoryHasIt(): void
     {
         $repository = new CompositeMigrationsRepository(
-            $this->createRepositoryHavingMigration(false),
-            $this->createRepositoryHavingMigration(false),
+            $this->createEmptyRepository(),
+            $this->createEmptyRepository(),
         );
 
         self::assertFalse($repository->hasMigration('Version001'));
@@ -112,14 +112,55 @@ class CompositeMigrationsRepositoryTest extends TestCase
         $repository->getMigration(new Version('Version001'));
     }
 
-    private function createRepositoryHavingMigration(bool $hasMigration): MigrationsRepository
+    private function createRepositoryHavingMigration(): MigrationsRepository
     {
-        $repository = $this->createMock(MigrationsRepository::class);
-        $repository->method('hasMigration')
-            ->with('Version001')
-            ->willReturn($hasMigration);
+        return new readonly class (self::createStub(AbstractMigration::class)) implements MigrationsRepository
+        {
+            public function __construct(
+                private AbstractMigration $migration,
+            ) {
+            }
 
-        return $repository;
+            public function hasMigration(string $version): bool
+            {
+                return $version === 'Version001';
+            }
+
+            public function getMigration(Version $version): AvailableMigration
+            {
+                if ((string) $version !== 'Version001') {
+                    throw MigrationClassNotFound::new((string) $version);
+                }
+
+                return new AvailableMigration($version, $this->migration);
+            }
+
+            public function getMigrations(): AvailableMigrationsSet
+            {
+                return new AvailableMigrationsSet([new AvailableMigration(new Version('Version001'), $this->migration)]);
+            }
+        };
+    }
+
+    private function createEmptyRepository(): MigrationsRepository
+    {
+        return new readonly class implements MigrationsRepository
+        {
+            public function hasMigration(string $version): false
+            {
+                return false;
+            }
+
+            public function getMigration(Version $version): never
+            {
+                throw MigrationClassNotFound::new((string) $version);
+            }
+
+            public function getMigrations(): AvailableMigrationsSet
+            {
+                return new AvailableMigrationsSet([]);
+            }
+        };
     }
 
     private function createRepositoryWithMigrations(AvailableMigration ...$migrations): MigrationsRepository

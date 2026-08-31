@@ -5,6 +5,10 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     colors="true"
     bootstrap="vendor/autoload.php"
+    failOnNotice="true"
+    failOnWarning="true"
+    failOnPhpunitDeprecation="true"
+    failOnPhpunitNotice="true"
     displayDetailsOnTestsThatTriggerDeprecations="true"
 >
     <testsuites>
@@ -14,6 +18,11 @@
     </testsuites>
 
     <source ignoreSuppressionOfDeprecations="true">
+        <deprecationTrigger ignoreUndefinedTriggers="true">
+            <function>trigger_deprecation</function>
+            <method>Doctrine\Deprecations\Deprecation::trigger</method>
+            <method>Doctrine\Deprecations\Deprecation::triggerIfCalledFromOutside</method>
+        </deprecationTrigger>
         <include>
             <directory>src</directory>
         </include>

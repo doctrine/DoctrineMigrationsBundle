@@ -8,21 +8,20 @@ use Doctrine\Bundle\MigrationsBundle\MigrationsFactory\ServiceMigrationFactory;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Version\MigrationFactory;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Service\ServiceLocatorTrait;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 
-class ServiceMigrationFactoryTest extends TestCase
+final class ServiceMigrationFactoryTest extends TestCase
 {
     public function testCreateVersionReturnsMigrationFromContainer(): void
     {
         $migration = self::createStub(AbstractMigration::class);
 
-        $container = $this->createMock(ServiceProviderInterface::class);
-        $container->method('has')
-            ->with('Version001')
-            ->willReturn(true);
-        $container->method('get')
-            ->with('Version001')
-            ->willReturn($migration);
+        $container = new class ([
+            'Version001' => static fn () => $migration,
+        ]) implements ServiceProviderInterface {
+            use ServiceLocatorTrait;
+        };
 
         $decoratedFactory = $this->createMock(MigrationFactory::class);
         $decoratedFactory->expects(self::never())
@@ -37,12 +36,9 @@ class ServiceMigrationFactoryTest extends TestCase
     {
         $migration = self::createStub(AbstractMigration::class);
 
-        $container = $this->createMock(ServiceProviderInterface::class);
-        $container->method('has')
-            ->with('Version001')
-            ->willReturn(false);
-        $container->expects(self::never())
-            ->method('get');
+        $container = new class ([]) implements ServiceProviderInterface {
+            use ServiceLocatorTrait;
+        };
 
         $decoratedFactory = $this->createMock(MigrationFactory::class);
         $decoratedFactory->expects(self::once())
