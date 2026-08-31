@@ -42,12 +42,12 @@
         "composer/semver": "^3.0",
         "doctrine/coding-standard": "^14",
         "doctrine/orm": "^3",
-        "phpstan/phpstan": "^2",
+        "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-deprecation-rules": "^2",
         "phpstan/phpstan-phpunit": "^2",
         "phpstan/phpstan-strict-rules": "^2",
         "phpstan/phpstan-symfony": "^2",
-        "phpunit/phpunit": "^12.5",
+        "phpunit/phpunit": "^13.3.2",
         "symfony/var-exporter": "^6.4 || ^7 || ^8"
     },
     "autoload": {
