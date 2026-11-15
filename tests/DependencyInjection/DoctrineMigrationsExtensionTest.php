@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\RegisterDbalTypePass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\RegisterMigrationsPass;
@@ -30,6 +31,7 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -37,6 +39,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 
 use function assert;
+use function class_exists;
 use function sys_get_temp_dir;
 
 class DoctrineMigrationsExtensionTest extends TestCase
@@ -517,6 +520,11 @@ class DoctrineMigrationsExtensionTest extends TestCase
         }
 
         $extension->load(['doctrine' => $doctrineBundleConfigs], $container);
+
+        // DoctrineBundle registers this pass in its bundle class, which this test does not build.
+        if (class_exists(RegisterDbalTypePass::class)) {
+            $container->addCompilerPass(new RegisterDbalTypePass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -10);
+        }
 
         $extension = new DoctrineMigrationsExtension();
         $extension->load(['doctrine_migrations' => $config], $container);
