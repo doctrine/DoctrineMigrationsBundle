@@ -7,6 +7,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\RegisterDbalTypePass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -36,6 +37,7 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -569,6 +571,11 @@ class DoctrineMigrationsExtensionTest extends TestCase
         }
 
         $extension->load(['doctrine' => $doctrineBundleConfigs], $container);
+
+        // DoctrineBundle registers this pass in its bundle class, which this test does not build.
+        if (class_exists(RegisterDbalTypePass::class)) {
+            $container->addCompilerPass(new RegisterDbalTypePass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -10);
+        }
 
         $extension = new DoctrineMigrationsExtension();
         $extension->load(['doctrine_migrations' => $config], $container);
