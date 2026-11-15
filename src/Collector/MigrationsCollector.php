@@ -30,8 +30,7 @@ class MigrationsCollector extends DataCollector
         $this->flattener         = $migrationsFlattener;
     }
 
-    /** @return void */
-    public function collect(Request $request, Response $response, ?Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
         if ($this->data !== []) {
             return;
@@ -76,8 +75,7 @@ class MigrationsCollector extends DataCollector
         $this->data['namespaces'] = $configuration->getMigrationDirectories();
     }
 
-    /** @return string */
-    public function getName()
+    public function getName(): string
     {
         return 'doctrine_migrations';
     }
@@ -88,8 +86,7 @@ class MigrationsCollector extends DataCollector
         return $this->data;
     }
 
-    /** @return void */
-    public function reset()
+    public function reset(): void
     {
         $this->data = [];
     }
