@@ -6,8 +6,7 @@ namespace Doctrine\Bundle\MigrationsBundle\Tests\DependencyInjection;
 
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\CacheCompatibilityPass;
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MigrationsBundle\DependencyInjection\CompilerPass\RegisterMigrationsPass;
@@ -561,14 +560,17 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $bundle = new DoctrineMigrationsBundle();
         $bundle->build($container);
 
-        $extension = new DoctrineExtension();
+        $doctrineBundle = new DoctrineBundle();
+        $doctrineBundle->build($container);
 
         $doctrineBundleConfigs = $dbalConfig === null ? ['dbal' => ['url' => 'sqlite:///:memory:']] : ['dbal' => $dbalConfig];
         if ($ormConfig !== null) {
             $doctrineBundleConfigs += ['orm' => $ormConfig];
         }
 
-        $extension->load(['doctrine' => $doctrineBundleConfigs], $container);
+        $doctrineExtension = $doctrineBundle->getContainerExtension();
+        assert($doctrineExtension !== null);
+        $doctrineExtension->load(['doctrine' => $doctrineBundleConfigs], $container);
 
         $extension = new DoctrineMigrationsExtension();
         $extension->load(['doctrine_migrations' => $config], $container);
@@ -577,11 +579,6 @@ class DoctrineMigrationsExtensionTest extends TestCase
         $container->getDefinition('doctrine.migrations.configuration')->setPublic(true);
         if ($container->hasDefinition('doctrine_migrations.schema_filter_listener')) {
             $container->getDefinition('doctrine_migrations.schema_filter_listener')->setPublic(true);
-        }
-
-        if (class_exists(CacheCompatibilityPass::class)) {
-            /** @phpstan-ignore argument.type */
-            $container->addCompilerPass(new CacheCompatibilityPass());
         }
 
         return $container;
