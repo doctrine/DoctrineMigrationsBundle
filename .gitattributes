@@ -1,12 +1,14 @@
 * text=auto
 
-/docs export-ignore
-/tests export-ignore
-.doctrine-project.json export-ignore
-.gitattributes export-ignore
-/.github export-ignore
-.gitignore export-ignore
-phpcs.xml.dist export-ignore
-phpstan.neon.dist export-ignore
-phpstan-baseline.neon export-ignore
-phpunit.xml.dist export-ignore
+/* export-ignore
+/src -export-ignore
+/src/** -export-ignore
+/config -export-ignore
+/config/** -export-ignore
+/templates -export-ignore
+/templates/** -export-ignore
+/LICENSE -export-ignore
+/*.md -export-ignore
+/*.markdown -export-ignore
+/composer.json -export-ignore
+/.symfony.bundle.yaml -export-ignore
